@@ -1,88 +1,106 @@
 <script setup lang="ts">
-import { Expand, Fold, Setting } from '@element-plus/icons-vue'
-import { computed, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import AppSettingsDrawer from '@/layout/components/AppSettingsDrawer.vue'
-import { useAuthStore } from '@/stores/modules/auth'
-import { useMenuStore } from '@/stores/modules/menu'
-import { usePermissionStore } from '@/stores/modules/permission'
-import { useTabsStore } from '@/stores/modules/tabs'
-import { useUiStore } from '@/stores/modules/ui'
-import type { RouteTag } from '@/stores/modules/tabs'
+import { Expand, Fold, Setting } from "@element-plus/icons-vue";
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import AppSettingsDrawer from "@/layout/components/AppSettingsDrawer.vue";
+import { useAuthStore } from "@/stores/modules/auth";
+import { useMenuStore } from "@/stores/modules/menu";
+import { usePermissionStore } from "@/stores/modules/permission";
+import { useTabsStore } from "@/stores/modules/tabs";
+import { useUiStore } from "@/stores/modules/ui";
+import type { RouteTag } from "@/stores/modules/tabs";
 
-const route = useRoute()
-const router = useRouter()
-const authStore = useAuthStore()
-const menuStore = useMenuStore()
-const permissionStore = usePermissionStore()
-const tabsStore = useTabsStore()
-const uiStore = useUiStore()
+const route = useRoute();
+const router = useRouter();
+const authStore = useAuthStore();
+const menuStore = useMenuStore();
+const permissionStore = usePermissionStore();
+const tabsStore = useTabsStore();
+const uiStore = useUiStore();
 
-const isSettingsDrawerVisible = ref(false)
+const isSettingsDrawerVisible = ref(false);
 
-const title = computed(() => (route.meta.title as string) || '管理后台')
-const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route.path))
-const sidebarToggleIcon = computed(() => (uiStore.isSidebarCollapsed ? Expand : Fold))
-const activeTagPath = computed(() => route.path)
+const title = computed(() => (route.meta.title as string) || "管理后台");
+const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route.path));
+const sidebarToggleIcon = computed(() =>
+  uiStore.isSidebarCollapsed ? Expand : Fold,
+);
+const activeTagPath = computed(() => route.path);
 
 watch(
   () => route.fullPath,
   () => {
-    menuStore.rememberRoute(route.path, route.fullPath)
+    menuStore.rememberRoute(route.path, route.fullPath);
     tabsStore.addTag({
-      title: (route.meta.title as string) || '未命名页面',
+      title: (route.meta.title as string) || "未命名页面",
       path: route.path,
       fullPath: route.fullPath,
       isPublic: Boolean(route.meta.public),
-      name: route.name ? String(route.name) : ''
-    })
+      hidden: Boolean(route.meta.hidden),
+      name: route.name ? String(route.name) : "",
+    });
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 const handleTagClick = async (tag: RouteTag): Promise<void> => {
-  if (route.fullPath === tag.fullPath) return
-  await router.push(tag.fullPath)
-}
+  if (route.fullPath === tag.fullPath) return;
+  await router.push(tag.fullPath);
+};
 
 const handleTagClose = async (tag: RouteTag): Promise<void> => {
-  const fallbackFullPath = tabsStore.removeTag(tag.path)
+  const fallbackFullPath = tabsStore.removeTag(tag.path);
   if (route.path === tag.path && fallbackFullPath) {
-    await router.push(fallbackFullPath)
+    await router.push(fallbackFullPath);
   }
-}
+};
 
 const handleLogout = async (): Promise<void> => {
-  await authStore.logout()
-  menuStore.reset()
-  tabsStore.reset()
-  permissionStore.reset()
-  await router.replace('/login')
-}
+  await authStore.logout();
+  menuStore.reset();
+  tabsStore.reset();
+  permissionStore.reset();
+  await router.replace("/login");
+};
 </script>
 
 <template>
   <header class="bg-[var(--app-surface)] border-b border-[var(--app-border)]">
     <div class="h-14 px-5 flex items-center justify-between">
       <div class="flex items-center gap-3 min-w-0">
-        <el-tooltip :content="uiStore.isSidebarCollapsed ? '展开侧边栏' : '折叠侧边栏'" placement="bottom">
-          <el-button text circle class="!text-[var(--app-text-primary)]" @click="uiStore.toggleSidebar">
+        <el-tooltip
+          :content="uiStore.isSidebarCollapsed ? '展开侧边栏' : '折叠侧边栏'"
+          placement="bottom"
+        >
+          <el-button
+            text
+            circle
+            class="!text-[var(--app-text-primary)]"
+            @click="uiStore.toggleSidebar"
+          >
             <el-icon><component :is="sidebarToggleIcon" /></el-icon>
           </el-button>
         </el-tooltip>
 
-        <div class="text-base font-semibold text-[var(--app-text-primary)] shrink-0">{{ title }}</div>
+        <div
+          class="text-base font-semibold text-[var(--app-text-primary)] shrink-0"
+        >
+          {{ title }}
+        </div>
 
         <el-divider direction="vertical" />
 
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="`${item.to}-${index}`">
+          <el-breadcrumb-item
+            v-for="(item, index) in breadcrumbs"
+            :key="`${item.to}-${index}`"
+          >
             <span
               :class="[
                 'text-sm',
                 index === breadcrumbs.length - 1
                   ? 'text-[var(--app-text-primary)]'
-                  : 'text-[var(--app-text-secondary)]'
+                  : 'text-[var(--app-text-secondary)]',
               ]"
             >
               {{ item.title }}
@@ -93,14 +111,20 @@ const handleLogout = async (): Promise<void> => {
 
       <div class="flex items-center gap-3">
         <el-dropdown>
-          <span class="cursor-pointer text-sm text-[var(--app-text-primary)] flex items-center gap-2">
-            <el-avatar :size="26">{{ authStore.user?.displayName?.slice(0, 1) || 'U' }}</el-avatar>
-            {{ authStore.user?.displayName || '未知用户' }}
+          <span
+            class="cursor-pointer text-sm text-[var(--app-text-primary)] flex items-center gap-2"
+          >
+            <el-avatar :size="26">{{
+              authStore.user?.displayName?.slice(0, 1) || "U"
+            }}</el-avatar>
+            {{ authStore.user?.displayName || "未知用户" }}
           </span>
 
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
+              <el-dropdown-item @click="handleLogout"
+                >退出登录</el-dropdown-item
+              >
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -118,7 +142,9 @@ const handleLogout = async (): Promise<void> => {
       </div>
     </div>
 
-    <div class="h-11 px-4 border-t border-[var(--app-border)] bg-[var(--app-bg)]/40">
+    <div
+      class="h-11 px-4 border-t border-[var(--app-border)] bg-[var(--app-bg)]/40"
+    >
       <el-scrollbar>
         <div class="h-10 flex items-center gap-2 pr-2">
           <el-tag
@@ -130,7 +156,11 @@ const handleLogout = async (): Promise<void> => {
             disable-transitions
             @close="handleTagClose(tag)"
           >
-            <span class="cursor-pointer select-none" @click="handleTagClick(tag)">{{ tag.title }}</span>
+            <span
+              class="cursor-pointer select-none"
+              @click="handleTagClick(tag)"
+              >{{ tag.title }}</span
+            >
           </el-tag>
         </div>
       </el-scrollbar>

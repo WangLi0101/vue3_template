@@ -6,9 +6,14 @@ import type {
 } from "@/types/auth";
 
 export const loginApi = (payload: LoginPayload): Promise<LoginResponse> => {
-  return request.post<LoginResponse>("/auth/login", payload);
+  return request<LoginResponse, LoginPayload>("/auth/login", "auth", {
+    method: "post",
+    data: payload,
+  });
 };
 
 export const getProfileApi = (): Promise<ProfileResponse> => {
-  return request.get<ProfileResponse>("/auth/me");
+  return request<ProfileResponse>("/auth/me", "auth", {
+    method: "get",
+  });
 };

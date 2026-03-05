@@ -13,6 +13,7 @@ interface AddTagPayload {
   path: string
   fullPath: string
   isPublic: boolean
+  hidden: boolean
   name: string
 }
 
@@ -28,6 +29,7 @@ export const useTabsStore = defineStore('tabs', () => {
 
   const isTrackableRoute = (payload: AddTagPayload): boolean => {
     if (payload.isPublic) return false
+    if (payload.hidden) return false
     if (!payload.path || !payload.title) return false
     if (payload.name === 'Forbidden' || payload.name === 'NotFound') return false
     return true
