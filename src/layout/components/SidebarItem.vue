@@ -40,7 +40,7 @@ const normalizeIcon = (icon?: string): string => {
   </el-menu-item>
 </template>
 <style lang="scss">
-.el-menu-item.is-active .el-menu-tooltip__trigger {
+.el-menu-item .el-menu-tooltip__trigger {
   padding-left: 0 !important;
   padding-right: 0 !important;
   display: flex;
