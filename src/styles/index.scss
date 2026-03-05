@@ -17,3 +17,13 @@ body {
 * {
   box-sizing: border-box;
 }
+
+#nprogress .bar {
+  background: var(--app-primary, var(--el-color-primary, #e53935)) !important;
+}
+
+#nprogress .peg {
+  box-shadow:
+    0 0 10px var(--app-primary, var(--el-color-primary, #e53935)),
+    0 0 5px var(--app-primary, var(--el-color-primary, #e53935)) !important;
+}

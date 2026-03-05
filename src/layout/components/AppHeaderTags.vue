@@ -25,55 +25,165 @@ const handleTagClose = async (tag: RouteTag): Promise<void> => {
 </script>
 
 <template>
-  <div
-    class="app-header-tags h-11 px-4 bg-app-header transition-colors duration-300 flex items-center [border-top:1px_solid_var(--app-border)] [border-bottom:1px_solid_var(--app-border)]"
-  >
-    <el-scrollbar class="w-full flex-1">
-      <div class="h-full flex items-center gap-1.5 pr-2">
+  <div class="app-header-tags">
+    <el-scrollbar class="tags-scroll">
+      <transition-group name="tag-slide" tag="div" class="tags-track">
         <div
           v-for="tag in tabsStore.tabs"
           :key="tag.path"
-          class="tag-item group flex items-center h-7 pl-3 pr-2 mt-[7px] mb-[7px] text-[13px] rounded-md border transition-all duration-200 cursor-pointer select-none whitespace-nowrap shrink-0"
-          :class="[
-            activeTagPath === tag.path
-              ? 'is-active bg-[color:rgb(var(--app-primary-rgb)/0.14)] border-[color:rgb(var(--app-primary-rgb)/0.38)] text-primary font-medium'
-              : 'bg-app-surface border-app-border text-app-text-secondary hover:bg-app-surface-hover hover:border-app-border-hover hover:text-app-text-primary',
-          ]"
+          class="tag-item"
+          :class="[activeTagPath === tag.path ? 'is-active' : 'is-inactive']"
           @click="handleTagClick(tag)"
         >
-          <span class="max-w-[140px] truncate">{{ tag.title }}</span>
-          <div
+          <span class="tag-title">{{ tag.title }}</span>
+          <button
             v-if="tag.closable"
-            class="ml-1 w-4 h-4 rounded flex items-center justify-center transition-all duration-200"
-            :class="
-              activeTagPath === tag.path
-                ? 'opacity-100 text-primary/80 hover:text-primary hover:bg-[color:rgb(var(--app-primary-rgb)/0.2)]'
-                : 'opacity-0 group-hover:opacity-100 text-app-text-secondary hover:text-app-text-primary hover:bg-app-bg-mute'
-            "
+            type="button"
+            class="tag-close"
             @click.stop="handleTagClose(tag)"
           >
             <el-icon :size="10"><Close /></el-icon>
-          </div>
+          </button>
         </div>
-      </div>
+      </transition-group>
     </el-scrollbar>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+.app-header-tags {
+  display: flex;
+  align-items: stretch;
+  height: 36px;
+  border-top: 1px solid var(--app-border);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.tags-scroll {
+  flex: 1;
+}
+
+.app-header-tags :deep(.el-scrollbar),
+.app-header-tags :deep(.el-scrollbar__wrap),
+.app-header-tags :deep(.el-scrollbar__view) {
+  height: 100%;
+}
+
+.tags-track {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  min-width: max-content;
+}
+
 .tag-item {
-  box-shadow: 0 1px 2px rgb(15 23 42 / 0.03);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 14px;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--app-text-primary);
+  border-right: 1px solid var(--app-border);
+  background-color: rgb(var(--app-primary-rgb) / 0.03);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.tag-item:first-child {
+  border-left: 1px solid var(--app-border);
+}
+
+.tag-item.is-inactive:hover {
+  color: var(--app-primary);
+  background-color: rgb(var(--app-primary-rgb) / 0.08);
 }
 
 .tag-item.is-active {
-  box-shadow: 0 6px 12px -9px rgb(var(--app-primary-rgb) / 0.65);
+  color: var(--app-primary);
+  background-color: rgb(var(--app-primary-rgb) / 0.12);
+}
+
+.tag-item.is-active::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background-color: var(--app-primary);
+}
+
+.tag-title {
+  max-width: 164px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-item.is-active .tag-title {
+  font-weight: 500;
+}
+
+.tag-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  line-height: 1;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0;
+  background: transparent;
+  transition: opacity 0.2s ease;
+}
+
+.tag-close :deep(.el-icon) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.tag-item:hover .tag-close,
+.tag-item.is-active .tag-close {
+  opacity: 1;
+}
+
+.tag-close:hover {
+  color: var(--app-primary);
+  background-color: rgb(var(--app-primary-rgb) / 0.14);
+}
+
+.tag-slide-enter-active,
+.tag-slide-leave-active {
+  transition: all 0.2s ease;
+}
+
+.tag-slide-move {
+  transition: transform 0.2s ease;
+}
+
+.tag-slide-enter-from,
+.tag-slide-leave-to {
+  opacity: 0;
+  transform: translateX(-8px);
 }
 
 .app-header-tags :deep(.el-scrollbar__bar.is-horizontal) {
-  height: 6px;
+  height: 4px;
 }
 
 .app-header-tags :deep(.el-scrollbar__thumb) {
-  background-color: rgb(var(--app-primary-rgb) / 0.24);
+  background-color: rgb(var(--app-primary-rgb) / 0.22);
 }
 </style>

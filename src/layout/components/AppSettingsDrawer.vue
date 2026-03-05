@@ -29,6 +29,7 @@ const modeOptions: Array<{
   { label: "深色", value: "dark", icon: Moon },
   { label: "自动", value: "system", icon: Monitor },
 ];
+
 const predefineColors = [...appThemeConfig.primaryColorPresets];
 
 const setThemeMode = (mode: ThemeMode): void => {
@@ -36,11 +37,6 @@ const setThemeMode = (mode: ThemeMode): void => {
 };
 
 const setThemeColor = (color: string): void => {
-  themeStore.setPrimaryColor(color);
-};
-
-const handleColorPickerChange = (color: string | null): void => {
-  if (!color) return;
   themeStore.setPrimaryColor(color);
 };
 
@@ -53,87 +49,89 @@ const isThemeColorActive = (color: string): boolean =>
 <template>
   <el-drawer
     v-model="visible"
-    title="系统配置"
-    size="320px"
+    size="280px"
     direction="rtl"
     :append-to-body="true"
     :modal="true"
-    :show-close="false"
+    :with-header="false"
+    class="app-settings-drawer"
   >
-    <template #header="{ close }">
-      <div class="flex items-center justify-between w-full">
-        <span class="text-base font-bold text-app-text-primary tracking-wide"
-          >系统主题配置</span
+    <div class="flex flex-col h-full bg-app-surface">
+      <div
+        class="flex items-center justify-between px-5 h-[52px] border-b border-app-border shrink-0"
+      >
+        <span class="text-[15px] font-medium text-app-text-primary"
+          >系统配置</span
         >
-        <el-button
-          text
-          circle
-          :icon="Close"
-          class="!text-app-text-secondary hover:!text-app-text-primary hover:!bg-app-bg-mute"
-          @click="close"
-        />
+        <el-icon
+          class="cursor-pointer text-app-text-secondary hover:text-app-text-primary transition-colors outline-none"
+          size="18"
+          @click="visible = false"
+        >
+          <Close />
+        </el-icon>
       </div>
-    </template>
 
-    <div class="space-y-8 mt-2">
-      <section>
-        <div
-          class="text-[13px] font-bold tracking-wider text-app-text-secondary uppercase mb-4"
-        >
-          主题模式 (Mode)
-        </div>
-        <div class="grid grid-cols-3 gap-3">
-          <button
-            v-for="option in modeOptions"
-            :key="option.value"
-            type="button"
-            class="h-16 rounded-xl border text-sm transition-all duration-300 flex flex-col items-center justify-center gap-1.5 font-medium relative overflow-hidden"
-            :class="
-              isThemeModeActive(option.value)
-                ? 'border-primary text-primary bg-[color:rgb(var(--app-primary-rgb)/0.08)] shadow-[0_4px_12px_-4px_rgb(var(--app-primary-rgb)/0.4)]'
-                : 'border-app-border text-app-text-secondary hover:border-app-border-hover hover:text-app-text-primary hover:bg-app-bg-mute'
-            "
-            @click="setThemeMode(option.value)"
+      <div class="flex-1 overflow-y-auto p-5 space-y-7">
+        <!-- 整体风格 -->
+        <section>
+          <div class="text-[14px] text-app-text-primary mb-3">整体风格</div>
+          <div
+            class="flex items-center p-[3px] bg-app-bg-mute rounded bg-opacity-80"
           >
-            <el-icon size="16">
-              <component :is="option.icon" />
-            </el-icon>
-            <span>{{ option.label }}</span>
-          </button>
-        </div>
-      </section>
+            <button
+              v-for="option in modeOptions"
+              :key="option.value"
+              type="button"
+              class="flex-1 flex items-center justify-center gap-1.5 h-7 text-[13px] rounded-[4px] transition-all duration-300 border border-transparent"
+              :class="
+                isThemeModeActive(option.value)
+                  ? 'bg-app-surface text-app-text-primary shadow-[0_1px_3px_0_rgba(0,0,0,0.1)] font-medium !border-[var(--el-border-color-lighter)]'
+                  : 'text-app-text-secondary hover:text-app-text-primary'
+              "
+              @click="setThemeMode(option.value)"
+            >
+              <el-icon size="14">
+                <component :is="option.icon" />
+              </el-icon>
+              <span>{{ option.label }}</span>
+            </button>
+          </div>
+        </section>
 
-      <section>
-        <div
-          class="text-[13px] font-bold tracking-wider text-app-text-secondary uppercase mb-4"
-        >
-          主色调 (Colors)
-        </div>
-        <div class="flex flex-wrap items-center gap-4">
-          <button
-            v-for="color in predefineColors"
-            :key="color"
-            type="button"
-            class="h-8 w-8 rounded-full ring-offset-2 ring-offset-app-surface transition-all duration-300 flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95"
-            :class="
-              isThemeColorActive(color)
-                ? 'ring-2 ring-primary shadow-md'
-                : 'ring-1 ring-app-border hover:ring-app-border-hover'
-            "
-            :style="{ backgroundColor: color }"
-            @click="setThemeColor(color)"
-          >
-            <el-icon v-if="isThemeColorActive(color)" color="#ffffff">
-              <Check />
-            </el-icon>
-          </button>
-
-          <el-color-picker
-            :model-value="themeStore.primaryColor"
-            @change="handleColorPickerChange"
-          />
-        </div>
-      </section>
+        <!-- 主题色 -->
+        <section>
+          <div class="text-[14px] text-app-text-primary mb-3">主题色</div>
+          <div class="flex flex-wrap items-center gap-[10px]">
+            <button
+              v-for="color in predefineColors"
+              :key="color"
+              type="button"
+              class="relative w-[20px] h-[20px] rounded-[4px] cursor-pointer flex items-center justify-center outline-none transition-transform hover:scale-110 shadow-sm border border-black/10 dark:border-white/10"
+              :style="{ backgroundColor: color }"
+              @click="setThemeColor(color)"
+            >
+              <el-icon
+                v-if="isThemeColorActive(color)"
+                :class="
+                  color.toLowerCase() === '#ffffff'
+                    ? 'text-black'
+                    : 'text-white'
+                "
+                size="12"
+              >
+                <Check />
+              </el-icon>
+            </button>
+          </div>
+        </section>
+      </div>
     </div>
   </el-drawer>
 </template>
+
+<style>
+.app-settings-drawer .el-drawer__body {
+  padding: 0 !important;
+}
+</style>

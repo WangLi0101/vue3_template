@@ -1,5 +1,6 @@
-import type { Pinia } from "pinia";
 import { ElMessage } from "element-plus";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 import { useAuthStore } from "@/stores/modules/auth";
 import { useMenuStore } from "@/stores/modules/menu";
 import { usePermissionStore } from "@/stores/modules/permission";
@@ -7,7 +8,13 @@ import { ApiRequestError } from "@/types/http";
 import type { Router } from "vue-router";
 
 export const setupRouterGuards = (router: Router): void => {
-  router.beforeEach(async (to) => {
+  NProgress.configure({ showSpinner: false });
+
+  router.beforeEach(async (to, from) => {
+    if (to.fullPath !== from.fullPath) {
+      NProgress.start();
+    }
+
     const authStore = useAuthStore();
     const menuStore = useMenuStore();
     const permissionStore = usePermissionStore();
@@ -75,5 +82,13 @@ export const setupRouterGuards = (router: Router): void => {
     }
 
     return true;
+  });
+
+  router.afterEach(() => {
+    NProgress.done();
+  });
+
+  router.onError(() => {
+    NProgress.done();
   });
 };
