@@ -39,8 +39,12 @@ const normalizeIcon = (icon?: string): string => {
     </template>
   </el-menu-item>
 </template>
-<style lang="scss" scoped>
-:deep(.el-menu--collapse .el-menu-item.is-active .el-menu-tooltip__trigger) {
+<style lang="scss">
+.el-menu-item.is-active .el-menu-tooltip__trigger {
   padding-left: 0 !important;
+  padding-right: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

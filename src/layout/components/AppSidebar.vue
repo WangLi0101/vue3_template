@@ -97,10 +97,6 @@ const appName = computed(() =>
   color: var(--app-sidebar-text-active);
 }
 
-.app-sidebar :deep(.el-sub-menu .el-menu-item) {
-  padding-left: 48px !important;
-}
-
 .app-sidebar :deep(.el-sub-menu__icon-arrow) {
   color: var(--app-sidebar-text);
 }
