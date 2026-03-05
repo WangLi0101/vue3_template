@@ -1,9 +1,9 @@
 import type { App } from "vue";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import { staticRoutes } from "@/router/static-routes";
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: staticRoutes,
   scrollBehavior() {
     return { top: 0 };
