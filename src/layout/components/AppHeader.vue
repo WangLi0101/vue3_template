@@ -2,6 +2,7 @@
 import { Expand, Fold, Setting } from "@element-plus/icons-vue";
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import AppBreadcrumb from "@/layout/components/AppBreadcrumb.vue";
 import AppHeaderTags from "@/layout/components/AppHeaderTags.vue";
 import AppSettingsDrawer from "@/layout/components/AppSettingsDrawer.vue";
 import { useAuthStore } from "@/stores/modules/auth";
@@ -21,7 +22,6 @@ const uiStore = useUiStore();
 const isSettingsDrawerVisible = ref(false);
 
 const title = computed(() => (route.meta.title as string) || "管理后台");
-const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route.path));
 const sidebarToggleIcon = computed(() =>
   uiStore.isSidebarCollapsed ? Expand : Fold,
 );
@@ -76,24 +76,7 @@ const handleLogout = async (): Promise<void> => {
         </div>
 
         <el-divider direction="vertical" />
-
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item
-            v-for="(item, index) in breadcrumbs"
-            :key="`${item.to}-${index}`"
-          >
-            <span
-              :class="[
-                'text-sm',
-                index === breadcrumbs.length - 1
-                  ? 'text-app-text-primary font-medium'
-                  : 'text-app-text-secondary hover:text-primary transition-colors',
-              ]"
-            >
-              {{ item.title }}
-            </span>
-          </el-breadcrumb-item>
-        </el-breadcrumb>
+        <AppBreadcrumb />
       </div>
 
       <div class="flex items-center gap-3">
@@ -109,9 +92,9 @@ const handleLogout = async (): Promise<void> => {
 
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="handleLogout"
-                >退出登录</el-dropdown-item
-              >
+              <el-dropdown-item @click="handleLogout">
+                退出登录
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -134,3 +117,4 @@ const handleLogout = async (): Promise<void> => {
 
   <AppSettingsDrawer v-model="isSettingsDrawerVisible" />
 </template>
+
