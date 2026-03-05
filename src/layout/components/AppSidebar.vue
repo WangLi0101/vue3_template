@@ -18,11 +18,15 @@ const appName = computed(() =>
 
 <template>
   <aside
-    class="app-sidebar h-full border-r border-[var(--app-border)] bg-[var(--app-surface)] overflow-hidden"
+    class="app-sidebar h-full border-r border-app-sidebar-border bg-app-sidebar-bg overflow-hidden transition-colors duration-300 z-20"
   >
     <div
-      class="h-14 flex items-center px-4 text-base font-semibold text-[var(--app-text-primary)] border-b border-[var(--app-border)]"
-      :class="uiStore.isSidebarCollapsed ? 'justify-center px-0' : ''"
+      class="h-14 flex items-center px-4 text-base font-bold text-app-sidebar-active border-b border-app-sidebar-border tracking-wider transition-all"
+      :class="
+        uiStore.isSidebarCollapsed
+          ? 'justify-center px-0 text-xl font-extrabold tracking-normal'
+          : ''
+      "
     >
       {{ appName }}
     </div>
@@ -32,6 +36,7 @@ const appName = computed(() =>
         :default-active="activeMenu"
         :collapse="uiStore.isSidebarCollapsed"
         :collapse-transition="false"
+        class="app-sidebar-menu"
         router
       >
         <SidebarItem v-for="item in menuItems" :key="item.path" :item="item" />
@@ -39,3 +44,76 @@ const appName = computed(() =>
     </el-scrollbar>
   </aside>
 </template>
+
+<style scoped lang="scss">
+.app-sidebar-menu {
+  border-right: none;
+  background-color: transparent;
+}
+
+.app-sidebar :deep(.el-menu),
+.app-sidebar :deep(.el-menu--inline) {
+  border-right: none;
+  background-color: transparent;
+  padding: 4px 8px;
+}
+
+.app-sidebar :deep(.el-menu-item),
+.app-sidebar :deep(.el-sub-menu__title) {
+  height: 40px;
+  line-height: 40px;
+  margin: 0;
+  border-radius: 4px;
+  color: var(--app-sidebar-text);
+  background-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.app-sidebar :deep(.el-menu-item + .el-menu-item),
+.app-sidebar :deep(.el-menu-item + .el-sub-menu),
+.app-sidebar :deep(.el-sub-menu + .el-menu-item),
+.app-sidebar :deep(.el-sub-menu + .el-sub-menu) {
+  margin-top: 4px;
+}
+
+.app-sidebar :deep(.el-menu-item:hover),
+.app-sidebar :deep(.el-sub-menu__title:hover) {
+  background-color: var(--app-sidebar-bg-hover);
+  color: var(--app-sidebar-text-active);
+}
+
+.app-sidebar :deep(.el-menu-item.is-active) {
+  background-color: rgb(var(--app-primary-rgb) / 0.9);
+  color: var(--app-sidebar-text-active);
+}
+
+.app-sidebar :deep(.el-menu-item.is-active:hover) {
+  background-color: rgb(var(--app-primary-rgb) / 1);
+}
+
+.app-sidebar :deep(.el-sub-menu.is-opened > .el-sub-menu__title) {
+  color: var(--app-sidebar-text-active);
+}
+
+.app-sidebar :deep(.el-sub-menu .el-menu-item) {
+  padding-left: 48px !important;
+}
+
+.app-sidebar :deep(.el-sub-menu__icon-arrow) {
+  color: var(--app-sidebar-text);
+}
+
+.app-sidebar :deep(.el-sub-menu__title:hover .el-sub-menu__icon-arrow),
+.app-sidebar
+  :deep(.el-sub-menu.is-opened > .el-sub-menu__title .el-sub-menu__icon-arrow) {
+  color: var(--app-sidebar-text-active);
+}
+
+.app-sidebar :deep(.el-menu--collapse .el-menu-item),
+.app-sidebar :deep(.el-menu--collapse .el-sub-menu__title) {
+  justify-content: center;
+  padding: 0 !important;
+}
+</style>

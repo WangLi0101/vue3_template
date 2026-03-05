@@ -17,12 +17,10 @@ const normalizeIcon = (icon?: string): string => {
 <template>
   <el-sub-menu v-if="item.children?.length" :index="item.path">
     <template #title>
-      <IconifyIconOnline
-        :icon="normalizeIcon(item.icon)"
-        class="sidebar-icon"
-        v-if="item.icon"
-      />
-      <span class="sidebar-title">{{ item.title }}</span>
+      <el-icon v-if="item.icon">
+        <IconifyIconOnline :icon="normalizeIcon(item.icon)" class="text-xl" />
+      </el-icon>
+      <span>{{ item.title }}</span>
     </template>
 
     <SidebarItem
@@ -33,50 +31,16 @@ const normalizeIcon = (icon?: string): string => {
   </el-sub-menu>
 
   <el-menu-item v-else :index="item.path">
-    <IconifyIconOnline
-      :icon="normalizeIcon(item.icon)"
-      class="sidebar-icon"
-      v-if="item.icon"
-    />
-
+    <el-icon v-if="item.icon">
+      <IconifyIconOnline :icon="normalizeIcon(item.icon)" class="!text-xl" />
+    </el-icon>
     <template #title>
-      <span class="sidebar-title">{{ item.title }}</span>
+      <span>{{ item.title }}</span>
     </template>
   </el-menu-item>
 </template>
-
 <style lang="scss" scoped>
-.sidebar-icon {
-  font-size: 18px !important;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  opacity: 0.85;
-}
-
-.sidebar-title {
-  margin-left: 10px !important;
-  font-size: 14.5px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-  transition: all 0.3s ease;
-}
-
-:global(.el-menu-item:hover .sidebar-icon),
-:global(.el-sub-menu .el-sub-menu__title:hover .sidebar-icon),
-:global(.el-menu-item.is-active .sidebar-icon) {
-  opacity: 1;
-  transform: scale(1.15);
-  color: var(--el-color-primary) !important;
-}
-
-:global(.el-menu--collapse .sidebar-title) {
-  display: none !important;
-}
-
-:global(.el-menu--collapse .sidebar-icon) {
-  margin-right: 0 !important;
+:deep(.el-menu--collapse .el-menu-item.is-active .el-menu-tooltip__trigger) {
+  padding-left: 0 !important;
 }
 </style>

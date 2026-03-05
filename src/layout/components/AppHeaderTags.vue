@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { Close } from "@element-plus/icons-vue";
 import { useTabsStore } from "@/stores/modules/tabs";
 import type { RouteTag } from "@/stores/modules/tabs";
 
@@ -25,25 +26,30 @@ const handleTagClose = async (tag: RouteTag): Promise<void> => {
 
 <template>
   <div
-    class="h-11 px-4 border-t border-[var(--app-border)] bg-[var(--app-bg)]/40"
+    class="h-10 px-4 bg-app-header transition-colors duration-300 flex items-center [border-top:1px_solid_var(--app-border)]"
   >
-    <el-scrollbar>
-      <div class="h-10 flex items-center gap-2 pr-2">
-        <el-tag
+    <el-scrollbar class="w-full flex-1">
+      <div class="h-full flex items-center gap-2 pr-2">
+        <div
           v-for="tag in tabsStore.tabs"
           :key="tag.path"
-          :closable="tag.closable"
-          :type="activeTagPath === tag.path ? 'primary' : 'info'"
-          effect="light"
-          disable-transitions
-          @close="handleTagClose(tag)"
+          class="group flex items-center h-[26px] px-3 mt-[7px] mb-[7px] text-[13px] rounded-md border transition-all duration-300 cursor-pointer select-none whitespace-nowrap shrink-0"
+          :class="[
+            activeTagPath === tag.path
+              ? 'bg-[color:rgb(var(--app-primary-rgb)/0.12)] border-primary/40 text-primary font-medium'
+              : 'bg-app-surface border-app-border text-app-text-secondary hover:bg-app-surface-hover hover:border-app-border-hover hover:text-app-text-primary',
+          ]"
+          @click="handleTagClick(tag)"
         >
-          <span
-            class="cursor-pointer select-none"
-            @click="handleTagClick(tag)"
-            >{{ tag.title }}</span
+          <span>{{ tag.title }}</span>
+          <div
+            v-if="tag.closable"
+            class="ml-1.5 w-4 h-4 rounded-full hover:bg-[color:rgb(var(--app-primary-rgb)/0.15)] flex items-center justify-center text-app-text-secondary hover:text-primary transition-colors"
+            @click.stop="handleTagClose(tag)"
           >
-        </el-tag>
+            <el-icon :size="10"><Close /></el-icon>
+          </div>
+        </div>
       </div>
     </el-scrollbar>
   </div>

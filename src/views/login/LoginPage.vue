@@ -61,16 +61,16 @@ const loginTips = `测试账号：\nadmin / admin123（管理员）\nauditor / a
 
 <template>
   <div
-    class="h-screen w-full flex items-center justify-center bg-[var(--app-bg)] p-4"
+    class="h-screen w-full flex items-center justify-center bg-app-bg p-4"
   >
     <div
-      class="w-full max-w-[420px] bg-[var(--app-surface)] rounded-xl shadow-sm border border-[var(--app-border)] p-8"
+      class="w-full max-w-[420px] bg-app-surface rounded-xl shadow-sm border border-app-border p-8"
     >
       <div class="mb-6">
-        <h1 class="text-2xl font-semibold text-[var(--app-text-primary)]">
+        <h1 class="text-2xl font-semibold text-app-text-primary">
           RBAC 管理后台
         </h1>
-        <p class="text-sm text-[var(--app-text-secondary)] mt-1">
+        <p class="text-sm text-app-text-secondary mt-1">
           Vue3 + Element Plus + Tailwind + SCSS
         </p>
       </div>

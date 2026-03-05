@@ -52,7 +52,7 @@ const handleLogout = async (): Promise<void> => {
 </script>
 
 <template>
-  <header class="bg-[var(--app-surface)] border-b border-[var(--app-border)]">
+  <header class="bg-app-header z-10 sticky top-0 transition-colors duration-300">
     <div class="h-14 px-5 flex items-center justify-between">
       <div class="flex items-center gap-3 min-w-0">
         <el-tooltip
@@ -62,7 +62,7 @@ const handleLogout = async (): Promise<void> => {
           <el-button
             text
             circle
-            class="!text-[var(--app-text-primary)]"
+            class="!text-app-text-primary hover:!bg-app-bg-mute"
             @click="uiStore.toggleSidebar"
           >
             <el-icon><component :is="sidebarToggleIcon" /></el-icon>
@@ -70,7 +70,7 @@ const handleLogout = async (): Promise<void> => {
         </el-tooltip>
 
         <div
-          class="text-base font-semibold text-[var(--app-text-primary)] shrink-0"
+          class="text-base font-semibold text-app-text-primary shrink-0 tracking-wide"
         >
           {{ title }}
         </div>
@@ -86,8 +86,8 @@ const handleLogout = async (): Promise<void> => {
               :class="[
                 'text-sm',
                 index === breadcrumbs.length - 1
-                  ? 'text-[var(--app-text-primary)]'
-                  : 'text-[var(--app-text-secondary)]',
+                  ? 'text-app-text-primary font-medium'
+                  : 'text-app-text-secondary hover:text-primary transition-colors',
               ]"
             >
               {{ item.title }}
@@ -99,7 +99,7 @@ const handleLogout = async (): Promise<void> => {
       <div class="flex items-center gap-3">
         <el-dropdown>
           <span
-            class="cursor-pointer text-sm text-[var(--app-text-primary)] flex items-center gap-2"
+            class="cursor-pointer text-sm text-app-text-primary flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <el-avatar :size="26">{{
               authStore.user?.displayName?.slice(0, 1) || "U"
@@ -120,7 +120,7 @@ const handleLogout = async (): Promise<void> => {
           <el-button
             text
             circle
-            class="!text-[var(--app-text-primary)]"
+            class="!text-app-text-primary hover:!bg-app-bg-mute transition-colors"
             @click="isSettingsDrawerVisible = true"
           >
             <el-icon><Setting /></el-icon>

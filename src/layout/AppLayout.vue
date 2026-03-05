@@ -13,7 +13,7 @@ const sidebarWidthClass = computed(() =>
 </script>
 
 <template>
-  <div class="h-screen flex overflow-hidden">
+  <div class="h-screen flex overflow-hidden bg-app-content">
     <div
       class="shrink-0 transition-all duration-200 ease-in-out"
       :class="sidebarWidthClass"
@@ -21,11 +21,13 @@ const sidebarWidthClass = computed(() =>
       <AppSidebar />
     </div>
 
-    <div class="flex-1 min-w-0 flex flex-col">
+    <div class="flex-1 min-w-0 flex flex-col bg-app-content">
       <AppHeader />
 
-      <main class="flex-1 overflow-auto p-4 bg-[var(--app-bg)]">
-        <AppRouterView />
+      <main class="flex-1 overflow-auto p-3 sm:p-5 bg-app-content">
+        <div class="bg-app-surface h-full rounded-lg shadow-sm p-3 sm:p-5">
+          <AppRouterView />
+        </div>
       </main>
     </div>
   </div>
