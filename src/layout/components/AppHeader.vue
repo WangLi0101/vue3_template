@@ -2,13 +2,13 @@
 import { Expand, Fold, Setting } from "@element-plus/icons-vue";
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import AppHeaderTags from "@/layout/components/AppHeaderTags.vue";
 import AppSettingsDrawer from "@/layout/components/AppSettingsDrawer.vue";
 import { useAuthStore } from "@/stores/modules/auth";
 import { useMenuStore } from "@/stores/modules/menu";
 import { usePermissionStore } from "@/stores/modules/permission";
 import { useTabsStore } from "@/stores/modules/tabs";
 import { useUiStore } from "@/stores/modules/ui";
-import type { RouteTag } from "@/stores/modules/tabs";
 
 const route = useRoute();
 const router = useRouter();
@@ -25,7 +25,6 @@ const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route.path));
 const sidebarToggleIcon = computed(() =>
   uiStore.isSidebarCollapsed ? Expand : Fold,
 );
-const activeTagPath = computed(() => route.path);
 
 watch(
   () => route.fullPath,
@@ -42,18 +41,6 @@ watch(
   },
   { immediate: true },
 );
-
-const handleTagClick = async (tag: RouteTag): Promise<void> => {
-  if (route.fullPath === tag.fullPath) return;
-  await router.push(tag.fullPath);
-};
-
-const handleTagClose = async (tag: RouteTag): Promise<void> => {
-  const fallbackFullPath = tabsStore.removeTag(tag.path);
-  if (route.path === tag.path && fallbackFullPath) {
-    await router.push(fallbackFullPath);
-  }
-};
 
 const handleLogout = async (): Promise<void> => {
   await authStore.logout();
@@ -142,29 +129,7 @@ const handleLogout = async (): Promise<void> => {
       </div>
     </div>
 
-    <div
-      class="h-11 px-4 border-t border-[var(--app-border)] bg-[var(--app-bg)]/40"
-    >
-      <el-scrollbar>
-        <div class="h-10 flex items-center gap-2 pr-2">
-          <el-tag
-            v-for="tag in tabsStore.tabs"
-            :key="tag.path"
-            :closable="tag.closable"
-            :type="activeTagPath === tag.path ? 'primary' : 'info'"
-            effect="light"
-            disable-transitions
-            @close="handleTagClose(tag)"
-          >
-            <span
-              class="cursor-pointer select-none"
-              @click="handleTagClick(tag)"
-              >{{ tag.title }}</span
-            >
-          </el-tag>
-        </div>
-      </el-scrollbar>
-    </div>
+    <AppHeaderTags />
   </header>
 
   <AppSettingsDrawer v-model="isSettingsDrawerVisible" />

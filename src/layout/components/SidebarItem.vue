@@ -17,9 +17,11 @@ const normalizeIcon = (icon?: string): string => {
 <template>
   <el-sub-menu v-if="item.children?.length" :index="item.path">
     <template #title>
-      <el-icon class="sidebar-icon">
-        <IconifyIconOnline :icon="normalizeIcon(item.icon)" />
-      </el-icon>
+      <IconifyIconOnline
+        :icon="normalizeIcon(item.icon)"
+        class="sidebar-icon"
+        v-if="item.icon"
+      />
       <span class="sidebar-title">{{ item.title }}</span>
     </template>
 
@@ -31,9 +33,12 @@ const normalizeIcon = (icon?: string): string => {
   </el-sub-menu>
 
   <el-menu-item v-else :index="item.path">
-    <el-icon class="sidebar-icon">
-      <IconifyIconOnline :icon="normalizeIcon(item.icon)" />
-    </el-icon>
+    <IconifyIconOnline
+      :icon="normalizeIcon(item.icon)"
+      class="sidebar-icon"
+      v-if="item.icon"
+    />
+
     <template #title>
       <span class="sidebar-title">{{ item.title }}</span>
     </template>
@@ -43,12 +48,12 @@ const normalizeIcon = (icon?: string): string => {
 <style lang="scss" scoped>
 .sidebar-icon {
   font-size: 18px !important;
-  margin-right: 10px !important;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   opacity: 0.85;
 }
 
 .sidebar-title {
+  margin-left: 10px !important;
   font-size: 14.5px;
   font-weight: 500;
   letter-spacing: 0.02em;
