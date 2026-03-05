@@ -3,6 +3,7 @@ export type PermissionCode = string
 export interface AppRouteMeta {
   title: string
   icon?: string
+  rank?: number
   hidden?: boolean
   keepAlive?: boolean
   permission?: PermissionCode | PermissionCode[]

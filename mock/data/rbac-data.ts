@@ -13,7 +13,8 @@ const adminMenus: AppMenu[] = [
     component: "dashboard/DashboardPage",
     meta: {
       title: "仪表盘",
-      icon: "icon:mdi:view-dashboard",
+      icon: "mdi:view-dashboard",
+      rank: 1,
     },
   },
   {
@@ -24,7 +25,8 @@ const adminMenus: AppMenu[] = [
     redirect: "/system/user",
     meta: {
       title: "系统管理",
-      icon: "el:Setting",
+      icon: "mdi:cog-outline",
+      rank: 3,
     },
     children: [
       {
@@ -34,8 +36,9 @@ const adminMenus: AppMenu[] = [
         component: "system/UserPage",
         meta: {
           title: "用户管理",
-          icon: "icon:mdi:account-group",
+
           permission: "sys:user:view",
+          rank: 1,
           keepAlive: true,
         },
       },
@@ -46,8 +49,9 @@ const adminMenus: AppMenu[] = [
         component: "system/RolePage",
         meta: {
           title: "角色管理",
-          icon: "el:UserFilled",
+
           permission: "sys:role:view",
+          rank: 2,
         },
       },
       {
@@ -57,8 +61,9 @@ const adminMenus: AppMenu[] = [
         component: "system/MenuPage",
         meta: {
           title: "菜单管理",
-          icon: "icon:mdi:sitemap",
+
           permission: "sys:menu:view",
+          rank: 3,
         },
       },
       {
@@ -68,8 +73,8 @@ const adminMenus: AppMenu[] = [
         component: "system/PermissionPage",
         meta: {
           title: "权限管理",
-          icon: "icon:mdi:shield-key",
           permission: "sys:permission:view",
+          rank: 4,
         },
       },
     ],
@@ -85,6 +90,7 @@ const auditorMenus: AppMenu[] = [
     meta: {
       title: "仪表盘",
       icon: "icon:mdi:view-dashboard",
+      rank: 1,
     },
   },
   {
@@ -95,7 +101,8 @@ const auditorMenus: AppMenu[] = [
     redirect: "/system/user",
     meta: {
       title: "系统管理",
-      icon: "el:Setting",
+      icon: "icon:mdi:cog-outline",
+      rank: 2,
     },
     children: [
       {
@@ -107,6 +114,7 @@ const auditorMenus: AppMenu[] = [
           title: "用户管理",
           icon: "icon:mdi:account-group",
           permission: "sys:user:view",
+          rank: 1,
           keepAlive: true,
         },
       },
@@ -117,8 +125,9 @@ const auditorMenus: AppMenu[] = [
         component: "system/RolePage",
         meta: {
           title: "角色管理",
-          icon: "el:UserFilled",
+          icon: "icon:mdi:account-circle",
           permission: "sys:role:view",
+          rank: 2,
         },
       },
     ],

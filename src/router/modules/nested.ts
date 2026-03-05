@@ -9,7 +9,9 @@ export const routes: RouteRecordRaw[] = [
     redirect: "/nested-static/group/menu",
     meta: {
       title: "三级路由示例",
+      rank: 2,
       requiresAuth: true,
+      icon: "material-symbols:account-tree",
     },
     children: [
       {
@@ -19,7 +21,9 @@ export const routes: RouteRecordRaw[] = [
         redirect: "/nested-static/group/menu",
         meta: {
           title: "二级分组",
+          rank: 1,
           requiresAuth: true,
+          icon: "material-symbols:account-tree",
         },
         children: [
           {
@@ -28,8 +32,9 @@ export const routes: RouteRecordRaw[] = [
             component: () => import("@/views/system/MenuPage.vue"),
             meta: {
               title: "三级-菜单页",
+              rank: 1,
               requiresAuth: true,
-              keepAlive: true,
+              keepAlive: false,
             },
           },
           {
@@ -38,8 +43,9 @@ export const routes: RouteRecordRaw[] = [
             component: () => import("@/views/system/RolePage.vue"),
             meta: {
               title: "三级-角色页",
+              rank: 2,
               requiresAuth: true,
-              keepAlive: true,
+              keepAlive: false,
             },
           },
         ],
