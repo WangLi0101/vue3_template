@@ -1,4 +1,4 @@
-import type { AppMenu, ProfileResponse } from "../../src/types/auth";
+import type { AppMenu, ProfileResponse } from "../../src/api/auth/types";
 
 interface MockUserProfile extends Omit<ProfileResponse, "menus"> {
   password: string;

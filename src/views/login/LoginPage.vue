@@ -36,7 +36,11 @@ const handleLogin = async (): Promise<void> => {
 
     loading.value = true;
     try {
-      await authStore.login(formState);
+      const loginSuccess = await authStore.login(formState);
+      if (!loginSuccess) {
+        return;
+      }
+
       menuStore.reset();
       permissionStore.reset();
 

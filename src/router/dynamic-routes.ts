@@ -1,4 +1,4 @@
-import type { AppMenu } from '@/types/auth'
+import type { AppMenu } from '@/api/auth/types'
 import AppRouterView from '@/components/AppRouterView.vue'
 import type { RouteRecordRaw } from 'vue-router'
 

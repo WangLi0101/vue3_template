@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { getProfileApi, loginApi } from "@/api/auth";
-import type { AppMenu, AuthUser, LoginPayload } from "@/types/auth";
+import { getProfileApi, loginApi } from "@/api/auth/api";
+import type { AppMenu, AuthUser, LoginPayload } from "@/api/auth/types";
 import { clearToken, getToken, setToken } from "@/utils/token";
 
 export const useAuthStore = defineStore("auth", () => {
@@ -19,25 +19,37 @@ export const useAuthStore = defineStore("auth", () => {
     return target.every((permission) => permissions.value.has(permission));
   };
 
-  const login = async (payload: LoginPayload): Promise<void> => {
+  const login = async (payload: LoginPayload): Promise<boolean> => {
     const response = await loginApi(payload);
-    token.value = response.accessToken;
-    setToken(response.accessToken);
+    if (response.code !== 0 || !response.data?.accessToken) {
+      return false;
+    }
+
+    token.value = response.data.accessToken;
+    setToken(response.data.accessToken);
     isInitialized.value = false;
+    return true;
   };
 
-  const fetchProfile = async (): Promise<void> => {
+  const fetchProfile = async (): Promise<boolean> => {
     if (!token.value) {
       throw new Error("缺少登录态");
     }
 
-    const profile = await getProfileApi();
+    const response = await getProfileApi();
+    if (response.code !== 0 || !response.data) {
+      isInitialized.value = false;
+      return false;
+    }
+
+    const profile = response.data;
 
     user.value = profile.user;
     roles.value = profile.roles;
     permissions.value = new Set(profile.permissions);
     menus.value = profile.menus;
     isInitialized.value = true;
+    return true;
   };
 
   const resetAuth = (): void => {

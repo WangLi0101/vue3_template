@@ -4,6 +4,7 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from "axios";
+import { ElMessage } from "element-plus";
 import { ApiRequestError, type ApiResponse } from "@/types/http";
 import { SERVICE_URL_MAP, type ServiceName } from "@/utils/http/config";
 import { getToken } from "@/utils/token";
@@ -42,11 +43,7 @@ http.interceptors.response.use(
     }
 
     if (payload.code !== 0) {
-      throw new ApiRequestError(
-        payload.message || "业务请求失败",
-        response.status,
-        payload.code,
-      );
+      ElMessage.error(payload.message || "业务请求失败");
     }
 
     return response;
@@ -63,15 +60,15 @@ http.interceptors.response.use(
   },
 );
 
-const unwrapResponse = <T>(response: HttpResponse<T>): T => {
-  return response.data.data;
+const unwrapResponse = <T>(response: HttpResponse<T>): ApiResponse<T> => {
+  return response.data;
 };
 
 export const request = <T, D = unknown>(
   url: string,
   serviceName: ServiceName,
   config: RequestConfig<D> = {},
-): Promise<T> => {
+): Promise<ApiResponse<T>> => {
   const baseURL = SERVICE_URL_MAP[serviceName];
   if (!baseURL) {
     return Promise.reject(new ApiRequestError("未配置服务地址", 0, -1));

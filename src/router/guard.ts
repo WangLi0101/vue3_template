@@ -38,7 +38,19 @@ export const setupRouterGuards = (router: Router): void => {
 
     if (!authStore.isInitialized) {
       try {
-        await authStore.fetchProfile();
+        const profileReady = await authStore.fetchProfile();
+        if (!profileReady) {
+          authStore.resetAuth();
+          menuStore.reset();
+          permissionStore.reset();
+          return {
+            name: "Login",
+            query: {
+              redirect: to.fullPath,
+            },
+          };
+        }
+
         menuStore.setMenus(authStore.menus);
         permissionStore.mountDynamicRoutes(router, menuStore.dynamicRoutes);
 
