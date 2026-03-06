@@ -1,42 +1,32 @@
 import type { App, Directive } from "vue";
 import { useAuthStore } from "@/stores/modules/auth";
 
-const checkPermission = (
-  value: string | string[],
-  authStore: ReturnType<typeof useAuthStore>,
-): boolean => {
+type PermissionValue = string | string[];
+
+export const checkPermission = (value: PermissionValue): boolean => {
+  const authStore = useAuthStore();
   const permissions = Array.isArray(value) ? value : [value];
-  return permissions.every((permission) =>
+  return permissions.some((permission) =>
     authStore.permissions.has(permission),
   );
 };
 
-const permissionDirective: Directive<HTMLElement, string | string[]> = {
+const removeWhenForbidden = (
+  el: HTMLElement,
+  required?: PermissionValue,
+): void => {
+  if (!required) {
+    return;
+  }
+
+  if (!checkPermission(required)) {
+    el.remove();
+  }
+};
+
+const permissionDirective: Directive<HTMLElement, PermissionValue> = {
   mounted(el, binding) {
-    const authStore = useAuthStore();
-    const required = binding.value;
-
-    if (!required) return;
-
-    if (!checkPermission(required, authStore)) {
-      el.style.display = "none";
-    }
-  },
-  updated(el, binding) {
-    const authStore = useAuthStore();
-    const required = binding.value;
-
-    if (!required) {
-      el.style.removeProperty("display");
-      return;
-    }
-
-    if (!checkPermission(required, authStore)) {
-      el.style.display = "none";
-      return;
-    }
-
-    el.style.removeProperty("display");
+    removeWhenForbidden(el, binding.value);
   },
 };
 
