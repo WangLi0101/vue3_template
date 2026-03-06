@@ -1,10 +1,8 @@
-import { ElMessage } from "element-plus";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { useAuthStore } from "@/stores/modules/auth";
 import { useMenuStore } from "@/stores/modules/menu";
 import { usePermissionStore } from "@/stores/modules/permission";
-import { ApiRequestError } from "@/types/http";
 import type { Router } from "vue-router";
 
 export const setupRouterGuards = (router: Router): void => {
@@ -38,8 +36,8 @@ export const setupRouterGuards = (router: Router): void => {
 
     if (!authStore.isInitialized) {
       try {
-        const profile = await authStore.fetchProfile();
-        if (!profile) {
+        const profileReady = await authStore.fetchProfile();
+        if (!profileReady) {
           authStore.logoutLocal();
           menuStore.reset();
           permissionStore.reset();
@@ -51,8 +49,6 @@ export const setupRouterGuards = (router: Router): void => {
           };
         }
 
-        permissionStore.setAccess(profile.roles, profile.permissions);
-        menuStore.setMenus(profile.menus);
         permissionStore.mountDynamicRoutes(router, menuStore.dynamicRoutes);
 
         return {
@@ -63,16 +59,6 @@ export const setupRouterGuards = (router: Router): void => {
         authStore.logoutLocal();
         menuStore.reset();
         permissionStore.reset();
-
-        if (error instanceof ApiRequestError) {
-          ElMessage.error(
-            `${error.message} (HTTP ${error.httpStatus} / CODE ${error.businessCode})`,
-          );
-        } else {
-          ElMessage.error(
-            error instanceof Error ? error.message : "初始化权限失败",
-          );
-        }
 
         return {
           name: "Login",
