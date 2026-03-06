@@ -7,7 +7,7 @@ import type {
 import { ElMessage } from "element-plus";
 import { ApiRequestError, type ApiResponse } from "@/types/http";
 import { getToken } from "@/utils/token";
-import { handlerError } from "./code";
+import { handlerError, handlerHttpError } from "./code";
 import { isDownloadResponseType } from "./types";
 
 const attachAuthorization = (
@@ -47,12 +47,12 @@ const handleResponseSuccess = <T>(
   if (payload instanceof Blob || payload instanceof ArrayBuffer) {
     return response;
   }
-
   if (!isBusinessPayload(payload)) {
     throw new ApiRequestError("响应数据格式错误", response.status, -1);
   }
-
-  handlerError(payload);
+  if (payload.code !== 0) {
+    handlerError(payload);
+  }
   return response;
 };
 
@@ -61,7 +61,8 @@ const handleResponseError = (error: AxiosError<ApiResponse<unknown>>) => {
   const businessCode = error.response?.data?.code ?? -1;
   const message =
     error.response?.data?.message || error.message || "网络请求失败";
-  ElMessage.error(message);
+
+  handlerHttpError(httpStatus, message);
   return Promise.reject(new ApiRequestError(message, httpStatus, businessCode));
 };
 
