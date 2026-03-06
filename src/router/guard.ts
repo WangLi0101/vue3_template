@@ -55,9 +55,6 @@ export const setupRouterGuards = (router: Router): void => {
         };
       } catch (error) {
         authStore.logoutLocal();
-        menuStore.reset();
-        permissionStore.reset();
-
         return {
           name: "Login",
           query: {
