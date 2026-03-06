@@ -4,15 +4,11 @@ import type { FormInstance, FormRules } from "element-plus";
 import { reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/modules/auth";
-import { useMenuStore } from "@/stores/modules/menu";
-import { usePermissionStore } from "@/stores/modules/permission";
 import { ApiRequestError } from "@/types/http";
 
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
-const menuStore = useMenuStore();
-const permissionStore = usePermissionStore();
 
 const formRef = ref<FormInstance>();
 const loading = ref(false);
@@ -40,9 +36,6 @@ const handleLogin = async (): Promise<void> => {
       if (!loginSuccess) {
         return;
       }
-
-      menuStore.reset();
-      permissionStore.reset();
 
       const redirect = (route.query.redirect as string) || "/";
       await router.replace(redirect);

@@ -38,9 +38,9 @@ export const setupRouterGuards = (router: Router): void => {
 
     if (!authStore.isInitialized) {
       try {
-        const profileReady = await authStore.fetchProfile();
-        if (!profileReady) {
-          authStore.resetAuth();
+        const profile = await authStore.fetchProfile();
+        if (!profile) {
+          authStore.logoutLocal();
           menuStore.reset();
           permissionStore.reset();
           return {
@@ -51,7 +51,8 @@ export const setupRouterGuards = (router: Router): void => {
           };
         }
 
-        menuStore.setMenus(authStore.menus);
+        permissionStore.setAccess(profile.roles, profile.permissions);
+        menuStore.setMenus(profile.menus);
         permissionStore.mountDynamicRoutes(router, menuStore.dynamicRoutes);
 
         return {
@@ -59,7 +60,7 @@ export const setupRouterGuards = (router: Router): void => {
           replace: true,
         };
       } catch (error) {
-        authStore.resetAuth();
+        authStore.logoutLocal();
         menuStore.reset();
         permissionStore.reset();
 
@@ -86,7 +87,7 @@ export const setupRouterGuards = (router: Router): void => {
       | string
       | string[]
       | undefined;
-    if (requiredPermission && !authStore.hasPermission(requiredPermission)) {
+    if (requiredPermission && !permissionStore.hasAll(requiredPermission)) {
       return {
         name: "Forbidden",
         replace: true,

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useAuthStore } from "@/stores/modules/auth";
+import { usePermissionStore } from "@/stores/modules/permission";
 
 const authStore = useAuthStore();
+const permissionStore = usePermissionStore();
 
-const roleList = computed(() => authStore.roles);
-const permissionList = computed(() => Array.from(authStore.permissions));
+const roleList = computed(() => permissionStore.roles);
+const permissionList = computed(() => Array.from(permissionStore.permissions));
 </script>
 
 <template>

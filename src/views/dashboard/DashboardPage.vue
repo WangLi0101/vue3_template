@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useAuthStore } from "@/stores/modules/auth";
+import { useMenuStore } from "@/stores/modules/menu";
+import { usePermissionStore } from "@/stores/modules/permission";
 
 const authStore = useAuthStore();
+const menuStore = useMenuStore();
+const permissionStore = usePermissionStore();
 
 const stats = computed(() => [
   { label: "当前用户", value: authStore.user?.displayName || "--" },
-  { label: "角色数量", value: authStore.roles.length },
-  { label: "权限点数量", value: authStore.permissions.size },
-  { label: "菜单节点数量", value: authStore.menus.length },
+  { label: "角色数量", value: permissionStore.roles.length },
+  { label: "权限点数量", value: permissionStore.permissions.size },
+  { label: "菜单节点数量", value: menuStore.rawMenus.length },
 ]);
 </script>
 

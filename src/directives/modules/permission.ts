@@ -1,14 +1,11 @@
 import type { App, Directive } from "vue";
-import { useAuthStore } from "@/stores/modules/auth";
+import { usePermissionStore } from "@/stores/modules/permission";
 
 type PermissionValue = string | string[];
 
 export const checkPermission = (value: PermissionValue): boolean => {
-  const authStore = useAuthStore();
-  const permissions = Array.isArray(value) ? value : [value];
-  return permissions.some((permission) =>
-    authStore.permissions.has(permission),
-  );
+  const permissionStore = usePermissionStore();
+  return permissionStore.hasAny(value);
 };
 
 const removeWhenForbidden = (

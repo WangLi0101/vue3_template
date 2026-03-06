@@ -43,10 +43,10 @@ watch(
 );
 
 const handleLogout = async (): Promise<void> => {
-  await authStore.logout();
+  authStore.logoutLocal();
   menuStore.reset();
-  tabsStore.reset();
   permissionStore.reset();
+  tabsStore.reset();
   await router.replace("/login");
 };
 </script>
