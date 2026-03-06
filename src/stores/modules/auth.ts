@@ -3,15 +3,16 @@ import { computed, ref } from "vue";
 import { getProfileApi, loginApi } from "@/api/auth/api";
 import type { AppMenu, AuthUser, LoginPayload } from "@/api/auth/types";
 import { clearToken, getToken, setToken } from "@/utils/token";
+import { usePermissionStore } from "./permission";
 
 export const useAuthStore = defineStore("auth", () => {
+  const permissionStore = usePermissionStore();
   const token = ref<string>(getToken());
   const user = ref<AuthUser | null>(null);
   const roles = ref<string[]>([]);
   const permissions = ref<Set<string>>(new Set());
   const menus = ref<AppMenu[]>([]);
   const isInitialized = ref(false);
-
   const isLoggedIn = computed(() => Boolean(token.value));
 
   const hasPermission = (required: string | string[]): boolean => {
@@ -63,6 +64,8 @@ export const useAuthStore = defineStore("auth", () => {
   };
 
   const logout = async (): Promise<void> => {
+    // 清除动态路由
+    permissionStore.reset();
     resetAuth();
   };
 
