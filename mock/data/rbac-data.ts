@@ -1,4 +1,5 @@
-import type { AppMenu, ProfileResponse } from "../../src/api/auth/types";
+import type { ProfileResponse } from "../../src/api/auth/types";
+import type { AppMenu } from "../../src/types/menu";
 
 interface MockUserProfile extends Omit<ProfileResponse, "menus"> {
   password: string;
@@ -21,8 +22,6 @@ const adminMenus: AppMenu[] = [
     id: "200",
     name: "System",
     path: "system",
-    component: "router-view",
-    redirect: "/system/user",
     meta: {
       title: "系统管理",
       icon: "mdi:cog-outline",
@@ -97,8 +96,6 @@ const auditorMenus: AppMenu[] = [
     id: "200",
     name: "System",
     path: "system",
-    component: "router-view",
-    redirect: "/system/user",
     meta: {
       title: "系统管理",
       icon: "icon:mdi:cog-outline",

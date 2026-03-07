@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { buildRoutesFromMenus } from "@/router/dynamic-routes";
 import { rootRouteModules } from "@/router/module-routes";
-import type { AppMenu } from "@/api/auth/types";
+import type { AppMenu } from "@/types/menu";
 import type { RouteRecordRaw } from "vue-router";
 
 export interface SidebarMenuItem {
