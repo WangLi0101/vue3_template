@@ -1,18 +1,14 @@
-import NProgress from "nprogress";
-import "nprogress/nprogress.css";
 import { useAuthStore } from "@/stores/modules/auth";
 import { useMenuStore } from "@/stores/modules/menu";
 import { usePermissionStore } from "@/stores/modules/permission";
 import type { Router } from "vue-router";
+import NProgress from "@/utils/progress";
 
 export const setupRouterGuards = (router: Router): void => {
-  NProgress.configure({ showSpinner: false });
-
   router.beforeEach(async (to, from) => {
     if (to.fullPath !== from.fullPath) {
       NProgress.start();
     }
-
     const authStore = useAuthStore();
     const menuStore = useMenuStore();
     const permissionStore = usePermissionStore();
