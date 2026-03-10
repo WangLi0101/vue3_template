@@ -16,20 +16,13 @@ export function request<T, D = unknown>(
   config?: RequestConfig<D>,
 ): Promise<ApiResponse<T>>;
 
-export function request<
-  D = unknown,
-  R extends DownloadResponseType = DownloadResponseType,
->(
+export function request<D = unknown, R extends DownloadResponseType = DownloadResponseType>(
   url: string,
   serviceName: ServiceName,
   config: DownloadRequestConfig<D, R>,
 ): Promise<DownloadDataMap[R]>;
 
-export function request<
-  T,
-  D = unknown,
-  R extends DownloadResponseType = DownloadResponseType,
->(
+export function request<T, D = unknown, R extends DownloadResponseType = DownloadResponseType>(
   url: string,
   serviceName: ServiceName,
   config: RequestConfig<D> | DownloadRequestConfig<D, R> = {},

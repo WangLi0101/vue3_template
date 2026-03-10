@@ -11,17 +11,15 @@ const uiStore = useUiStore();
 
 const menuItems = computed(() => menuStore.sidebarMenus);
 const activeMenu = computed(() => route.path);
-const appName = computed(() =>
-  uiStore.isSidebarCollapsed ? "R" : "RBAC Admin",
-);
+const appName = computed(() => (uiStore.isSidebarCollapsed ? "R" : "RBAC Admin"));
 </script>
 
 <template>
   <aside
-    class="app-sidebar h-full border-r border-app-sidebar-border bg-app-sidebar-bg overflow-hidden transition-colors duration-300 z-20"
+    class="app-sidebar z-20 h-full overflow-hidden border-r border-app-sidebar-border bg-app-sidebar-bg transition-colors duration-300"
   >
     <div
-      class="h-14 flex items-center px-4 text-base font-bold text-app-sidebar-active border-b border-app-sidebar-border tracking-wider transition-all"
+      class="flex h-14 items-center border-b border-app-sidebar-border px-4 text-base font-bold tracking-wider text-app-sidebar-active transition-all"
       :class="
         uiStore.isSidebarCollapsed
           ? 'justify-center px-0 text-xl font-extrabold tracking-normal'
@@ -102,8 +100,7 @@ const appName = computed(() =>
 }
 
 .app-sidebar :deep(.el-sub-menu__title:hover .el-sub-menu__icon-arrow),
-.app-sidebar
-  :deep(.el-sub-menu.is-opened > .el-sub-menu__title .el-sub-menu__icon-arrow) {
+.app-sidebar :deep(.el-sub-menu.is-opened > .el-sub-menu__title .el-sub-menu__icon-arrow) {
   color: var(--app-sidebar-text-active);
 }
 

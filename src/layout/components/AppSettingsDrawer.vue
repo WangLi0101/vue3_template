@@ -40,8 +40,7 @@ const setThemeColor = (color: string): void => {
   themeStore.setPrimaryColor(color);
 };
 
-const isThemeModeActive = (mode: ThemeMode): boolean =>
-  themeStore.mode === mode;
+const isThemeModeActive = (mode: ThemeMode): boolean => themeStore.mode === mode;
 const isThemeColorActive = (color: string): boolean =>
   themeStore.primaryColor.toLowerCase() === color.toLowerCase();
 </script>
@@ -56,15 +55,13 @@ const isThemeColorActive = (color: string): boolean =>
     :with-header="false"
     class="app-settings-drawer"
   >
-    <div class="flex flex-col h-full bg-app-surface">
+    <div class="flex h-full flex-col bg-app-surface">
       <div
-        class="flex items-center justify-between px-5 h-[52px] border-b border-app-border shrink-0"
+        class="flex h-[52px] shrink-0 items-center justify-between border-b border-app-border px-5"
       >
-        <span class="text-[15px] font-medium text-app-text-primary"
-          >系统配置</span
-        >
+        <span class="text-[15px] font-medium text-app-text-primary">系统配置</span>
         <el-icon
-          class="cursor-pointer text-app-text-secondary hover:text-app-text-primary transition-colors outline-none"
+          class="cursor-pointer text-app-text-secondary outline-none transition-colors hover:text-app-text-primary"
           size="18"
           @click="visible = false"
         >
@@ -72,21 +69,19 @@ const isThemeColorActive = (color: string): boolean =>
         </el-icon>
       </div>
 
-      <div class="flex-1 overflow-y-auto p-5 space-y-7">
+      <div class="flex-1 space-y-7 overflow-y-auto p-5">
         <!-- 整体风格 -->
         <section>
-          <div class="text-[14px] text-app-text-primary mb-3">整体风格</div>
-          <div
-            class="flex items-center p-[3px] bg-app-bg-mute rounded bg-opacity-80"
-          >
+          <div class="mb-3 text-[14px] text-app-text-primary">整体风格</div>
+          <div class="flex items-center rounded bg-app-bg-mute bg-opacity-80 p-[3px]">
             <button
               v-for="option in modeOptions"
               :key="option.value"
               type="button"
-              class="flex-1 flex items-center justify-center gap-1.5 h-7 text-[13px] rounded-[4px] transition-all duration-300 border border-transparent"
+              class="flex h-7 flex-1 items-center justify-center gap-1.5 rounded-[4px] border border-transparent text-[13px] transition-all duration-300"
               :class="
                 isThemeModeActive(option.value)
-                  ? 'bg-app-surface text-app-text-primary shadow-[0_1px_3px_0_rgba(0,0,0,0.1)] font-medium !border-[var(--el-border-color-lighter)]'
+                  ? '!border-[var(--el-border-color-lighter)] bg-app-surface font-medium text-app-text-primary shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]'
                   : 'text-app-text-secondary hover:text-app-text-primary'
               "
               @click="setThemeMode(option.value)"
@@ -101,23 +96,19 @@ const isThemeColorActive = (color: string): boolean =>
 
         <!-- 主题色 -->
         <section>
-          <div class="text-[14px] text-app-text-primary mb-3">主题色</div>
+          <div class="mb-3 text-[14px] text-app-text-primary">主题色</div>
           <div class="flex flex-wrap items-center gap-[10px]">
             <button
               v-for="color in predefineColors"
               :key="color"
               type="button"
-              class="relative w-[20px] h-[20px] rounded-[4px] cursor-pointer flex items-center justify-center outline-none transition-transform hover:scale-110 shadow-sm border border-black/10 dark:border-white/10"
+              class="relative flex h-[20px] w-[20px] cursor-pointer items-center justify-center rounded-[4px] border border-black/10 shadow-sm outline-none transition-transform hover:scale-110 dark:border-white/10"
               :style="{ backgroundColor: color }"
               @click="setThemeColor(color)"
             >
               <el-icon
                 v-if="isThemeColorActive(color)"
-                :class="
-                  color.toLowerCase() === '#ffffff'
-                    ? 'text-black'
-                    : 'text-white'
-                "
+                :class="color.toLowerCase() === '#ffffff' ? 'text-black' : 'text-white'"
                 size="12"
               >
                 <Check />

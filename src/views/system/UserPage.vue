@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 
 const tableData = ref([
-  { id: 1, username: 'admin', role: 'super_admin', status: '启用' },
-  { id: 2, username: 'auditor', role: 'auditor', status: '启用' }
-])
+  { id: 1, username: "admin", role: "super_admin", status: "启用" },
+  { id: 2, username: "auditor", role: "auditor", status: "启用" },
+]);
 </script>
 
 <template>
@@ -26,8 +26,12 @@ const tableData = ref([
       <el-table-column prop="status" label="状态" min-width="120" />
       <el-table-column label="操作" width="220">
         <template #default>
-          <el-button v-permission="'sys:user:edit'" size="small" type="primary" link>编辑</el-button>
-          <el-button v-permission="'sys:user:delete'" size="small" type="danger" link>删除</el-button>
+          <el-button v-permission="'sys:user:edit'" size="small" type="primary" link
+            >编辑</el-button
+          >
+          <el-button v-permission="'sys:user:delete'" size="small" type="danger" link
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>

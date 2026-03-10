@@ -43,14 +43,14 @@
 ## 新增 Mock 接口示例
 
 ```ts
-import type { MockMethod } from 'vite-plugin-mock'
+import type { MockMethod } from "vite-plugin-mock";
 
 export default [
   {
-    url: '/api/example/list',
-    method: 'get',
+    url: "/api/example/list",
+    method: "get",
     statusCode: 200,
-    response: () => ({ code: 0, data: [], message: 'success' })
-  }
-] as MockMethod[]
+    response: () => ({ code: 0, data: [], message: "success" }),
+  },
+] as MockMethod[];
 ```

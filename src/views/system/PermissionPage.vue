@@ -17,20 +17,14 @@ const permissionList = computed(() => Array.from(permissionStore.permissions));
         <div class="font-semibold">当前登录信息</div>
       </template>
 
-      <div class="mb-3 text-sm text-gray-500">
-        用户：{{ authStore.user?.displayName || "-" }}
-      </div>
+      <div class="mb-3 text-sm text-gray-500">用户：{{ authStore.user?.displayName || "-" }}</div>
       <div class="mb-2 text-sm">角色：</div>
       <el-space wrap>
         <el-tag v-for="role in roleList" :key="role" type="info">{{ role }}</el-tag>
       </el-space>
       <div class="mb-2 mt-4 text-sm">权限：</div>
       <el-space wrap>
-        <el-tag
-          v-for="permission in permissionList"
-          :key="permission"
-          effect="plain"
-        >
+        <el-tag v-for="permission in permissionList" :key="permission" effect="plain">
           {{ permission }}
         </el-tag>
       </el-space>
@@ -48,12 +42,8 @@ const permissionList = computed(() => Array.from(permissionStore.permissions));
         :closable="false"
       />
       <el-space wrap>
-        <el-button v-role="['super_admin']" type="primary">
-          仅 super_admin 可见
-        </el-button>
-        <el-button v-role="['auditor']" type="success">
-          仅 auditor 可见
-        </el-button>
+        <el-button v-role="['super_admin']" type="primary"> 仅 super_admin 可见 </el-button>
+        <el-button v-role="['auditor']" type="success"> 仅 auditor 可见 </el-button>
         <el-button v-role="['super_admin', 'auditor']" type="info">
           super_admin 或 auditor 可见
         </el-button>
@@ -69,15 +59,10 @@ const permissionList = computed(() => Array.from(permissionStore.permissions));
         <el-button v-permission="'sys:user:create'" type="primary">
           需要 sys:user:create
         </el-button>
-        <el-button
-          v-permission="['sys:role:create', 'sys:user:delete']"
-          type="warning"
-        >
+        <el-button v-permission="['sys:role:create', 'sys:user:delete']" type="warning">
           sys:role:create 或 sys:user:delete
         </el-button>
-        <el-button v-permission="'sys:menu:create'" type="danger">
-          需要 sys:menu:create
-        </el-button>
+        <el-button v-permission="'sys:menu:create'" type="danger"> 需要 sys:menu:create </el-button>
       </el-space>
     </el-card>
   </el-space>

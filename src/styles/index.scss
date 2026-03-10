@@ -10,8 +10,10 @@ body,
 body {
   background: var(--app-bg);
   color: var(--app-text-primary);
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 * {

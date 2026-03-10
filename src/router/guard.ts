@@ -53,7 +53,7 @@ export const setupRouterGuards = (router: Router): void => {
           path: to.fullPath,
           replace: true,
         };
-      } catch (error) {
+      } catch (_error) {
         authStore.logoutLocal();
         return {
           name: "Login",
@@ -64,10 +64,7 @@ export const setupRouterGuards = (router: Router): void => {
       }
     }
 
-    const requiredPermission = to.meta.permission as
-      | string
-      | string[]
-      | undefined;
+    const requiredPermission = to.meta.permission as string | string[] | undefined;
     if (requiredPermission && !permissionStore.hasAll(requiredPermission)) {
       return {
         name: "Forbidden",

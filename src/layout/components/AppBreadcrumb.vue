@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useMenuStore } from "@/stores/modules/menu";
 
 defineOptions({
@@ -8,13 +8,11 @@ defineOptions({
 });
 
 const route = useRoute();
-const router = useRouter();
 const menuStore = useMenuStore();
 
 const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route.path));
 
-const isActiveItem = (index: number): boolean =>
-  index === breadcrumbs.value.length - 1;
+const isActiveItem = (index: number): boolean => index === breadcrumbs.value.length - 1;
 </script>
 
 <template>
@@ -25,7 +23,7 @@ const isActiveItem = (index: number): boolean =>
           <span
             v-if="isActiveItem(index)"
             :key="`active-${item.to}`"
-            class="breadcrumb-item-content text-sm text-app-text-primary font-medium"
+            class="breadcrumb-item-content text-sm font-medium text-app-text-primary"
           >
             {{ item.title }}
           </span>
@@ -33,7 +31,7 @@ const isActiveItem = (index: number): boolean =>
             v-else
             :key="`link-${item.to}`"
             type="button"
-            class="breadcrumb-item-content bg-transparent border-0 p-0 text-sm text-app-text-secondary hover:text-primary transition-colors"
+            class="breadcrumb-item-content border-0 bg-transparent p-0 text-sm text-app-text-secondary transition-colors hover:text-primary"
           >
             {{ item.title }}
           </button>

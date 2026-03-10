@@ -23,17 +23,17 @@ const stats = computed(() => [
         <div class="font-semibold">欢迎使用 RBAC 管理后台</div>
       </template>
 
-      <div class="text-app-text-secondary leading-7">
+      <div class="leading-7 text-app-text-secondary">
         当前版本采用单 Token 鉴权，不启用 Refresh Token。
       </div>
     </el-card>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
       <el-card v-for="item in stats" :key="item.label" shadow="never">
         <div class="text-sm text-app-text-secondary">
           {{ item.label }}
         </div>
-        <div class="text-2xl font-semibold text-app-text-primary mt-2">
+        <div class="mt-2 text-2xl font-semibold text-app-text-primary">
           {{ item.value }}
         </div>
       </el-card>

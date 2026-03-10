@@ -1,5 +1,6 @@
-import { iconType } from "./types";
-import { h, defineComponent, Component } from "vue";
+import type { iconType } from "./types";
+import { defineComponent, h, type Component } from "vue";
+import type { IconifyIcon as IconifyIconType } from "@iconify/vue/dist/offline";
 import { IconifyIconOnline, IconifyIconOffline, FontIcon } from "../index";
 
 /**
@@ -9,17 +10,16 @@ import { IconifyIconOnline, IconifyIconOffline, FontIcon } from "../index";
  * @param attrs 可选 iconType 属性
  * @returns Component
  */
-export function useRenderIcon(icon: any, attrs?: iconType): Component {
+export function useRenderIcon(
+  icon: string | IconifyIconType | Component,
+  attrs?: iconType,
+): Component {
   // iconfont
   const ifReg = /^IF-/;
-  // typeof icon === "function" 属于SVG
-  if (ifReg.test(icon)) {
+  if (typeof icon === "string" && ifReg.test(icon)) {
     // iconfont
     const name = icon.split(ifReg)[1];
-    const iconName = name.slice(
-      0,
-      name.indexOf(" ") == -1 ? name.length : name.indexOf(" ")
-    );
+    const iconName = name.slice(0, name.indexOf(" ") === -1 ? name.length : name.indexOf(" "));
     const iconType = name.slice(name.indexOf(" ") + 1, name.length);
     return defineComponent({
       name: "FontIcon",
@@ -27,40 +27,51 @@ export function useRenderIcon(icon: any, attrs?: iconType): Component {
         return h(FontIcon, {
           icon: iconName,
           iconType,
-          ...attrs
+          ...attrs,
         });
-      }
+      },
     });
-  } else if (typeof icon === "function" || typeof icon?.render === "function") {
-    // svg
-    return icon;
-  } else if (typeof icon === "object") {
-    return defineComponent({
-      name: "OfflineIcon",
-      render() {
-        return h(IconifyIconOffline, {
-          icon: icon,
-          ...attrs
-        });
-      }
-    });
-  } else {
+  }
+
+  if (typeof icon === "string") {
     // 通过是否存在 : 符号来判断是在线还是本地图标，存在即是在线图标，反之
     return defineComponent({
-      name: "Icon",
+      name: "ReIcon",
       render() {
-        if (icon && icon.includes(":")) {
+        if (icon.includes(":")) {
           return h(IconifyIconOnline, {
             icon: icon,
-            ...attrs
+            ...attrs,
           });
         }
 
         return h(IconifyIconOffline, {
           icon: icon,
-          ...attrs
+          ...attrs,
         });
-      }
+      },
     });
   }
+
+  if (
+    typeof icon === "function" ||
+    (typeof icon === "object" && icon !== null && ("render" in icon || "setup" in icon))
+  ) {
+    // svg
+    return icon;
+  }
+
+  if (typeof icon === "object" && icon !== null) {
+    return defineComponent({
+      name: "OfflineIcon",
+      render() {
+        return h(IconifyIconOffline, {
+          icon: icon as IconifyIconType,
+          ...attrs,
+        });
+      },
+    });
+  }
+
+  return IconifyIconOffline;
 }

@@ -23,11 +23,7 @@ const normalizeIcon = (icon?: string): string => {
       <span>{{ item.title }}</span>
     </template>
 
-    <SidebarItem
-      v-for="child in item.children"
-      :key="child.path"
-      :item="child"
-    />
+    <SidebarItem v-for="child in item.children" :key="child.path" :item="child" />
   </el-sub-menu>
 
   <el-menu-item v-else :index="item.path">
@@ -39,6 +35,7 @@ const normalizeIcon = (icon?: string): string => {
     </template>
   </el-menu-item>
 </template>
+
 <style lang="scss">
 .el-menu-item .el-menu-tooltip__trigger {
   padding-left: 0 !important;

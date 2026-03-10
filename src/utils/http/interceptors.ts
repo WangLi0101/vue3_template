@@ -1,18 +1,10 @@
-import type {
-  AxiosError,
-  AxiosInstance,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from "axios";
-import { ElMessage } from "element-plus";
+import type { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { ApiRequestError, type ApiResponse } from "@/types/http";
 import { getToken } from "@/utils/token";
 import { handlerError, handlerHttpError } from "./code";
 import { isDownloadResponseType } from "./types";
 
-const attachAuthorization = (
-  config: InternalAxiosRequestConfig,
-): InternalAxiosRequestConfig => {
+const attachAuthorization = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   const token = getToken();
   if (!token) {
     return config;
@@ -31,9 +23,7 @@ const isBusinessPayload = (value: unknown): value is ApiResponse<unknown> => {
   if (!value || typeof value !== "object") {
     return false;
   }
-  return (
-    "code" in value && typeof (value as { code: unknown }).code === "number"
-  );
+  return "code" in value && typeof (value as { code: unknown }).code === "number";
 };
 
 const handleResponseSuccess = <T>(
@@ -59,8 +49,7 @@ const handleResponseSuccess = <T>(
 const handleResponseError = (error: AxiosError<ApiResponse<unknown>>) => {
   const httpStatus = error.response?.status ?? 0;
   const businessCode = error.response?.data?.code ?? -1;
-  const message =
-    error.response?.data?.message || error.message || "网络请求失败";
+  const message = error.response?.data?.message || error.message || "网络请求失败";
 
   handlerHttpError(httpStatus, message);
   return Promise.reject(new ApiRequestError(message, httpStatus, businessCode));

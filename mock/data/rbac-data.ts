@@ -160,5 +160,4 @@ export const mockProfiles: Record<string, MockUserProfile> = {
   },
 };
 
-export const cloneMenus = (menus: AppMenu[]): AppMenu[] =>
-  JSON.parse(JSON.stringify(menus));
+export const cloneMenus = (menus: AppMenu[]): AppMenu[] => JSON.parse(JSON.stringify(menus));

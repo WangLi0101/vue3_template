@@ -11,10 +11,7 @@ export type DownloadDataMap = {
   arraybuffer: ArrayBuffer;
 };
 
-export type DownloadRequestConfig<
-  D,
-  R extends DownloadResponseType,
-> = RequestConfig<D> & {
+export type DownloadRequestConfig<D, R extends DownloadResponseType> = RequestConfig<D> & {
   responseType: R;
 };
 

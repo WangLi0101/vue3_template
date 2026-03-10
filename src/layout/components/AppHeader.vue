@@ -22,9 +22,7 @@ const uiStore = useUiStore();
 const isSettingsDrawerVisible = ref(false);
 
 const title = computed(() => (route.meta.title as string) || "管理后台");
-const sidebarToggleIcon = computed(() =>
-  uiStore.isSidebarCollapsed ? Expand : Fold,
-);
+const sidebarToggleIcon = computed(() => (uiStore.isSidebarCollapsed ? Expand : Fold));
 
 watch(
   () => route.fullPath,
@@ -52,9 +50,9 @@ const handleLogout = async (): Promise<void> => {
 </script>
 
 <template>
-  <header class="bg-app-header z-10 sticky top-0 transition-colors duration-300">
-    <div class="h-14 px-5 flex items-center justify-between">
-      <div class="flex items-center gap-3 min-w-0">
+  <header class="sticky top-0 z-10 bg-app-header transition-colors duration-300">
+    <div class="flex h-14 items-center justify-between px-5">
+      <div class="flex min-w-0 items-center gap-3">
         <el-tooltip
           :content="uiStore.isSidebarCollapsed ? '展开侧边栏' : '折叠侧边栏'"
           placement="bottom"
@@ -69,9 +67,7 @@ const handleLogout = async (): Promise<void> => {
           </el-button>
         </el-tooltip>
 
-        <div
-          class="text-base font-semibold text-app-text-primary shrink-0 tracking-wide"
-        >
+        <div class="shrink-0 text-base font-semibold tracking-wide text-app-text-primary">
           {{ title }}
         </div>
 
@@ -82,19 +78,15 @@ const handleLogout = async (): Promise<void> => {
       <div class="flex items-center gap-3">
         <el-dropdown>
           <span
-            class="cursor-pointer text-sm text-app-text-primary flex items-center gap-2 hover:opacity-80 transition-opacity"
+            class="flex cursor-pointer items-center gap-2 text-sm text-app-text-primary transition-opacity hover:opacity-80"
           >
-            <el-avatar :size="26">{{
-              authStore.user?.displayName?.slice(0, 1) || "U"
-            }}</el-avatar>
+            <el-avatar :size="26">{{ authStore.user?.displayName?.slice(0, 1) || "U" }}</el-avatar>
             {{ authStore.user?.displayName || "未知用户" }}
           </span>
 
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="handleLogout">
-                退出登录
-              </el-dropdown-item>
+              <el-dropdown-item @click="handleLogout"> 退出登录 </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -103,7 +95,7 @@ const handleLogout = async (): Promise<void> => {
           <el-button
             text
             circle
-            class="!text-app-text-primary hover:!bg-app-bg-mute transition-colors"
+            class="!text-app-text-primary transition-colors hover:!bg-app-bg-mute"
             @click="isSettingsDrawerVisible = true"
           >
             <el-icon><Setting /></el-icon>
@@ -117,4 +109,3 @@ const handleLogout = async (): Promise<void> => {
 
   <AppSettingsDrawer v-model="isSettingsDrawerVisible" />
 </template>
-

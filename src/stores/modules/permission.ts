@@ -43,10 +43,7 @@ export const usePermissionStore = defineStore("permission", () => {
     isRoutesMounted.value = false;
   };
 
-  const mountDynamicRoutes = (
-    router: Router,
-    routes: RouteRecordRaw[],
-  ): void => {
+  const mountDynamicRoutes = (router: Router, routes: RouteRecordRaw[]): void => {
     if (isRoutesMounted.value) return;
 
     routes.forEach((route: RouteRecordRaw) => {

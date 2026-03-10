@@ -56,9 +56,7 @@ const mixColors = (base: string, mixin: string, weight: number): string => {
   const g = Math.round(g1 * (1 - clampedWeight) + g2 * clampedWeight);
   const b = Math.round(b1 * (1 - clampedWeight) + b2 * clampedWeight);
 
-  return `#${[r, g, b]
-    .map((channel) => channel.toString(16).padStart(2, "0"))
-    .join("")}`;
+  return `#${[r, g, b].map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
 };
 
 // 写入根节点 CSS 变量
@@ -88,12 +86,9 @@ const readThemeState = (): PersistedThemeState | null => {
 
   try {
     const parsed = JSON.parse(raw) as Partial<PersistedThemeState>;
-    const mode = isThemeMode(parsed.mode)
-      ? parsed.mode
-      : appThemeConfig.defaultMode;
+    const mode = isThemeMode(parsed.mode) ? parsed.mode : appThemeConfig.defaultMode;
     const primaryColor =
-      normalizeHexColor(parsed.primaryColor || "") ||
-      appThemeConfig.defaultPrimaryColor;
+      normalizeHexColor(parsed.primaryColor || "") || appThemeConfig.defaultPrimaryColor;
 
     return { mode, primaryColor };
   } catch {
@@ -147,30 +142,12 @@ export const useThemeStore = defineStore("theme", () => {
 
     // Element Plus 主色及其明暗梯度变量
     setRootVar("--el-color-primary", normalizedColor);
-    setRootVar(
-      "--el-color-primary-light-3",
-      mixColors(normalizedColor, "#ffffff", 0.3),
-    );
-    setRootVar(
-      "--el-color-primary-light-5",
-      mixColors(normalizedColor, "#ffffff", 0.5),
-    );
-    setRootVar(
-      "--el-color-primary-light-7",
-      mixColors(normalizedColor, "#ffffff", 0.7),
-    );
-    setRootVar(
-      "--el-color-primary-light-8",
-      mixColors(normalizedColor, "#ffffff", 0.8),
-    );
-    setRootVar(
-      "--el-color-primary-light-9",
-      mixColors(normalizedColor, "#ffffff", 0.9),
-    );
-    setRootVar(
-      "--el-color-primary-dark-2",
-      mixColors(normalizedColor, "#000000", 0.2),
-    );
+    setRootVar("--el-color-primary-light-3", mixColors(normalizedColor, "#ffffff", 0.3));
+    setRootVar("--el-color-primary-light-5", mixColors(normalizedColor, "#ffffff", 0.5));
+    setRootVar("--el-color-primary-light-7", mixColors(normalizedColor, "#ffffff", 0.7));
+    setRootVar("--el-color-primary-light-8", mixColors(normalizedColor, "#ffffff", 0.8));
+    setRootVar("--el-color-primary-light-9", mixColors(normalizedColor, "#ffffff", 0.9));
+    setRootVar("--el-color-primary-dark-2", mixColors(normalizedColor, "#000000", 0.2));
   };
 
   // 一次性应用完整主题

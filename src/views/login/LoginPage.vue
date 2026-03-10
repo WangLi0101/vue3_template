@@ -42,9 +42,7 @@ const handleLogin = async (): Promise<void> => {
       ElMessage.success("登录成功");
     } catch (error) {
       if (error instanceof ApiRequestError) {
-        ElMessage.error(
-          `${error.message} (HTTP ${error.httpStatus} / CODE ${error.businessCode})`,
-        );
+        ElMessage.error(`${error.message} (HTTP ${error.httpStatus} / CODE ${error.businessCode})`);
         return;
       }
 
@@ -82,11 +80,7 @@ const loginTips = "测试账号：admin / admin123，auditor / auditor123";
           @keyup.enter="handleLogin"
         >
           <el-form-item label="用户名" prop="username">
-            <el-input
-              v-model="formState.username"
-              size="large"
-              placeholder="请输入用户名"
-            />
+            <el-input v-model="formState.username" size="large" placeholder="请输入用户名" />
           </el-form-item>
 
           <el-form-item label="密码" prop="password">
@@ -104,12 +98,7 @@ const loginTips = "测试账号：admin / admin123，auditor / auditor123";
             <button class="text-link" type="button">Forgot Password?</button>
           </div>
 
-          <el-button
-            type="primary"
-            class="submit-btn"
-            :loading="loading"
-            @click="handleLogin"
-          >
+          <el-button type="primary" class="submit-btn" :loading="loading" @click="handleLogin">
             Sign In
           </el-button>
         </el-form>
@@ -156,8 +145,7 @@ const loginTips = "测试账号：admin / admin123，auditor / auditor123";
   padding: 24px;
   background:
     radial-gradient(circle at 20% 20%, rgb(131 118 255 / 12%), transparent 45%),
-    radial-gradient(circle at 80% 80%, rgb(65 213 255 / 10%), transparent 42%),
-    var(--app-bg);
+    radial-gradient(circle at 80% 80%, rgb(65 213 255 / 10%), transparent 42%), var(--app-bg);
 }
 
 .login-shell {
@@ -389,11 +377,7 @@ const loginTips = "测试账号：admin / admin123，auditor / auditor123";
   border-radius: 50%;
   background:
     radial-gradient(circle, rgb(255 255 255 / 95%) 0 3px, transparent 3px 100%),
-    repeating-radial-gradient(
-      circle,
-      transparent 0 8px,
-      rgb(255 255 255 / 75%) 9px 11px
-    );
+    repeating-radial-gradient(circle, transparent 0 8px, rgb(255 255 255 / 75%) 9px 11px);
   box-shadow: 0 0 0 14px rgb(255 255 255 / 15%);
 }
 

@@ -8,10 +8,7 @@ export const checkPermission = (value: PermissionValue): boolean => {
   return permissionStore.hasAny(value);
 };
 
-const removeWhenForbidden = (
-  el: HTMLElement,
-  required?: PermissionValue,
-): void => {
+const removeWhenForbidden = (el: HTMLElement, required?: PermissionValue): void => {
   if (!required) {
     return;
   }

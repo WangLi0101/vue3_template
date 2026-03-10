@@ -30,10 +30,7 @@ const joinPath = (parentPath: string, currentPath: string): string => {
 const DEFAULT_RANK = Number.MAX_SAFE_INTEGER;
 const resolveRank = (value: unknown): number =>
   typeof value === "number" && Number.isFinite(value) ? value : DEFAULT_RANK;
-const sortWithRank = <T>(
-  list: T[],
-  getRank: (item: T) => number,
-): T[] => {
+const sortWithRank = <T>(list: T[], getRank: (item: T) => number): T[] => {
   return list
     .map((item, index) => ({ item, index }))
     .sort((left, right) => {
@@ -43,14 +40,8 @@ const sortWithRank = <T>(
     .map((record) => record.item);
 };
 
-const toSidebarMenus = (
-  menus: AppMenu[],
-  parentPath = "",
-): SidebarMenuItem[] => {
-  return sortWithRank(
-    menus,
-    (menu) => resolveRank(menu.meta.rank),
-  )
+const toSidebarMenus = (menus: AppMenu[], parentPath = ""): SidebarMenuItem[] => {
+  return sortWithRank(menus, (menu) => resolveRank(menu.meta.rank))
     .filter((menu) => !menu.meta.hidden)
     .map((menu) => {
       const currentPath = joinPath(parentPath, menu.path);
@@ -70,13 +61,9 @@ const toSidebarMenus = (
     });
 };
 
-const toSidebarMenusFromRoutes = (
-  routes: RouteRecordRaw[],
-  parentPath = "",
-): SidebarMenuItem[] => {
-  return sortWithRank(
-    routes,
-    (route) => resolveRank((route.meta as Record<string, unknown> | undefined)?.rank),
+const toSidebarMenusFromRoutes = (routes: RouteRecordRaw[], parentPath = ""): SidebarMenuItem[] => {
+  return sortWithRank(routes, (route) =>
+    resolveRank((route.meta as Record<string, unknown> | undefined)?.rank),
   ).flatMap((route, index) => {
     const routeMeta = (route.meta || {}) as Record<string, unknown>;
     if (routeMeta.hidden) return [];
@@ -146,18 +133,14 @@ export const useMenuStore = defineStore("menu", () => {
   const rawMenus = ref<AppMenu[]>([]);
   const pathFullPathMap = ref<Record<string, string>>({});
 
-  const backendSidebarMenus = computed<SidebarMenuItem[]>(() =>
-    toSidebarMenus(rawMenus.value),
-  );
+  const backendSidebarMenus = computed<SidebarMenuItem[]>(() => toSidebarMenus(rawMenus.value));
   const moduleSidebarMenus = computed<SidebarMenuItem[]>(() =>
     toSidebarMenusFromRoutes(rootRouteModules),
   );
   const sidebarMenus = computed<SidebarMenuItem[]>(() =>
     mergeSidebarMenus(backendSidebarMenus.value, moduleSidebarMenus.value),
   );
-  const dynamicRoutes = computed<RouteRecordRaw[]>(() =>
-    buildRoutesFromMenus(rawMenus.value),
-  );
+  const dynamicRoutes = computed<RouteRecordRaw[]>(() => buildRoutesFromMenus(rawMenus.value));
 
   const setMenus = (menus: AppMenu[]): void => {
     rawMenus.value = menus;
@@ -187,10 +170,7 @@ export const useMenuStore = defineStore("menu", () => {
       return [home];
     }
 
-    if (
-      chain[0].to !== "/dashboard" &&
-      !chain[0].to.startsWith("/dashboard?")
-    ) {
+    if (chain[0].to !== "/dashboard" && !chain[0].to.startsWith("/dashboard?")) {
       return [home, ...chain];
     }
 
