@@ -151,6 +151,22 @@ export const useMenuStore = defineStore("menu", () => {
     pathFullPathMap.value[path] = fullPath;
   };
 
+  const getFirstRoutePath = (): string => {
+    const firstPath = sidebarMenus.value[0]?.path;
+    if (!firstPath) return "/";
+    return pathFullPathMap.value[firstPath] || firstPath;
+  };
+  const resolveRootRedirectTarget = (path: string, fullPath: string): string | null => {
+    if (path !== "/") return null;
+
+    const firstRoutePath = getFirstRoutePath();
+    if (!firstRoutePath || firstRoutePath === "/" || firstRoutePath === fullPath) {
+      return null;
+    }
+
+    return firstRoutePath;
+  };
+
   const getBreadcrumbs = (path: string): BreadcrumbItem[] => {
     const home: BreadcrumbItem = {
       title: "首页",
@@ -189,6 +205,8 @@ export const useMenuStore = defineStore("menu", () => {
     dynamicRoutes,
     setMenus,
     rememberRoute,
+    getFirstRoutePath,
+    resolveRootRedirectTarget,
     getBreadcrumbs,
     reset,
   };

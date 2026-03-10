@@ -25,7 +25,6 @@ export const staticRoutes: RouteRecordRaw[] = [
     path: "/",
     name: "Root",
     component: AppLayout,
-    redirect: "/dashboard",
     meta: {
       title: "首页",
       requiresAuth: true,

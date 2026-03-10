@@ -49,6 +49,14 @@ export const setupRouterGuards = (router: Router): void => {
 
         permissionStore.mountDynamicRoutes(router, menuStore.dynamicRoutes);
 
+        const rootRedirectTarget = menuStore.resolveRootRedirectTarget(to.path, to.fullPath);
+        if (rootRedirectTarget) {
+          return {
+            path: rootRedirectTarget,
+            replace: true,
+          };
+        }
+
         return {
           path: to.fullPath,
           replace: true,
@@ -62,6 +70,14 @@ export const setupRouterGuards = (router: Router): void => {
           },
         };
       }
+    }
+
+    const rootRedirectTarget = menuStore.resolveRootRedirectTarget(to.path, to.fullPath);
+    if (rootRedirectTarget) {
+      return {
+        path: rootRedirectTarget,
+        replace: true,
+      };
     }
 
     const requiredPermission = to.meta.permission as string | string[] | undefined;
