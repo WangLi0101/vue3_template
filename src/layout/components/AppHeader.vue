@@ -1,14 +1,20 @@
 <template>
-  <AppHeaderContent
-    :title="title"
-    :is-sidebar-collapsed="uiStore.isSidebarCollapsed"
-    :display-name="displayName"
-    @toggle-sidebar="uiStore.toggleSidebar"
-    @open-settings="isSettingsDrawerVisible = true"
-    @logout="logout"
-  />
+  <section class="app-header">
+    <div class="app-header__hero">
+      <AppHeaderContent
+        :title="title"
+        :is-sidebar-collapsed="uiStore.isSidebarCollapsed"
+        :display-name="displayName"
+        @toggle-sidebar="uiStore.toggleSidebar"
+        @open-settings="isSettingsDrawerVisible = true"
+        @logout="logout"
+      />
+    </div>
 
-  <AppHeaderTags />
+    <div class="app-header__tags">
+      <AppHeaderTags />
+    </div>
+  </section>
 
   <AppSettingsDrawer v-model="isSettingsDrawerVisible" />
 </template>
@@ -36,3 +42,21 @@ const displayName = computed(() => authStore.user?.displayName || "未知用户"
 
 useRouteTabTracking();
 </script>
+
+<style scoped lang="scss">
+.app-header {
+  position: relative;
+  background-color: var(--app-header-bg);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.app-header__tags {
+  border-top: 1px solid var(--app-border);
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    overflow-x: auto;
+  }
+}
+</style>

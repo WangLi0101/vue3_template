@@ -77,7 +77,7 @@
 <script setup lang="ts">
 import { Check, Close, Monitor, Moon, Sunny } from "@element-plus/icons-vue";
 import { computed } from "vue";
-import { appThemeConfig, type ThemeMode } from "@/config/theme";
+import { themeColorPresets, type ThemeMode } from "@/config/theme";
 import { useThemeStore } from "@/stores/modules/theme";
 
 interface Props {
@@ -106,7 +106,7 @@ const modeOptions: Array<{
   { label: "自动", value: "system", icon: Monitor },
 ];
 
-const predefineColors = [...appThemeConfig.primaryColorPresets];
+const predefineColors = [...themeColorPresets];
 
 const setThemeMode = (mode: ThemeMode): void => {
   themeStore.setMode(mode);

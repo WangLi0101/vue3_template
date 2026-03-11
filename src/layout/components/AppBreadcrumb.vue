@@ -46,9 +46,25 @@ const isActiveItem = (index: number): boolean => index === breadcrumbs.value.len
   min-width: 0;
 }
 
+.app-breadcrumb :deep(.el-breadcrumb) {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.app-breadcrumb :deep(.el-breadcrumb__item) {
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-breadcrumb :deep(.el-breadcrumb__separator) {
+  margin: 0 6px;
+  color: var(--app-text-disabled);
+}
+
 .breadcrumb-item-content {
   display: inline-flex;
   align-items: center;
+  line-height: 1;
 }
 
 .breadcrumb-item-enter-active,

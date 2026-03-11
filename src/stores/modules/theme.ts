@@ -1,10 +1,15 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import {
-  appThemeConfig,
+  buildElementPlusPrimaryCssVars,
+  buildPrimaryCssVars,
+  buildSemanticCssVars,
+  normalizeHexColor,
+  themeDefaults,
+  themePersistence,
+  themeSemanticTokensByMode,
   type ResolvedThemeMode,
   type ThemeMode,
-  type ThemeSemanticVars,
 } from "@/config/theme";
 
 // 本地持久化数据结构
@@ -18,54 +23,13 @@ const isThemeMode = (value: unknown): value is ThemeMode => {
   return value === "light" || value === "dark" || value === "system";
 };
 
-// 规范化颜色值，支持 #RGB / #RRGGBB，统一输出 #RRGGBB
-const normalizeHexColor = (value: string): string | null => {
-  const normalized = value.trim().toLowerCase();
-  if (!normalized) return null;
-
-  const fullHexPattern = /^#[0-9a-f]{6}$/i;
-  if (fullHexPattern.test(normalized)) {
-    return normalized;
-  }
-
-  const shortHexPattern = /^#[0-9a-f]{3}$/i;
-  if (!shortHexPattern.test(normalized)) {
-    return null;
-  }
-
-  const [r, g, b] = normalized.slice(1).split("");
-  return `#${r}${r}${g}${g}${b}${b}`;
-};
-
-// 十六进制颜色转 RGB 通道
-const hexToRgb = (hex: string): [number, number, number] => {
-  const normalized = normalizeHexColor(hex) || appThemeConfig.defaultPrimaryColor;
-  const value = Number.parseInt(normalized.slice(1), 16);
-  const r = (value >> 16) & 255;
-  const g = (value >> 8) & 255;
-  const b = value & 255;
-  return [r, g, b];
-};
-
-// 按权重混合颜色，生成 Element Plus 所需的亮色/暗色派生变量
-const mixColors = (base: string, mixin: string, weight: number): string => {
-  const clampedWeight = Math.max(0, Math.min(1, weight));
-  const [r1, g1, b1] = hexToRgb(base);
-  const [r2, g2, b2] = hexToRgb(mixin);
-  const r = Math.round(r1 * (1 - clampedWeight) + r2 * clampedWeight);
-  const g = Math.round(g1 * (1 - clampedWeight) + g2 * clampedWeight);
-  const b = Math.round(b1 * (1 - clampedWeight) + b2 * clampedWeight);
-
-  return `#${[r, g, b].map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
-};
-
 // 写入根节点 CSS 变量
 const setRootVar = (name: string, value: string): void => {
   document.documentElement.style.setProperty(name, value);
 };
 
-// 批量应用语义化主题变量
-const applySemanticVars = (vars: ThemeSemanticVars): void => {
+// 批量应用 CSS 变量
+const applyCssVars = (vars: Record<string, string>): void => {
   Object.entries(vars).forEach(([name, value]) => {
     setRootVar(name, value);
   });
@@ -74,21 +38,20 @@ const applySemanticVars = (vars: ThemeSemanticVars): void => {
 // 持久化主题设置
 const persistThemeState = (state: PersistedThemeState): void => {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(appThemeConfig.storageKey, JSON.stringify(state));
+  window.localStorage.setItem(themePersistence.storageKey, JSON.stringify(state));
 };
 
 // 读取并校验持久化主题设置
 const readThemeState = (): PersistedThemeState | null => {
   if (typeof window === "undefined") return null;
 
-  const raw = window.localStorage.getItem(appThemeConfig.storageKey);
+  const raw = window.localStorage.getItem(themePersistence.storageKey);
   if (!raw) return null;
 
   try {
     const parsed = JSON.parse(raw) as Partial<PersistedThemeState>;
-    const mode = isThemeMode(parsed.mode) ? parsed.mode : appThemeConfig.defaultMode;
-    const primaryColor =
-      normalizeHexColor(parsed.primaryColor || "") || appThemeConfig.defaultPrimaryColor;
+    const mode = isThemeMode(parsed.mode) ? parsed.mode : themeDefaults.mode;
+    const primaryColor = normalizeHexColor(parsed.primaryColor || "") || themeDefaults.primaryColor;
 
     return { mode, primaryColor };
   } catch {
@@ -98,9 +61,9 @@ const readThemeState = (): PersistedThemeState | null => {
 
 export const useThemeStore = defineStore("theme", () => {
   // 用户配置模式（可为 system）
-  const mode = ref<ThemeMode>(appThemeConfig.defaultMode);
+  const mode = ref<ThemeMode>(themeDefaults.mode);
   // 用户选择主题色
-  const primaryColor = ref<string>(appThemeConfig.defaultPrimaryColor);
+  const primaryColor = ref<string>(themeDefaults.primaryColor);
   // 系统是否偏好深色（由 matchMedia 维护）
   const systemPrefersDark = ref(false);
   // 缓存媒体查询对象，便于后续扩展/清理
@@ -123,31 +86,22 @@ export const useThemeStore = defineStore("theme", () => {
     const root = document.documentElement;
     root.classList.toggle("dark", isDark.value);
     root.setAttribute("data-theme", resolvedMode.value);
-    applySemanticVars(appThemeConfig.semanticVars[resolvedMode.value]);
+    applyCssVars(buildSemanticCssVars(themeSemanticTokensByMode[resolvedMode.value]));
   };
 
   // 应用主题色到全局 CSS 变量与 Element Plus 变量
   const applyPrimaryToDom = (): void => {
     if (typeof document === "undefined") return;
 
-    const normalizedColor =
-      normalizeHexColor(primaryColor.value) || appThemeConfig.defaultPrimaryColor;
+    const normalizedColor = normalizeHexColor(primaryColor.value) || themeDefaults.primaryColor;
     if (normalizedColor !== primaryColor.value) {
       primaryColor.value = normalizedColor;
     }
 
-    const [r, g, b] = hexToRgb(normalizedColor);
-    setRootVar("--app-primary", normalizedColor);
-    setRootVar("--app-primary-rgb", `${r} ${g} ${b}`);
-
-    // Element Plus 主色及其明暗梯度变量
-    setRootVar("--el-color-primary", normalizedColor);
-    setRootVar("--el-color-primary-light-3", mixColors(normalizedColor, "#ffffff", 0.3));
-    setRootVar("--el-color-primary-light-5", mixColors(normalizedColor, "#ffffff", 0.5));
-    setRootVar("--el-color-primary-light-7", mixColors(normalizedColor, "#ffffff", 0.7));
-    setRootVar("--el-color-primary-light-8", mixColors(normalizedColor, "#ffffff", 0.8));
-    setRootVar("--el-color-primary-light-9", mixColors(normalizedColor, "#ffffff", 0.9));
-    setRootVar("--el-color-primary-dark-2", mixColors(normalizedColor, "#000000", 0.2));
+    applyCssVars({
+      ...buildPrimaryCssVars(normalizedColor),
+      ...buildElementPlusPrimaryCssVars(normalizedColor),
+    });
   };
 
   // 一次性应用完整主题

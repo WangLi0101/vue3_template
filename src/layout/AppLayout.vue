@@ -7,8 +7,8 @@
     <div class="flex min-w-0 flex-1 flex-col bg-app-content">
       <AppHeader />
 
-      <main class="flex-1 overflow-auto bg-app-content p-3 sm:p-5">
-        <div class="h-full rounded-lg bg-app-surface p-3 shadow-sm sm:p-5">
+      <main class="flex-1 overflow-auto bg-app-content p-3">
+        <div class="h-full rounded-lg bg-app-surface p-3 shadow-sm">
           <AppRouterView />
         </div>
       </main>

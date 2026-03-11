@@ -7,6 +7,7 @@
           :key="tag.path"
           class="tag-item"
           :class="[activeTagPath === tag.path ? 'is-active' : 'is-inactive']"
+          :title="tag.title"
           @click="handleTagClick(tag)"
         >
           <span class="tag-title">{{ tag.title }}</span>
@@ -14,6 +15,7 @@
             v-if="tag.closable"
             type="button"
             class="tag-close"
+            :aria-label="`关闭${tag.title}`"
             @click.stop="handleTagClose(tag)"
           >
             <el-icon :size="10"><Close /></el-icon>
@@ -53,10 +55,10 @@ const handleTagClose = async (tag: RouteTag): Promise<void> => {
 <style scoped lang="scss">
 .app-header-tags {
   display: flex;
-  align-items: stretch;
-  height: 36px;
-  border-top: 1px solid var(--app-border);
-  border-bottom: 1px solid var(--app-border);
+  align-items: center;
+  height: 34px;
+  padding: 0 8px;
+  background-color: var(--app-header-bg);
 }
 
 .tags-scroll {
@@ -81,45 +83,41 @@ const handleTagClose = async (tag: RouteTag): Promise<void> => {
   display: inline-flex;
   align-items: center;
   height: 100%;
-  padding: 0 14px;
+  padding: 0 12px;
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
   font-size: 13px;
-  color: var(--app-text-primary);
-  border-right: 1px solid var(--app-border);
-  background-color: rgb(var(--app-primary-rgb) / 0.03);
+  color: var(--app-text-secondary);
+  border-right: 1px solid transparent;
+  background-color: transparent;
   transition:
     color 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.tag-item:first-child {
-  border-left: 1px solid var(--app-border);
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .tag-item.is-inactive:hover {
   color: var(--app-primary);
-  background-color: rgb(var(--app-primary-rgb) / 0.08);
+  background-color: rgb(var(--app-primary-rgb) / 0.04);
 }
 
 .tag-item.is-active {
   color: var(--app-primary);
-  background-color: rgb(var(--app-primary-rgb) / 0.12);
 }
 
 .tag-item.is-active::after {
   content: "";
   position: absolute;
   right: 0;
-  bottom: -1px;
+  bottom: 0;
   left: 0;
   height: 2px;
   background-color: var(--app-primary);
 }
 
 .tag-title {
-  max-width: 164px;
+  max-width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -161,7 +159,7 @@ const handleTagClose = async (tag: RouteTag): Promise<void> => {
 
 .tag-close:hover {
   color: var(--app-primary);
-  background-color: rgb(var(--app-primary-rgb) / 0.14);
+  background-color: rgb(var(--app-primary-rgb) / 0.12);
 }
 
 .tag-slide-enter-active,
@@ -185,5 +183,17 @@ const handleTagClose = async (tag: RouteTag): Promise<void> => {
 
 .app-header-tags :deep(.el-scrollbar__thumb) {
   background-color: rgb(var(--app-primary-rgb) / 0.22);
+}
+
+@media (max-width: 960px) {
+  .tag-title {
+    max-width: 112px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tag-item {
+    padding: 0 10px;
+  }
 }
 </style>

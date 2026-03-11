@@ -16,7 +16,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   const login = async (payload: LoginPayload): Promise<boolean> => {
     const response = await loginApi(payload);
-    if (response.code !== 0 || !response.data?.accessToken) {
+    if (response.code !== 0) {
       return false;
     }
 
@@ -32,7 +32,7 @@ export const useAuthStore = defineStore("auth", () => {
     }
 
     const response = await getProfileApi();
-    if (response.code !== 0 || !response.data) {
+    if (!response.data) {
       isInitialized.value = false;
       return false;
     }
