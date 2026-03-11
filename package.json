@@ -23,6 +23,7 @@
     "@iconify-icons/ri": "^1.2.10",
     "@iconify/vue": "^5.0.0",
     "axios": "^1.9.0",
+    "dayjs": "^1.11.19",
     "element-plus": "^2.11.3",
     "mitt": "^3.0.1",
     "nprogress": "^0.2.0",
