@@ -1,19 +1,3 @@
-<script setup lang="ts">
-import { IconifyIconOnline } from "@/components/ReIcon";
-import type { SidebarMenuItem } from "@/stores/modules/menu";
-
-interface Props {
-  item: SidebarMenuItem;
-}
-
-defineProps<Props>();
-
-const normalizeIcon = (icon?: string): string => {
-  if (!icon) return "codicon:blank";
-  return icon;
-};
-</script>
-
 <template>
   <el-sub-menu v-if="item.children?.length" :index="item.path">
     <template #title>
@@ -35,6 +19,22 @@ const normalizeIcon = (icon?: string): string => {
     </template>
   </el-menu-item>
 </template>
+
+<script setup lang="ts">
+import { IconifyIconOnline } from "@/components/ReIcon";
+import type { SidebarMenuItem } from "@/stores/modules/menu";
+
+interface Props {
+  item: SidebarMenuItem;
+}
+
+defineProps<Props>();
+
+const normalizeIcon = (icon?: string): string => {
+  if (!icon) return "codicon:blank";
+  return icon;
+};
+</script>
 
 <style lang="scss">
 .el-menu-item .el-menu-tooltip__trigger {

@@ -1,3 +1,18 @@
+<template>
+  <AppHeaderContent
+    :title="title"
+    :is-sidebar-collapsed="uiStore.isSidebarCollapsed"
+    :display-name="displayName"
+    @toggle-sidebar="uiStore.toggleSidebar"
+    @open-settings="isSettingsDrawerVisible = true"
+    @logout="logout"
+  />
+
+  <AppHeaderTags />
+
+  <AppSettingsDrawer v-model="isSettingsDrawerVisible" />
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -21,18 +36,3 @@ const displayName = computed(() => authStore.user?.displayName || "未知用户"
 
 useRouteTabTracking();
 </script>
-
-<template>
-  <AppHeaderContent
-    :title="title"
-    :is-sidebar-collapsed="uiStore.isSidebarCollapsed"
-    :display-name="displayName"
-    @toggle-sidebar="uiStore.toggleSidebar"
-    @open-settings="isSettingsDrawerVisible = true"
-    @logout="logout"
-  />
-
-  <AppHeaderTags />
-
-  <AppSettingsDrawer v-model="isSettingsDrawerVisible" />
-</template>

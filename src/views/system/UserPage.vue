@@ -1,12 +1,3 @@
-<script setup lang="ts">
-import { ref } from "vue";
-
-const tableData = ref([
-  { id: 1, username: "admin", role: "super_admin", status: "启用" },
-  { id: 2, username: "auditor", role: "auditor", status: "启用" },
-]);
-</script>
-
 <template>
   <el-card shadow="never">
     <template #header>
@@ -37,3 +28,12 @@ const tableData = ref([
     </el-table>
   </el-card>
 </template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+
+const tableData = ref([
+  { id: 1, username: "admin", role: "super_admin", status: "启用" },
+  { id: 2, username: "auditor", role: "auditor", status: "启用" },
+]);
+</script>

@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import { useRouter } from "vue-router";
-const router = useRouter();
-</script>
-
 <template>
   <div class="flex h-full min-h-[420px] items-center justify-center">
     <el-result icon="info" title="404" sub-title="页面不存在">
@@ -12,3 +7,8 @@ const router = useRouter();
     </el-result>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useRouter } from "vue-router";
+const router = useRouter();
+</script>

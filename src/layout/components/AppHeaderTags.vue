@@ -1,29 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { Close } from "@element-plus/icons-vue";
-import { useTabsStore } from "@/stores/modules/tabs";
-import type { RouteTag } from "@/stores/modules/tabs";
-
-const route = useRoute();
-const router = useRouter();
-const tabsStore = useTabsStore();
-
-const activeTagPath = computed(() => route.path);
-
-const handleTagClick = async (tag: RouteTag): Promise<void> => {
-  if (route.fullPath === tag.fullPath) return;
-  await router.push(tag.fullPath);
-};
-
-const handleTagClose = async (tag: RouteTag): Promise<void> => {
-  const fallbackFullPath = tabsStore.removeTag(tag.path);
-  if (route.path === tag.path && fallbackFullPath) {
-    await router.push(fallbackFullPath);
-  }
-};
-</script>
-
 <template>
   <div class="app-header-tags">
     <el-scrollbar class="tags-scroll">
@@ -49,6 +23,32 @@ const handleTagClose = async (tag: RouteTag): Promise<void> => {
     </el-scrollbar>
   </div>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { Close } from "@element-plus/icons-vue";
+import { useTabsStore } from "@/stores/modules/tabs";
+import type { RouteTag } from "@/stores/modules/tabs";
+
+const route = useRoute();
+const router = useRouter();
+const tabsStore = useTabsStore();
+
+const activeTagPath = computed(() => route.path);
+
+const handleTagClick = async (tag: RouteTag): Promise<void> => {
+  if (route.fullPath === tag.fullPath) return;
+  await router.push(tag.fullPath);
+};
+
+const handleTagClose = async (tag: RouteTag): Promise<void> => {
+  const fallbackFullPath = tabsStore.removeTag(tag.path);
+  if (route.path === tag.path && fallbackFullPath) {
+    await router.push(fallbackFullPath);
+  }
+};
+</script>
 
 <style scoped lang="scss">
 .app-header-tags {

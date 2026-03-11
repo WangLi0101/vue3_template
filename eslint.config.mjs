@@ -42,7 +42,7 @@ export default [
       "vue/block-order": [
         "error",
         {
-          order: ["script", "template", "style"],
+          order: ["template", "script", "style"],
         },
       ],
       "vue/no-v-html": "warn",

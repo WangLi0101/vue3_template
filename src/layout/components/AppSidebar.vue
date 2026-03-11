@@ -1,19 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import { useRoute } from "vue-router";
-import SidebarItem from "@/layout/components/SidebarItem.vue";
-import { useMenuStore } from "@/stores/modules/menu";
-import { useUiStore } from "@/stores/modules/ui";
-
-const route = useRoute();
-const menuStore = useMenuStore();
-const uiStore = useUiStore();
-
-const menuItems = computed(() => menuStore.sidebarMenus);
-const activeMenu = computed(() => route.path);
-const appName = computed(() => (uiStore.isSidebarCollapsed ? "R" : "RBAC Admin"));
-</script>
-
 <template>
   <aside
     class="app-sidebar z-20 h-full overflow-hidden border-r border-app-sidebar-border bg-app-sidebar-bg transition-colors duration-300"
@@ -42,6 +26,22 @@ const appName = computed(() => (uiStore.isSidebarCollapsed ? "R" : "RBAC Admin")
     </el-scrollbar>
   </aside>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import SidebarItem from "@/layout/components/SidebarItem.vue";
+import { useMenuStore } from "@/stores/modules/menu";
+import { useUiStore } from "@/stores/modules/ui";
+
+const route = useRoute();
+const menuStore = useMenuStore();
+const uiStore = useUiStore();
+
+const menuItems = computed(() => menuStore.sidebarMenus);
+const activeMenu = computed(() => route.path);
+const appName = computed(() => (uiStore.isSidebarCollapsed ? "R" : "RBAC Admin"));
+</script>
 
 <style scoped lang="scss">
 .app-sidebar-menu {

@@ -1,61 +1,3 @@
-<script setup lang="ts">
-import { ElMessage } from "element-plus";
-import type { FormInstance, FormRules } from "element-plus";
-import { reactive, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/modules/auth";
-import { ApiRequestError } from "@/types/http";
-
-const router = useRouter();
-const route = useRoute();
-const authStore = useAuthStore();
-
-const formRef = ref<FormInstance>();
-const loading = ref(false);
-const rememberMe = ref(true);
-
-const formState = reactive({
-  username: "admin",
-  password: "admin123",
-});
-
-const rules: FormRules = {
-  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-};
-
-const handleLogin = async (): Promise<void> => {
-  if (!formRef.value) return;
-
-  await formRef.value.validate(async (valid: boolean) => {
-    if (!valid) return;
-
-    loading.value = true;
-    try {
-      const loginSuccess = await authStore.login(formState);
-      if (!loginSuccess) {
-        return;
-      }
-
-      const redirect = (route.query.redirect as string) || "/";
-      await router.replace(redirect);
-      ElMessage.success("登录成功");
-    } catch (error) {
-      if (error instanceof ApiRequestError) {
-        ElMessage.error(`${error.message} (HTTP ${error.httpStatus} / CODE ${error.businessCode})`);
-        return;
-      }
-
-      ElMessage.error(error instanceof Error ? error.message : "登录失败");
-    } finally {
-      loading.value = false;
-    }
-  });
-};
-
-const loginTips = "测试账号：admin / admin123，auditor / auditor123";
-</script>
-
 <template>
   <div class="login-page">
     <div class="login-shell">
@@ -135,6 +77,64 @@ const loginTips = "测试账号：admin / admin123，auditor / auditor123";
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ElMessage } from "element-plus";
+import type { FormInstance, FormRules } from "element-plus";
+import { reactive, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/modules/auth";
+import { ApiRequestError } from "@/types/http";
+
+const router = useRouter();
+const route = useRoute();
+const authStore = useAuthStore();
+
+const formRef = ref<FormInstance>();
+const loading = ref(false);
+const rememberMe = ref(true);
+
+const formState = reactive({
+  username: "admin",
+  password: "admin123",
+});
+
+const rules: FormRules = {
+  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+};
+
+const handleLogin = async (): Promise<void> => {
+  if (!formRef.value) return;
+
+  await formRef.value.validate(async (valid: boolean) => {
+    if (!valid) return;
+
+    loading.value = true;
+    try {
+      const loginSuccess = await authStore.login(formState);
+      if (!loginSuccess) {
+        return;
+      }
+
+      const redirect = (route.query.redirect as string) || "/";
+      await router.replace(redirect);
+      ElMessage.success("登录成功");
+    } catch (error) {
+      if (error instanceof ApiRequestError) {
+        ElMessage.error(`${error.message} (HTTP ${error.httpStatus} / CODE ${error.businessCode})`);
+        return;
+      }
+
+      ElMessage.error(error instanceof Error ? error.message : "登录失败");
+    } finally {
+      loading.value = false;
+    }
+  });
+};
+
+const loginTips = "测试账号：admin / admin123，auditor / auditor123";
+</script>
 
 <style scoped lang="scss">
 .login-page {

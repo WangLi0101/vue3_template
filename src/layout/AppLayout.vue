@@ -1,15 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import AppHeader from "@/layout/components/AppHeader.vue";
-import AppSidebar from "@/layout/components/AppSidebar.vue";
-import AppRouterView from "@/components/AppRouterView.vue";
-import { useUiStore } from "@/stores/modules/ui";
-
-const uiStore = useUiStore();
-
-const sidebarWidthClass = computed(() => (uiStore.isSidebarCollapsed ? "w-[64px]" : "w-[220px]"));
-</script>
-
 <template>
   <div class="flex h-screen overflow-hidden bg-app-content">
     <div class="shrink-0 transition-all duration-200 ease-in-out" :class="sidebarWidthClass">
@@ -27,3 +15,15 @@ const sidebarWidthClass = computed(() => (uiStore.isSidebarCollapsed ? "w-[64px]
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import AppHeader from "@/layout/components/AppHeader.vue";
+import AppSidebar from "@/layout/components/AppSidebar.vue";
+import AppRouterView from "@/components/AppRouterView.vue";
+import { useUiStore } from "@/stores/modules/ui";
+
+const uiStore = useUiStore();
+
+const sidebarWidthClass = computed(() => (uiStore.isSidebarCollapsed ? "w-[64px]" : "w-[220px]"));
+</script>

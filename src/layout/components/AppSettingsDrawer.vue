@@ -1,50 +1,3 @@
-<script setup lang="ts">
-import { Check, Close, Monitor, Moon, Sunny } from "@element-plus/icons-vue";
-import { computed } from "vue";
-import { appThemeConfig, type ThemeMode } from "@/config/theme";
-import { useThemeStore } from "@/stores/modules/theme";
-
-interface Props {
-  modelValue?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: false,
-});
-const emit = defineEmits<{
-  "update:modelValue": [value: boolean];
-}>();
-
-const themeStore = useThemeStore();
-const visible = computed<boolean>({
-  get: () => props.modelValue,
-  set: (value: boolean) => emit("update:modelValue", value),
-});
-const modeOptions: Array<{
-  label: string;
-  value: ThemeMode;
-  icon: typeof Sunny;
-}> = [
-  { label: "浅色", value: "light", icon: Sunny },
-  { label: "深色", value: "dark", icon: Moon },
-  { label: "自动", value: "system", icon: Monitor },
-];
-
-const predefineColors = [...appThemeConfig.primaryColorPresets];
-
-const setThemeMode = (mode: ThemeMode): void => {
-  themeStore.setMode(mode);
-};
-
-const setThemeColor = (color: string): void => {
-  themeStore.setPrimaryColor(color);
-};
-
-const isThemeModeActive = (mode: ThemeMode): boolean => themeStore.mode === mode;
-const isThemeColorActive = (color: string): boolean =>
-  themeStore.primaryColor.toLowerCase() === color.toLowerCase();
-</script>
-
 <template>
   <el-drawer
     v-model="visible"
@@ -120,6 +73,53 @@ const isThemeColorActive = (color: string): boolean =>
     </div>
   </el-drawer>
 </template>
+
+<script setup lang="ts">
+import { Check, Close, Monitor, Moon, Sunny } from "@element-plus/icons-vue";
+import { computed } from "vue";
+import { appThemeConfig, type ThemeMode } from "@/config/theme";
+import { useThemeStore } from "@/stores/modules/theme";
+
+interface Props {
+  modelValue?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: false,
+});
+const emit = defineEmits<{
+  "update:modelValue": [value: boolean];
+}>();
+
+const themeStore = useThemeStore();
+const visible = computed<boolean>({
+  get: () => props.modelValue,
+  set: (value: boolean) => emit("update:modelValue", value),
+});
+const modeOptions: Array<{
+  label: string;
+  value: ThemeMode;
+  icon: typeof Sunny;
+}> = [
+  { label: "浅色", value: "light", icon: Sunny },
+  { label: "深色", value: "dark", icon: Moon },
+  { label: "自动", value: "system", icon: Monitor },
+];
+
+const predefineColors = [...appThemeConfig.primaryColorPresets];
+
+const setThemeMode = (mode: ThemeMode): void => {
+  themeStore.setMode(mode);
+};
+
+const setThemeColor = (color: string): void => {
+  themeStore.setPrimaryColor(color);
+};
+
+const isThemeModeActive = (mode: ThemeMode): boolean => themeStore.mode === mode;
+const isThemeColorActive = (color: string): boolean =>
+  themeStore.primaryColor.toLowerCase() === color.toLowerCase();
+</script>
 
 <style>
 .app-settings-drawer .el-drawer__body {

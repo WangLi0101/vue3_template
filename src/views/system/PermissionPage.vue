@@ -1,15 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import { useAuthStore } from "@/stores/modules/auth";
-import { usePermissionStore } from "@/stores/modules/permission";
-
-const authStore = useAuthStore();
-const permissionStore = usePermissionStore();
-
-const roleList = computed(() => permissionStore.roles);
-const permissionList = computed(() => Array.from(permissionStore.permissions));
-</script>
-
 <template>
   <el-space direction="vertical" :size="16" fill>
     <el-card shadow="never">
@@ -67,3 +55,15 @@ const permissionList = computed(() => Array.from(permissionStore.permissions));
     </el-card>
   </el-space>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { useAuthStore } from "@/stores/modules/auth";
+import { usePermissionStore } from "@/stores/modules/permission";
+
+const authStore = useAuthStore();
+const permissionStore = usePermissionStore();
+
+const roleList = computed(() => permissionStore.roles);
+const permissionList = computed(() => Array.from(permissionStore.permissions));
+</script>

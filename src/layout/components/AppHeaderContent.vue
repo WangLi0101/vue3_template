@@ -1,27 +1,3 @@
-<script setup lang="ts">
-import { Expand, Fold, Setting } from "@element-plus/icons-vue";
-import { computed } from "vue";
-import AppBreadcrumb from "@/layout/components/AppBreadcrumb.vue";
-
-interface Props {
-  title: string;
-  isSidebarCollapsed: boolean;
-  displayName: string;
-}
-
-const props = defineProps<Props>();
-
-const emit = defineEmits<{
-  toggleSidebar: [];
-  openSettings: [];
-  logout: [];
-}>();
-
-const sidebarToggleIcon = computed(() => (props.isSidebarCollapsed ? Expand : Fold));
-const sidebarToggleLabel = computed(() => (props.isSidebarCollapsed ? "展开侧边栏" : "折叠侧边栏"));
-const avatarFallback = computed(() => props.displayName.slice(0, 1) || "U");
-</script>
-
 <template>
   <header class="sticky top-0 z-10 bg-app-header transition-colors duration-300">
     <div class="flex h-14 items-center justify-between px-5">
@@ -75,3 +51,27 @@ const avatarFallback = computed(() => props.displayName.slice(0, 1) || "U");
     </div>
   </header>
 </template>
+
+<script setup lang="ts">
+import { Expand, Fold, Setting } from "@element-plus/icons-vue";
+import { computed } from "vue";
+import AppBreadcrumb from "@/layout/components/AppBreadcrumb.vue";
+
+interface Props {
+  title: string;
+  isSidebarCollapsed: boolean;
+  displayName: string;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  toggleSidebar: [];
+  openSettings: [];
+  logout: [];
+}>();
+
+const sidebarToggleIcon = computed(() => (props.isSidebarCollapsed ? Expand : Fold));
+const sidebarToggleLabel = computed(() => (props.isSidebarCollapsed ? "展开侧边栏" : "折叠侧边栏"));
+const avatarFallback = computed(() => props.displayName.slice(0, 1) || "U");
+</script>

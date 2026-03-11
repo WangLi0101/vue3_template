@@ -1,9 +1,3 @@
-<script setup lang="ts">
-defineOptions({
-  name: "AppRouterView",
-});
-</script>
-
 <template>
   <div class="app-router-view">
     <RouterView v-slot="{ Component, route }">
@@ -17,6 +11,12 @@ defineOptions({
     </RouterView>
   </div>
 </template>
+
+<script setup lang="ts">
+defineOptions({
+  name: "AppRouterView",
+});
+</script>
 
 <style lang="scss" scoped>
 .app-router-view {

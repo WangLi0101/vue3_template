@@ -1,20 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import { useRoute } from "vue-router";
-import { useMenuStore } from "@/stores/modules/menu";
-
-defineOptions({
-  name: "AppBreadcrumb",
-});
-
-const route = useRoute();
-const menuStore = useMenuStore();
-
-const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route.path));
-
-const isActiveItem = (index: number): boolean => index === breadcrumbs.value.length - 1;
-</script>
-
 <template>
   <div class="app-breadcrumb">
     <el-breadcrumb separator="/">
@@ -40,6 +23,23 @@ const isActiveItem = (index: number): boolean => index === breadcrumbs.value.len
     </el-breadcrumb>
   </div>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import { useMenuStore } from "@/stores/modules/menu";
+
+defineOptions({
+  name: "AppBreadcrumb",
+});
+
+const route = useRoute();
+const menuStore = useMenuStore();
+
+const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route.path));
+
+const isActiveItem = (index: number): boolean => index === breadcrumbs.value.length - 1;
+</script>
 
 <style scoped lang="scss">
 .app-breadcrumb {
