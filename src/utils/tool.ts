@@ -25,3 +25,10 @@ export function downloadFileByBlob(blob: Blob, fileName: string) {
   downloadFile(url, fileName);
   URL.revokeObjectURL(url);
 }
+
+/**
+ * File转Url
+ */
+export function fileToUrl(file: File) {
+  return URL.createObjectURL(file);
+}
