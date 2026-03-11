@@ -23,13 +23,32 @@
         </div>
       </transition-group>
     </el-scrollbar>
+
+    <el-dropdown
+      class="tags-action-dropdown"
+      placement="bottom-end"
+      trigger="click"
+      :disabled="!hasClosableTags"
+    >
+      <el-button link>
+        <el-icon :size="12"><ArrowDown /></el-icon>
+      </el-button>
+
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item :disabled="!hasClosableTags" @click="handleCloseAll"
+            >全部关闭</el-dropdown-item
+          >
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { Close } from "@element-plus/icons-vue";
+import { ArrowDown, Close } from "@element-plus/icons-vue";
 import { useTabsStore } from "@/stores/modules/tabs";
 import type { RouteTag } from "@/stores/modules/tabs";
 
@@ -38,6 +57,7 @@ const router = useRouter();
 const tabsStore = useTabsStore();
 
 const activeTagPath = computed(() => route.path);
+const hasClosableTags = computed(() => tabsStore.tabs.some((tag) => tag.closable));
 
 const handleTagClick = async (tag: RouteTag): Promise<void> => {
   if (route.fullPath === tag.fullPath) return;
@@ -47,6 +67,16 @@ const handleTagClick = async (tag: RouteTag): Promise<void> => {
 const handleTagClose = async (tag: RouteTag): Promise<void> => {
   const fallbackFullPath = tabsStore.removeTag(tag.path);
   if (route.path === tag.path && fallbackFullPath) {
+    await router.push(fallbackFullPath);
+  }
+};
+
+const handleCloseAll = async (): Promise<void> => {
+  const isCurrentTagClosable = tabsStore.tabs.some(
+    (tag) => tag.path === route.path && tag.closable,
+  );
+  const fallbackFullPath = tabsStore.removeAllClosableTags();
+  if (isCurrentTagClosable && fallbackFullPath) {
     await router.push(fallbackFullPath);
   }
 };
@@ -63,6 +93,47 @@ const handleTagClose = async (tag: RouteTag): Promise<void> => {
 
 .tags-scroll {
   flex: 1;
+  min-width: 0;
+}
+
+.tags-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 24px;
+  width: 24px;
+  margin-left: 8px;
+  padding: 0;
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  color: var(--app-text-secondary);
+  cursor: pointer;
+  background-color: transparent;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.tags-action:hover:not(:disabled) {
+  color: var(--app-primary);
+  border-color: rgb(var(--app-primary-rgb) / 0.4);
+  background-color: rgb(var(--app-primary-rgb) / 0.06);
+}
+
+.tags-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.tags-action :deep(.el-icon) {
+  transition: transform 0.2s ease;
+}
+
+.tags-action-dropdown:not(.is-disabled):hover .tags-action :deep(.el-icon) {
+  transform: translateY(1px);
 }
 
 .app-header-tags :deep(.el-scrollbar),
@@ -194,6 +265,10 @@ const handleTagClose = async (tag: RouteTag): Promise<void> => {
 @media (max-width: 768px) {
   .tag-item {
     padding: 0 10px;
+  }
+
+  .tags-action {
+    margin-left: 6px;
   }
 }
 </style>

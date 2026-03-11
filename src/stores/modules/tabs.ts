@@ -63,6 +63,14 @@ export const useTabsStore = defineStore("tabs", () => {
     return fallback?.fullPath || "/dashboard";
   };
 
+  const removeAllClosableTags = (): string | null => {
+    const remainingTabs = tabs.value.filter((tag) => !tag.closable);
+    if (remainingTabs.length === tabs.value.length) return null;
+
+    tabs.value = remainingTabs;
+    return remainingTabs[remainingTabs.length - 1]?.fullPath || "/dashboard";
+  };
+
   const reset = (): void => {
     tabs.value = [createHomeTag()];
   };
@@ -71,6 +79,7 @@ export const useTabsStore = defineStore("tabs", () => {
     tabs,
     addTag,
     removeTag,
+    removeAllClosableTags,
     reset,
   };
 });
