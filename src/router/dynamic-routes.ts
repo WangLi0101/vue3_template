@@ -2,11 +2,16 @@ import type { AppMenu } from "@/types/menu";
 import AppRouterView from "@/components/AppRouterView.vue";
 import type { RouteRecordRaw } from "vue-router";
 
+// 预加载视图目录下的所有页面组件，供动态路由按路径匹配加载。
 const viewModules = import.meta.glob("../views/**/*.vue");
+// 未配置排序权重时，默认排在最后。
 const DEFAULT_RANK = Number.MAX_SAFE_INTEGER;
 
+// 统一去掉组件路径两端的斜杠，避免拼接视图路径时出现重复分隔符。
 const normalizeComponent = (component: string): string =>
   component.replace(/^\/+/, "").replace(/\/+$/, "");
+
+// 合并父子路由路径，同时兼容绝对路径和根路径场景。
 const joinPath = (parentPath: string, currentPath: string): string => {
   if (currentPath.startsWith("/")) return currentPath;
 
@@ -14,10 +19,14 @@ const joinPath = (parentPath: string, currentPath: string): string => {
   const merged = `${normalizedParent}/${currentPath}`;
   return merged.replace(/\/+/g, "/").replace(/\/$/, "") || "/";
 };
+
+// 提取菜单排序权重，非法值统一回退到默认值。
 const getMenuRank = (menu: AppMenu): number =>
   typeof menu.meta.rank === "number" && Number.isFinite(menu.meta.rank)
     ? menu.meta.rank
     : DEFAULT_RANK;
+
+// 按 rank 升序排序；rank 相同则保持原始顺序，避免菜单顺序抖动。
 const sortMenusByRank = (menus: AppMenu[]): AppMenu[] =>
   menus
     .map((menu, index) => ({ menu, index }))
@@ -27,8 +36,10 @@ const sortMenusByRank = (menus: AppMenu[]): AppMenu[] =>
     })
     .map((item) => item.menu);
 
+// 清理组件配置中的空白字符，便于后续统一判断。
 const normalizeMenuComponent = (component?: string): string => (component || "").trim();
 
+// 解析叶子节点组件；如果配置为 router-view，则使用通用容器组件。
 const resolveLeafComponent = (component: string): RouteRecordRaw["component"] => {
   if (component === "router-view") {
     return AppRouterView;
@@ -45,6 +56,7 @@ const resolveLeafComponent = (component: string): RouteRecordRaw["component"] =>
   return loader;
 };
 
+// 根据菜单节点类型决定路由组件，兼容目录节点和页面节点。
 const resolveComponent = (menu: AppMenu): RouteRecordRaw["component"] => {
   const component = normalizeMenuComponent(menu.component);
   const hasChildren = Boolean(menu.children?.length);
@@ -53,7 +65,7 @@ const resolveComponent = (menu: AppMenu): RouteRecordRaw["component"] => {
     return AppRouterView;
   }
 
-  // Nested menu nodes can omit component; fallback to a generic RouterView container.
+  // 目录型菜单允许省略 component，此时回退到通用 RouterView 容器。
   if (hasChildren && !component) {
     return AppRouterView;
   }
@@ -66,6 +78,7 @@ const resolveComponent = (menu: AppMenu): RouteRecordRaw["component"] => {
   return resolveLeafComponent(component);
 };
 
+// 自动跳转到第一个可见子菜单，隐藏菜单仅作为兜底。
 const resolveAutoRedirect = (
   children: AppMenu[],
   parentPath: string,
@@ -74,6 +87,7 @@ const resolveAutoRedirect = (
   return joinPath(parentPath, firstVisibleChild.path);
 };
 
+// 递归将菜单树转换为 Vue Router 路由配置。
 const menuToRoute = (menu: AppMenu, parentPath = ""): RouteRecordRaw => {
   const currentPath = joinPath(parentPath, menu.path);
   const sortedChildren = menu.children?.length ? sortMenusByRank(menu.children) : [];
@@ -100,5 +114,6 @@ const menuToRoute = (menu: AppMenu, parentPath = ""): RouteRecordRaw => {
   return route;
 };
 
+// 入口方法：先排序顶层菜单，再批量生成动态路由。
 export const buildRoutesFromMenus = (menus: AppMenu[]): RouteRecordRaw[] =>
   sortMenusByRank(menus).map((menu) => menuToRoute(menu));

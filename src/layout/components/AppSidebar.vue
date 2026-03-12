@@ -39,6 +39,7 @@ const menuStore = useMenuStore();
 const uiStore = useUiStore();
 
 const menuItems = computed(() => menuStore.sidebarMenus);
+
 const activeMenu = computed(() => route.path);
 const appName = computed(() => (uiStore.isSidebarCollapsed ? "R" : "RBAC Admin"));
 </script>
