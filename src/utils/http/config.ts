@@ -1,7 +1,10 @@
+interface ServiceUrlMap {
+  MOCK: string;
+}
 const SERVICE_URL_MAP = {
   MOCK: "/api",
-} as const;
+};
 
-export type ServiceName = keyof typeof SERVICE_URL_MAP;
+export type ServiceName = keyof ServiceUrlMap;
 
 export { SERVICE_URL_MAP };

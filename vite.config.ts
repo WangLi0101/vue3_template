@@ -1,54 +1,81 @@
 import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
 import Icons from "unplugin-icons/vite";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import { viteMockServe } from "vite-plugin-mock";
 
-export default defineConfig({
-  plugins: [
-    vue(),
-    viteMockServe({
-      mockPath: "mock",
-      enable: true,
-      logger: true,
-    }),
-    Icons({
-      compiler: "vue3",
-    }),
-  ],
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-    },
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: '@use "@/styles/variables.scss" as *;',
+const DEFAULT_ASSET_DIR = "assets";
+
+const assetDirectoryMap: Record<string, string> = {
+  css: "css",
+  png: "img",
+  jpg: "img",
+  jpeg: "img",
+  gif: "img",
+  svg: "img",
+  webp: "img",
+  avif: "img",
+  ico: "img",
+  woff: "fonts",
+  woff2: "fonts",
+  eot: "fonts",
+  ttf: "fonts",
+  otf: "fonts",
+};
+
+export default defineConfig(({ command, mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+  const isServe = command === "serve";
+  const isDevelopment = mode === "development";
+  const isProduction = mode === "production";
+  const enableMock = isServe && env.VITE_ENABLE_MOCK !== "false";
+
+  return {
+    plugins: [
+      vue(),
+      viteMockServe({
+        mockPath: "mock",
+        enable: enableMock,
+        logger: enableMock,
+      }),
+      Icons({
+        compiler: "vue3",
+      }),
+    ],
+    resolve: {
+      alias: {
+        "@": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        chunkFileNames: "static/js/[name]-[hash].js",
-        entryFileNames: "static/js/[name]-[hash].js",
-        assetFileNames: "static/[ext]/[name]-[hash].[ext]",
-        manualChunks(id) {
-          if (!id.includes("node_modules")) return;
-          if (id.includes("@element-plus/icons-vue")) return "element-plus-icons";
-          if (id.includes("element-plus")) return "element-plus";
-          if (id.includes("@iconify")) return "iconify";
-          if (id.includes("vue-router")) return "vue-vendor";
-          if (id.includes("pinia")) return "vue-vendor";
-          if (id.includes("/vue/")) return "vue-vendor";
-          if (id.includes("/@vue/")) return "vue-vendor";
-          if (id.includes("axios")) return "axios";
-          if (id.includes("nprogress")) return "nprogress";
-
-          return "vendor";
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@use "@/styles/variables.scss" as *;',
         },
       },
     },
-  },
+    build: {
+      sourcemap: isDevelopment,
+      reportCompressedSize: isProduction,
+      rollupOptions: {
+        output: {
+          entryFileNames: "js/[name]-[hash].js",
+          chunkFileNames: "js/[name]-[hash].js",
+          assetFileNames(assetInfo) {
+            const extension = assetInfo.name?.split(".").pop()?.toLowerCase();
+            const directory = extension
+              ? (assetDirectoryMap[extension] ?? DEFAULT_ASSET_DIR)
+              : DEFAULT_ASSET_DIR;
+
+            return `${directory}/[name]-[hash][extname]`;
+          },
+          manualChunks: {
+            "vue-vendor": ["vue", "vue-router", "pinia"],
+            "element-plus": ["element-plus", "@element-plus/icons-vue"],
+            axios: ["axios"],
+          },
+        },
+      },
+    },
+  };
 });
