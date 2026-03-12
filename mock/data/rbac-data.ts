@@ -35,7 +35,6 @@ const adminMenus: AppMenu[] = [
         component: "system/UserPage",
         meta: {
           title: "用户管理",
-
           permission: "sys:user:view",
           rank: 1,
           keepAlive: true,
