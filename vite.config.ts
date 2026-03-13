@@ -23,6 +23,30 @@ const assetDirectoryMap: Record<string, string> = {
   otf: "fonts",
 };
 
+const vendorChunkGroups = [
+  { chunkName: "vue-vendor", packages: ["vue", "vue-router", "pinia"] },
+  { chunkName: "element-plus", packages: ["element-plus"] },
+  { chunkName: "axios", packages: ["axios"] },
+] as const;
+
+function resolveManualChunk(id: string): string | undefined {
+  if (!id.includes("node_modules")) {
+    return undefined;
+  }
+
+  for (const { chunkName, packages } of vendorChunkGroups) {
+    const matchesPackage = packages.some((pkg) => {
+      return id.includes(`/node_modules/${pkg}/`) || id.includes(`\\node_modules\\${pkg}\\`);
+    });
+
+    if (matchesPackage) {
+      return chunkName;
+    }
+  }
+
+  return undefined;
+}
+
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const isServe = command === "serve";
@@ -57,7 +81,8 @@ export default defineConfig(({ command, mode }) => {
     build: {
       sourcemap: isDevelopment,
       reportCompressedSize: isProduction,
-      rollupOptions: {
+      chunkSizeWarningLimit: 1000,
+      rolldownOptions: {
         output: {
           entryFileNames: "js/[name]-[hash].js",
           chunkFileNames: "js/[name]-[hash].js",
@@ -69,11 +94,7 @@ export default defineConfig(({ command, mode }) => {
 
             return `${directory}/[name]-[hash][extname]`;
           },
-          manualChunks: {
-            "vue-vendor": ["vue", "vue-router", "pinia"],
-            "element-plus": ["element-plus"],
-            axios: ["axios"],
-          },
+          manualChunks: resolveManualChunk,
         },
       },
     },

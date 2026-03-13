@@ -17,6 +17,16 @@ pnpm install
 pnpm dev
 ```
 
+## 打版
+1. 测试服
+```bash
+pnpm run build:staging
+```
+2. 正式服
+```bash
+pnpm run build:production
+```
+
 ## 技术栈
 
 - Vue 3 + TypeScript + Vite
