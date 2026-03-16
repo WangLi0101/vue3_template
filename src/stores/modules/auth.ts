@@ -32,7 +32,7 @@ export const useAuthStore = defineStore("auth", () => {
     }
 
     const response = await getProfileApi();
-    if (!response.data) {
+    if (response.code !== 0) {
       isInitialized.value = false;
       return false;
     }

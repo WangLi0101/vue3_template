@@ -10,6 +10,7 @@ const attachAuthorization = (config: InternalAxiosRequestConfig): InternalAxiosR
     return config;
   }
   const formattedToken = formatToken(token);
+
   if (typeof config.headers.set === "function") {
     config.headers.set("Authorization", formattedToken);
     return config;
