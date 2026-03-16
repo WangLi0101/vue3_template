@@ -9,3 +9,7 @@ export const setToken = (token: string): void => {
 export const clearToken = (): void => {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
 };
+
+export const formatToken = (token: string): string => {
+  return `Bearer ${token}`;
+};

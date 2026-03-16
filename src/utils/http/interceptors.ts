@@ -1,6 +1,6 @@
 import type { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { ApiRequestError, type ApiResponse } from "@/types/http";
-import { getToken } from "@/utils/token";
+import { formatToken, getToken } from "@/utils/token";
 import { handlerError, handlerHttpError } from "./code";
 import { isDownloadResponseType } from "./types";
 
@@ -9,13 +9,13 @@ const attachAuthorization = (config: InternalAxiosRequestConfig): InternalAxiosR
   if (!token) {
     return config;
   }
-
+  const formattedToken = formatToken(token);
   if (typeof config.headers.set === "function") {
-    config.headers.set("Authorization", `Bearer ${token}`);
+    config.headers.set("Authorization", formattedToken);
     return config;
   }
 
-  config.headers.Authorization = `Bearer ${token}`;
+  config.headers.Authorization = formattedToken;
   return config;
 };
 
