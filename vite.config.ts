@@ -23,28 +23,10 @@ const assetDirectoryMap: Record<string, string> = {
 };
 
 const vendorChunkGroups = [
-  { chunkName: "vue-vendor", packages: ["vue", "vue-router", "pinia"] },
-  { chunkName: "element-plus", packages: ["element-plus"] },
-  { chunkName: "axios", packages: ["axios"] },
+  { name: "vue-vendor", test: /[\\/]node_modules[\\/](vue|vue-router|pinia)[\\/]/ },
+  { name: "element-plus", test: /[\\/]node_modules[\\/]element-plus[\\/]/ },
+  { name: "axios", test: /[\\/]node_modules[\\/]axios[\\/]/ },
 ] as const;
-
-function resolveManualChunk(id: string): string | undefined {
-  if (!id.includes("node_modules")) {
-    return undefined;
-  }
-
-  for (const { chunkName, packages } of vendorChunkGroups) {
-    const matchesPackage = packages.some((pkg) => {
-      return id.includes(`/node_modules/${pkg}/`) || id.includes(`\\node_modules\\${pkg}\\`);
-    });
-
-    if (matchesPackage) {
-      return chunkName;
-    }
-  }
-
-  return undefined;
-}
 
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
@@ -90,7 +72,9 @@ export default defineConfig(({ command, mode }) => {
 
             return `${directory}/[name]-[hash][extname]`;
           },
-          manualChunks: resolveManualChunk,
+          codeSplitting: {
+            groups: [...vendorChunkGroups],
+          },
         },
       },
     },
