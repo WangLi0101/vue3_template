@@ -1,6 +1,5 @@
 import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
-import Icons from "unplugin-icons/vite";
 import { defineConfig, loadEnv } from "vite";
 import { viteMockServe } from "vite-plugin-mock";
 
@@ -61,9 +60,6 @@ export default defineConfig(({ command, mode }) => {
         mockPath: "mock",
         enable: enableMock,
         logger: enableMock,
-      }),
-      Icons({
-        compiler: "vue3",
       }),
     ],
     resolve: {
