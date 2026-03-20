@@ -1,11 +1,13 @@
 <template>
   <div class="bg-app-surface">
-    <div class="flex items-center justify-between gap-4 min-h-[42px] pl-2 pr-3 lg:pr-3 max-md:px-2 max-sm:pl-1 max-sm:pr-2">
-      <div class="flex flex-1 items-center min-w-0">
+    <div
+      class="flex min-h-[42px] items-center justify-between gap-4 pl-2 pr-3 max-md:px-2 max-sm:pl-1 max-sm:pr-2 lg:pr-3"
+    >
+      <div class="flex min-w-0 flex-1 items-center">
         <el-tooltip :content="sidebarToggleLabel" placement="bottom">
           <button
             type="button"
-            class="inline-flex items-center justify-center w-7 h-7 p-0 border-0 rounded bg-transparent text-app-text-secondary cursor-pointer transition-colors duration-200 hover:text-primary hover:bg-app-bg-mute"
+            class="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0 text-app-text-secondary transition-colors duration-200 hover:bg-app-bg-mute hover:text-primary"
             :aria-label="sidebarToggleLabel"
             @click="emit('toggleSidebar')"
           >
@@ -13,16 +15,16 @@
           </button>
         </el-tooltip>
 
-        <div class="min-w-0 overflow-hidden ml-1">
+        <div class="ml-1 min-w-0 overflow-hidden">
           <AppBreadcrumb />
         </div>
       </div>
 
-      <div class="flex items-center min-w-0 gap-1.5 shrink-0">
+      <div class="flex min-w-0 shrink-0 items-center gap-1.5">
         <el-tooltip content="系统配置" placement="bottom">
           <button
             type="button"
-            class="inline-flex items-center justify-center w-7 h-7 p-0 border-0 rounded bg-transparent text-app-text-secondary cursor-pointer transition-colors duration-200 hover:text-primary hover:bg-app-bg-mute"
+            class="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0 text-app-text-secondary transition-colors duration-200 hover:bg-app-bg-mute hover:text-primary"
             aria-label="打开系统配置"
             @click="emit('openSettings')"
           >
@@ -33,13 +35,18 @@
         <el-dropdown>
           <button
             type="button"
-            class="inline-flex items-center gap-2 px-1 py-0.5 border-0 rounded bg-transparent text-app-text-primary cursor-pointer transition-colors duration-200 hover:bg-app-bg-mute"
+            class="inline-flex cursor-pointer items-center gap-2 rounded border-0 bg-transparent px-1 py-0.5 text-app-text-primary transition-colors duration-200 hover:bg-app-bg-mute"
             aria-label="打开用户菜单"
           >
-            <el-avatar :size="24" class="shrink-0 text-white bg-primary/90 flex items-center justify-center">
+            <el-avatar
+              :size="24"
+              class="flex shrink-0 items-center justify-center bg-primary/90 text-white"
+            >
               {{ avatarFallback }}
             </el-avatar>
-            <span class="overflow-hidden md:max-w-[96px] max-w-[72px] text-[13px] font-medium text-ellipsis whitespace-nowrap">
+            <span
+              class="max-w-[72px] overflow-hidden text-ellipsis whitespace-nowrap text-[13px] font-medium md:max-w-[96px]"
+            >
               {{ displayName }}
             </span>
           </button>

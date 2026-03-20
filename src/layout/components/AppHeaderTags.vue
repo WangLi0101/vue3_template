@@ -1,45 +1,45 @@
 <template>
-  <div class="flex items-center h-[38px] px-2 bg-app-surface">
-    <el-scrollbar class="header-tags-scrollbar flex-1 min-w-0 h-full">
-      <transition-group
-        name="tags"
-        tag="div"
-        class="flex items-stretch h-full min-w-max"
-      >
+  <div class="flex h-[38px] items-center bg-app-surface px-2">
+    <el-scrollbar class="header-tags-scrollbar h-full min-w-0 flex-1">
+      <transition-group name="tags" tag="div" class="flex h-full min-w-max items-stretch">
         <div
           v-for="tag in tabsStore.tabs"
           :key="tag.path"
-          class="relative inline-flex items-center h-[38px] px-3 cursor-pointer select-none whitespace-nowrap text-[13px] border-0 border-r border-solid border-transparent bg-transparent transition-all duration-300 active:scale-[0.96] group/tag max-md:px-2.5"
+          class="group/tag relative inline-flex h-[38px] cursor-pointer select-none items-center whitespace-nowrap border-0 border-r border-solid border-transparent bg-transparent px-3 text-[13px] transition-all duration-300 active:scale-[0.96] max-md:px-2.5"
           :class="[
             activeTagPath === tag.path
-              ? 'text-primary bg-primary/5'
-              : 'text-app-text-secondary hover:text-primary hover:bg-primary/5'
+              ? 'bg-primary/5 text-primary'
+              : 'text-app-text-secondary hover:bg-primary/5 hover:text-primary',
           ]"
           :title="tag.title"
           @click="handleTagClick(tag)"
         >
           <span
-            class="overflow-hidden text-ellipsis transition-transform duration-300 max-[960px]:max-w-[112px] max-w-[140px]"
-            :class="activeTagPath === tag.path ? 'font-medium scale-[1.03]' : 'scale-100'"
+            class="max-w-[140px] overflow-hidden text-ellipsis transition-transform duration-300 max-[960px]:max-w-[112px]"
+            :class="activeTagPath === tag.path ? 'scale-[1.03] font-medium' : 'scale-100'"
           >
             {{ tag.title }}
           </span>
 
           <!-- 选中时的底部蓝线改为从中间向两边展开的丝滑动画 -->
           <div
-            class="absolute left-0 right-0 bottom-0 h-[2px] bg-primary transition-transform duration-300 ease-out origin-center"
+            class="absolute bottom-0 left-0 right-0 h-[2px] origin-center bg-primary transition-transform duration-300 ease-out"
             :class="activeTagPath === tag.path ? 'scale-x-100' : 'scale-x-0'"
           ></div>
 
           <button
             v-if="tag.closable"
             type="button"
-            class="inline-flex items-center justify-center w-[14px] h-[14px] ml-1.5 p-0 border-0 rounded-sm leading-none text-inherit shrink-0 cursor-pointer bg-transparent transition-all duration-200 hover:!bg-primary/10 hover:!text-primary"
-            :class="[activeTagPath === tag.path ? 'opacity-100' : 'opacity-0 group-hover/tag:opacity-100']"
+            class="ml-1.5 inline-flex h-[14px] w-[14px] shrink-0 cursor-pointer items-center justify-center rounded-sm border-0 bg-transparent p-0 leading-none text-inherit transition-all duration-200 hover:!bg-primary/10 hover:!text-primary"
+            :class="[
+              activeTagPath === tag.path ? 'opacity-100' : 'opacity-0 group-hover/tag:opacity-100',
+            ]"
             :aria-label="`关闭${tag.title}`"
             @click.stop="handleTagClose(tag)"
           >
-            <el-icon :size="10" class="flex items-center justify-center leading-none"><Close /></el-icon>
+            <el-icon :size="10" class="flex items-center justify-center leading-none"
+              ><Close
+            /></el-icon>
           </button>
         </div>
       </transition-group>
@@ -53,11 +53,18 @@
     >
       <button
         type="button"
-        class="inline-flex items-center justify-center shrink-0 w-6 h-6 ml-2 max-md:ml-1.5 p-0 border border-solid border-app-border rounded-md text-app-text-secondary cursor-pointer bg-transparent transition-all duration-200 disabled:opacity-45 disabled:cursor-not-allowed"
-        :class="!hasClosableTags ? '' : 'hover:text-primary hover:border-primary/40 hover:bg-primary/5'"
+        class="ml-2 inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md border border-solid border-app-border bg-transparent p-0 text-app-text-secondary transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-45 max-md:ml-1.5"
+        :class="
+          !hasClosableTags ? '' : 'hover:border-primary/40 hover:bg-primary/5 hover:text-primary'
+        "
         :disabled="!hasClosableTags"
       >
-        <el-icon :size="12" class="transition-transform duration-200" :class="!hasClosableTags ? '' : 'group-hover/action:translate-y-[1px]'"><ArrowDown /></el-icon>
+        <el-icon
+          :size="12"
+          class="transition-transform duration-200"
+          :class="!hasClosableTags ? '' : 'group-hover/action:translate-y-[1px]'"
+          ><ArrowDown
+        /></el-icon>
       </button>
 
       <template #dropdown>

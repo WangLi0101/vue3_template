@@ -1,5 +1,7 @@
 <template>
-  <section class="relative bg-app-surface border-0 border-b border-solid border-app-border max-md:overflow-x-auto">
+  <section
+    class="relative border-0 border-b border-solid border-app-border bg-app-surface max-md:overflow-x-auto"
+  >
     <div>
       <AppHeaderContent
         :title="title"

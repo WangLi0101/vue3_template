@@ -9,14 +9,14 @@
         <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.to || item.title">
           <span
             v-if="isActiveItem(index)"
-            class="inline-flex items-center leading-none text-sm font-medium text-app-text-primary"
+            class="inline-flex items-center text-sm font-medium leading-none text-app-text-primary"
           >
             {{ item.title }}
           </span>
           <button
             v-else
             type="button"
-            class="inline-flex items-center leading-none border-0 bg-transparent p-0 text-sm text-app-text-secondary transition-colors hover:text-primary cursor-pointer"
+            class="inline-flex cursor-pointer items-center border-0 bg-transparent p-0 text-sm leading-none text-app-text-secondary transition-colors hover:text-primary"
           >
             {{ item.title }}
           </button>

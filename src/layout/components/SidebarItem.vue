@@ -10,7 +10,11 @@
     <SidebarItem v-for="child in item.children" :key="child.path" :item="child" />
   </el-sub-menu>
 
-  <el-menu-item v-else :index="item.path" class="[&_.el-menu-tooltip__trigger]:!px-0 [&_.el-menu-tooltip__trigger]:flex [&_.el-menu-tooltip__trigger]:items-center [&_.el-menu-tooltip__trigger]:justify-center">
+  <el-menu-item
+    v-else
+    :index="item.path"
+    class="[&_.el-menu-tooltip__trigger]:flex [&_.el-menu-tooltip__trigger]:items-center [&_.el-menu-tooltip__trigger]:justify-center [&_.el-menu-tooltip__trigger]:!px-0"
+  >
     <el-icon v-if="item.icon">
       <IconifyIconOnline :icon="normalizeIcon(item.icon)" class="!text-xl" />
     </el-icon>
