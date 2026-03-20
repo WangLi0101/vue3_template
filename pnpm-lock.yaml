@@ -3135,7 +3135,7 @@ snapshots:
 
   mockjs@1.1.0:
     dependencies:
-      commander: 4.1.1
+      commander: 7.2.0
 
   ms@2.0.0: {}
 
