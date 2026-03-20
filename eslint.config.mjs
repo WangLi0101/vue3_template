@@ -45,6 +45,12 @@ export default [
           order: ["template", "script", "style"],
         },
       ],
+      "vue/multi-word-component-names": [
+        "error",
+        {
+          ignores: ["Index"],
+        },
+      ],
       "vue/no-v-html": "warn",
       "vue/padding-line-between-blocks": ["error", "always"],
     },
