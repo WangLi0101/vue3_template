@@ -38,7 +38,7 @@ defineOptions({
 const route = useRoute();
 const menuStore = useMenuStore();
 
-const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route.path));
+const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route));
 
 const isActiveItem = (index: number): boolean => index === breadcrumbs.value.length - 1;
 </script>
