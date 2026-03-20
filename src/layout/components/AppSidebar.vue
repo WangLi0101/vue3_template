@@ -1,9 +1,9 @@
 <template>
   <aside
-    class="app-sidebar z-20 h-full overflow-hidden border-r border-app-sidebar-border bg-app-sidebar-bg transition-colors duration-300"
+    class="app-sidebar z-20 h-full overflow-hidden border-r border-app-border bg-app-sidebar-bg transition-colors duration-300"
   >
     <div
-      class="flex h-14 items-center border-b border-app-sidebar-border px-4 text-base font-bold tracking-wider text-app-sidebar-active transition-all"
+      class="flex h-14 items-center border-b border-app-border px-4 text-base font-bold tracking-wider text-app-sidebar-active transition-all"
       :class="
         uiStore.isSidebarCollapsed
           ? 'justify-center px-0 text-xl font-extrabold tracking-normal'

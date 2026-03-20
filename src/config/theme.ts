@@ -33,18 +33,13 @@ export const themeColorPresets = [
 // 主题语义 token，保持领域语义而不是直接暴露 CSS 变量名
 export interface ThemeSemanticTokens {
   appBg: string; // 页面主背景
-  contentBg: string; // 内容区背景
   bgMute: string; // 次级/减弱背景（如侧边栏、区块底色）
   surface: string; // 卡片、弹窗等表面背景
-  headerBg: string; // 顶部栏背景
-  surfaceHover: string; // 表面 hover 态
   sidebarBg: string; // 侧边栏背景
   sidebarBgHover: string; // 侧边栏 hover 背景
-  sidebarBorder: string; // 侧边栏边框/分割线
   sidebarText: string; // 侧边栏默认文本
   sidebarTextActive: string; // 侧边栏激活文本
   border: string; // 基础分割线
-  borderHover: string; // 强调或 hover 边框
   textPrimary: string; // 主要文本
   textSecondary: string; // 次级文本
   textDisabled: string; // 禁用文本
@@ -52,18 +47,13 @@ export interface ThemeSemanticTokens {
 
 const themeSemanticCssVarMap = {
   appBg: "--app-bg",
-  contentBg: "--app-content-bg",
   bgMute: "--app-bg-mute",
   surface: "--app-surface",
-  headerBg: "--app-header-bg",
-  surfaceHover: "--app-surface-hover",
   sidebarBg: "--app-sidebar-bg",
   sidebarBgHover: "--app-sidebar-bg-hover",
-  sidebarBorder: "--app-sidebar-border",
   sidebarText: "--app-sidebar-text",
   sidebarTextActive: "--app-sidebar-text-active",
   border: "--app-border",
-  borderHover: "--app-border-hover",
   textPrimary: "--app-text-primary",
   textSecondary: "--app-text-secondary",
   textDisabled: "--app-text-disabled",
@@ -92,36 +82,26 @@ export interface ElementPlusPrimaryCssVars {
 export const themeSemanticTokensByMode = {
   light: {
     appBg: "#efefef",
-    contentBg: "#efefef",
     bgMute: "#efefef",
     surface: "#ffffff",
-    headerBg: "#ffffff",
-    surfaceHover: "#efefef",
     sidebarBg: "#2f333b",
     sidebarBgHover: "#3a3f47",
-    sidebarBorder: "#434954",
     sidebarText: "#b8c0cc",
     sidebarTextActive: "#ffffff",
     border: "#e0e0e0",
-    borderHover: "#d3d3d3",
     textPrimary: "#1f2937",
     textSecondary: "#6b7280",
     textDisabled: "#a7b0bc",
   },
   dark: {
     appBg: "#10131a",
-    contentBg: "#151b25",
     bgMute: "#1b2230",
     surface: "#1c2533",
-    headerBg: "#1c2533",
-    surfaceHover: "#263246",
     sidebarBg: "#0f141d",
     sidebarBgHover: "#1b2433",
-    sidebarBorder: "#2b3445",
     sidebarText: "#99a6ba",
     sidebarTextActive: "#ffffff",
     border: "#2a3445",
-    borderHover: "#3a475d",
     textPrimary: "#f3f5f9",
     textSecondary: "#95a3b8",
     textDisabled: "#66768e",

@@ -75,7 +75,7 @@ const avatarFallback = computed(() => props.displayName.slice(0, 1) || "U");
 
 <style scoped lang="scss">
 .app-header-content {
-  background-color: var(--app-header-bg);
+  background-color: var(--app-surface);
 }
 
 .app-header-content__main {

@@ -46,7 +46,7 @@ useRouteTabTracking();
 <style scoped lang="scss">
 .app-header {
   position: relative;
-  background-color: var(--app-header-bg);
+  background-color: var(--app-surface);
   border-bottom: 1px solid var(--app-border);
 }
 

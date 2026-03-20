@@ -88,7 +88,7 @@ const handleCloseAll = async (): Promise<void> => {
   align-items: center;
   height: 34px;
   padding: 0 8px;
-  background-color: var(--app-header-bg);
+  background-color: var(--app-surface);
 }
 
 .tags-scroll {
