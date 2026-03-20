@@ -28,7 +28,7 @@ pnpm run build:staging
 2. 正式服
 
 ```bash
-pnpm run build:production
+pnpm run build:prod
 ```
 
 ## 技术栈

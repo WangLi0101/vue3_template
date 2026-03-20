@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
 import { defineConfig, loadEnv } from "vite";
 import { viteMockServe } from "vite-plugin-mock";
+import svgLoader from "vite-svg-loader";
 
 const DEFAULT_ASSET_DIR = "assets";
 
@@ -37,6 +38,9 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [
+      svgLoader({
+        defaultImport: "url",
+      }),
       vue(),
       viteMockServe({
         mockPath: "mock",
