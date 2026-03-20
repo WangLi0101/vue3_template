@@ -1,25 +1,27 @@
 <template>
-  <div class="app-breadcrumb">
+  <div
+    class="min-w-0 [&_.el-breadcrumb]:text-[12px] [&_.el-breadcrumb]:leading-none [&_.el-breadcrumb__item]:inline-flex [&_.el-breadcrumb__item]:items-center [&_.el-breadcrumb__separator]:mx-[6px] [&_.el-breadcrumb__separator]:text-[var(--app-text-disabled)]"
+  >
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="index">
-        <Transition name="breadcrumb-item" mode="out-in">
+      <!-- 使用 TransitionGroup 管理整个层级，使进入、离开、改变顺序都有动画 -->
+      <TransitionGroup name="breadcrumb">
+        <!-- 重点：必须用唯一的值 (例如路由路径) 作为 key，不能用 index -->
+        <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.to || item.title">
           <span
             v-if="isActiveItem(index)"
-            :key="`active-${item.to}`"
-            class="breadcrumb-item-content text-sm font-medium text-app-text-primary"
+            class="inline-flex items-center leading-none text-sm font-medium text-app-text-primary"
           >
             {{ item.title }}
           </span>
           <button
             v-else
-            :key="`link-${item.to}`"
             type="button"
-            class="breadcrumb-item-content border-0 bg-transparent p-0 text-sm text-app-text-secondary transition-colors hover:text-primary"
+            class="inline-flex items-center leading-none border-0 bg-transparent p-0 text-sm text-app-text-secondary transition-colors hover:text-primary cursor-pointer"
           >
             {{ item.title }}
           </button>
-        </Transition>
-      </el-breadcrumb-item>
+        </el-breadcrumb-item>
+      </TransitionGroup>
     </el-breadcrumb>
   </div>
 </template>
@@ -41,54 +43,30 @@ const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route.path));
 const isActiveItem = (index: number): boolean => index === breadcrumbs.value.length - 1;
 </script>
 
-<style scoped lang="scss">
-.app-breadcrumb {
-  min-width: 0;
+<style lang="scss" scoped>
+/* 面包屑列表级过渡动画 */
+.breadcrumb-move,
+.breadcrumb-enter-active {
+  /* 进入和移动保持 0.5s 的松弛感 */
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.2, 1);
 }
 
-.app-breadcrumb :deep(.el-breadcrumb) {
-  font-size: 12px;
-  line-height: 1;
+.breadcrumb-leave-active {
+  /* 离开的时候必须极快 (0.2s 甚至更短)，并且置于底层，以防止和新文字重叠产生残影 */
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.2, 1);
+  position: absolute;
+  z-index: -1;
 }
 
-.app-breadcrumb :deep(.el-breadcrumb__item) {
-  display: inline-flex;
-  align-items: center;
-}
-
-.app-breadcrumb :deep(.el-breadcrumb__separator) {
-  margin: 0 6px;
-  color: var(--app-text-disabled);
-}
-
-.breadcrumb-item-content {
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
-}
-
-.breadcrumb-item-enter-active,
-.breadcrumb-item-leave-active {
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
-  will-change: opacity, transform;
-}
-
-.breadcrumb-item-enter-from {
+.breadcrumb-enter-from {
   opacity: 0;
-  transform: translateX(12px);
+  /* 为了避免水平文字重叠穿透，我们改为与主体视图一致的“上下浮上”效果 */
+  transform: translateY(10px);
 }
 
-.breadcrumb-item-leave-to {
+.breadcrumb-leave-to {
   opacity: 0;
-  transform: translateX(-12px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .breadcrumb-item-enter-active,
-  .breadcrumb-item-leave-active {
-    transition: none;
-  }
+  /* 老旧面包屑向上方轻轻飘走消失 */
+  transform: translateY(-10px);
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <section class="app-header">
-    <div class="app-header__hero">
+  <section class="relative bg-app-surface border-0 border-b border-solid border-app-border max-md:overflow-x-auto">
+    <div>
       <AppHeaderContent
         :title="title"
         :is-sidebar-collapsed="uiStore.isSidebarCollapsed"
@@ -11,7 +11,7 @@
       />
     </div>
 
-    <div class="app-header__tags">
+    <div class="border-0 border-t border-solid border-app-border">
       <AppHeaderTags />
     </div>
   </section>
@@ -42,21 +42,3 @@ const displayName = computed(() => authStore.user?.displayName || "未知用户"
 
 useRouteTabTracking();
 </script>
-
-<style scoped lang="scss">
-.app-header {
-  position: relative;
-  background-color: var(--app-surface);
-  border-bottom: 1px solid var(--app-border);
-}
-
-.app-header__tags {
-  border-top: 1px solid var(--app-border);
-}
-
-@media (max-width: 768px) {
-  .app-header {
-    overflow-x: auto;
-  }
-}
-</style>

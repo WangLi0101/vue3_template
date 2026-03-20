@@ -7,6 +7,24 @@ export default {
   },
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          '"Inter"',
+          "system-ui",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          '"Segoe UI"',
+          "Roboto",
+          '"Helvetica Neue"',
+          "Arial",
+          "sans-serif",
+        ],
+      },
+      boxShadow: {
+        soft: "0 4px 32px 0 rgba(0, 0, 0, 0.04)",
+        "soft-sm": "0 2px 12px 0 rgba(0, 0, 0, 0.03)",
+        "soft-lg": "0 8px 40px 0 rgba(0, 0, 0, 0.06)",
+      },
       colors: {
         primary: "rgb(var(--app-primary-rgb) / <alpha-value>)",
         app: {

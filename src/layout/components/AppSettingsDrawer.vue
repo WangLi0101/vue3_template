@@ -6,11 +6,11 @@
     :append-to-body="true"
     :modal="true"
     :with-header="false"
-    class="app-settings-drawer"
+    class="app-settings-drawer [&_.el-drawer__body]:!p-0"
   >
     <div class="flex h-full flex-col bg-app-surface">
       <div
-        class="flex h-[52px] shrink-0 items-center justify-between border-b border-app-border px-5"
+        class="flex h-[52px] shrink-0 items-center justify-between border-0 border-b border-solid border-app-border px-5"
       >
         <span class="text-[15px] font-medium text-app-text-primary">系统配置</span>
         <el-icon
@@ -120,9 +120,3 @@ const isThemeModeActive = (mode: ThemeMode): boolean => themeStore.mode === mode
 const isThemeColorActive = (color: string): boolean =>
   themeStore.primaryColor.toLowerCase() === color.toLowerCase();
 </script>
-
-<style>
-.app-settings-drawer .el-drawer__body {
-  padding: 0 !important;
-}
-</style>

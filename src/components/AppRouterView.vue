@@ -26,8 +26,8 @@ defineOptions({
 .route-switch-enter-active,
 .route-switch-leave-active {
   transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: opacity, transform;
 }
 
@@ -37,11 +37,11 @@ defineOptions({
 }
 
 .route-switch-enter-from {
-  transform: translateX(16px);
+  transform: translateY(10px);
 }
 
 .route-switch-leave-to {
-  transform: translateX(-16px);
+  transform: translateY(-10px);
 }
 
 @media (prefers-reduced-motion: reduce) {

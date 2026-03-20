@@ -1,38 +1,64 @@
 <template>
-  <div class="app-header-tags">
-    <el-scrollbar class="tags-scroll">
-      <transition-group name="tag-slide" tag="div" class="tags-track">
+  <div class="flex items-center h-[38px] px-2 bg-app-surface">
+    <el-scrollbar class="header-tags-scrollbar flex-1 min-w-0 h-full">
+      <transition-group
+        name="tags"
+        tag="div"
+        class="flex items-stretch h-full min-w-max"
+      >
         <div
           v-for="tag in tabsStore.tabs"
           :key="tag.path"
-          class="tag-item"
-          :class="[activeTagPath === tag.path ? 'is-active' : 'is-inactive']"
+          class="relative inline-flex items-center h-[38px] px-3 cursor-pointer select-none whitespace-nowrap text-[13px] border-0 border-r border-solid border-transparent bg-transparent transition-all duration-300 active:scale-[0.96] group/tag max-md:px-2.5"
+          :class="[
+            activeTagPath === tag.path
+              ? 'text-primary bg-primary/5'
+              : 'text-app-text-secondary hover:text-primary hover:bg-primary/5'
+          ]"
           :title="tag.title"
           @click="handleTagClick(tag)"
         >
-          <span class="tag-title">{{ tag.title }}</span>
+          <span
+            class="overflow-hidden text-ellipsis transition-transform duration-300 max-[960px]:max-w-[112px] max-w-[140px]"
+            :class="activeTagPath === tag.path ? 'font-medium scale-[1.03]' : 'scale-100'"
+          >
+            {{ tag.title }}
+          </span>
+
+          <!-- 选中时的底部蓝线改为从中间向两边展开的丝滑动画 -->
+          <div
+            class="absolute left-0 right-0 bottom-0 h-[2px] bg-primary transition-transform duration-300 ease-out origin-center"
+            :class="activeTagPath === tag.path ? 'scale-x-100' : 'scale-x-0'"
+          ></div>
+
           <button
             v-if="tag.closable"
             type="button"
-            class="tag-close"
+            class="inline-flex items-center justify-center w-[14px] h-[14px] ml-1.5 p-0 border-0 rounded-sm leading-none text-inherit shrink-0 cursor-pointer bg-transparent transition-all duration-200 hover:!bg-primary/10 hover:!text-primary"
+            :class="[activeTagPath === tag.path ? 'opacity-100' : 'opacity-0 group-hover/tag:opacity-100']"
             :aria-label="`关闭${tag.title}`"
             @click.stop="handleTagClose(tag)"
           >
-            <el-icon :size="10"><Close /></el-icon>
+            <el-icon :size="10" class="flex items-center justify-center leading-none"><Close /></el-icon>
           </button>
         </div>
       </transition-group>
     </el-scrollbar>
 
     <el-dropdown
-      class="tags-action-dropdown"
+      class="group/action"
       placement="bottom-end"
       trigger="click"
       :disabled="!hasClosableTags"
     >
-      <el-button link>
-        <el-icon :size="12"><ArrowDown /></el-icon>
-      </el-button>
+      <button
+        type="button"
+        class="inline-flex items-center justify-center shrink-0 w-6 h-6 ml-2 max-md:ml-1.5 p-0 border border-solid border-app-border rounded-md text-app-text-secondary cursor-pointer bg-transparent transition-all duration-200 disabled:opacity-45 disabled:cursor-not-allowed"
+        :class="!hasClosableTags ? '' : 'hover:text-primary hover:border-primary/40 hover:bg-primary/5'"
+        :disabled="!hasClosableTags"
+      >
+        <el-icon :size="12" class="transition-transform duration-200" :class="!hasClosableTags ? '' : 'group-hover/action:translate-y-[1px]'"><ArrowDown /></el-icon>
+      </button>
 
       <template #dropdown>
         <el-dropdown-menu>
@@ -82,193 +108,58 @@ const handleCloseAll = async (): Promise<void> => {
 };
 </script>
 
-<style scoped lang="scss">
-.app-header-tags {
-  display: flex;
-  align-items: center;
-  height: 34px;
-  padding: 0 8px;
-  background-color: var(--app-surface);
+<style scoped>
+.header-tags-scrollbar :deep(.el-scrollbar__wrap) {
+  height: 100%;
+  overflow-y: hidden;
+  scrollbar-width: none;
 }
 
-.tags-scroll {
-  flex: 1;
-  min-width: 0;
+.header-tags-scrollbar :deep(.el-scrollbar__wrap::-webkit-scrollbar) {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
-.tags-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  height: 24px;
-  width: 24px;
-  margin-left: 8px;
-  padding: 0;
-  border: 1px solid var(--app-border);
-  border-radius: 6px;
-  color: var(--app-text-secondary);
-  cursor: pointer;
-  background-color: transparent;
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    opacity 0.2s ease;
-}
-
-.tags-action:hover:not(:disabled) {
-  color: var(--app-primary);
-  border-color: rgb(var(--app-primary-rgb) / 0.4);
-  background-color: rgb(var(--app-primary-rgb) / 0.06);
-}
-
-.tags-action:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
-.tags-action :deep(.el-icon) {
-  transition: transform 0.2s ease;
-}
-
-.tags-action-dropdown:not(.is-disabled):hover .tags-action :deep(.el-icon) {
-  transform: translateY(1px);
-}
-
-.app-header-tags :deep(.el-scrollbar),
-.app-header-tags :deep(.el-scrollbar__wrap),
-.app-header-tags :deep(.el-scrollbar__view) {
+.header-tags-scrollbar :deep(.el-scrollbar__view) {
   height: 100%;
 }
 
-.tags-track {
-  display: flex;
-  align-items: stretch;
-  height: 100%;
-  min-width: max-content;
+.header-tags-scrollbar :deep(.el-scrollbar__bar.is-vertical) {
+  display: none !important;
+  width: 0 !important;
 }
 
-.tag-item {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  height: 100%;
-  padding: 0 12px;
-  cursor: pointer;
-  user-select: none;
-  white-space: nowrap;
-  font-size: 13px;
-  color: var(--app-text-secondary);
-  border-right: 1px solid transparent;
-  background-color: transparent;
-  transition:
-    color 0.2s ease,
-    background-color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.tag-item.is-inactive:hover {
-  color: var(--app-primary);
-  background-color: rgb(var(--app-primary-rgb) / 0.04);
-}
-
-.tag-item.is-active {
-  color: var(--app-primary);
-}
-
-.tag-item.is-active::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  background-color: var(--app-primary);
-}
-
-.tag-title {
-  max-width: 140px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.tag-item.is-active .tag-title {
-  font-weight: 500;
-}
-
-.tag-close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 14px;
-  height: 14px;
-  margin-left: 6px;
-  padding: 0;
-  border: 0;
-  border-radius: 2px;
-  line-height: 1;
-  color: inherit;
-  cursor: pointer;
-  flex-shrink: 0;
-  opacity: 0;
-  background: transparent;
-  transition: opacity 0.2s ease;
-}
-
-.tag-close :deep(.el-icon) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.tag-item:hover .tag-close,
-.tag-item.is-active .tag-close {
-  opacity: 1;
-}
-
-.tag-close:hover {
-  color: var(--app-primary);
-  background-color: rgb(var(--app-primary-rgb) / 0.12);
-}
-
-.tag-slide-enter-active,
-.tag-slide-leave-active {
-  transition: all 0.2s ease;
-}
-
-.tag-slide-move {
-  transition: transform 0.2s ease;
-}
-
-.tag-slide-enter-from,
-.tag-slide-leave-to {
-  opacity: 0;
-  transform: translateX(-8px);
-}
-
-.app-header-tags :deep(.el-scrollbar__bar.is-horizontal) {
+.header-tags-scrollbar :deep(.el-scrollbar__bar.is-horizontal) {
   height: 4px;
 }
 
-.app-header-tags :deep(.el-scrollbar__thumb) {
+.header-tags-scrollbar :deep(.el-scrollbar__thumb) {
   background-color: rgb(var(--app-primary-rgb) / 0.22);
 }
 
-@media (max-width: 960px) {
-  .tag-title {
-    max-width: 112px;
-  }
+/* ==================== 标签页丝滑增删动画 ==================== */
+.group\/tag {
+  /* 基础最大宽度限制（需设在一个固定的最大值方便 CSS 从 0 过渡），内部文本溢出的 span 会自行裁剪 */
+  max-width: 200px;
 }
 
-@media (max-width: 768px) {
-  .tag-item {
-    padding: 0 10px;
-  }
+.tags-move,
+.tags-enter-active,
+.tags-leave-active {
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.2, 1);
+  /* 宽度塌陷时必须配合 hidden，否则文字会溢出撑起父元素高度 */
+  overflow: hidden;
+}
 
-  .tags-action {
-    margin-left: 6px;
-  }
+.tags-enter-from,
+.tags-leave-to {
+  opacity: 0;
+  transform: translateY(15px);
+  /* 退场或入场时不仅淡出下沉，而且内外边距与最大宽度全面塌缩为0，使得右侧所有标签如丝般顺滑补位 */
+  max-width: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  border-width: 0 !important;
 }
 </style>

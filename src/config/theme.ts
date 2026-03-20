@@ -14,20 +14,22 @@ export const themeDefaults: Readonly<{
   primaryColor: string;
 }> = {
   mode: "system",
-  primaryColor: "#e53935",
+  primaryColor: "#2563eb",
 };
 
 // 设置面板可选主题色
+// 选色思路：更偏专业后台与现代产品语境，统一控制饱和度与明度，
+// 让按钮、链接、高亮态更耐看，同时兼顾浅色/深色模式下的表现。
 export const themeColorPresets = [
-  "#e53935", // Red     - 强调明确
-  "#6366f1", // Indigo  - 优雅高级
-  "#3b82f6", // Blue    - 商务稳健
-  "#0ea5e9", // Sky     - 清新通透
-  "#10b981", // Emerald - 自然活力
-  "#f59e0b", // Amber   - 温暖醒目
-  "#f43f5e", // Rose    - 热情浪漫
-  "#8b5cf6", // Violet  - 神秘质感
-  "#0f172a", // Slate   - 极简中性
+  "#2563eb", // Sapphire Blue - 专业、可信、适合通用后台
+  "#4f46e5", // Royal Indigo  - 科技感与品质感更强
+  "#7c3aed", // Iris Purple   - 适合产品感更强的品牌界面
+  "#0891b2", // Ocean Cyan    - 清爽理性，视觉更轻盈
+  "#0f766e", // Forest Teal   - 稳重克制，偏企业与数据平台
+  "#059669", // Jade Green    - 友好自然，适合运营与增长场景
+  "#d97706", // Amber Brown   - 温暖高级，适合强调与品牌点缀
+  "#db2777", // Berry Rose    - 精致醒目，适合更有辨识度的风格
+  "#334155", // Slate Ink     - 中性冷静，适合极简商务风
 ] as const;
 
 // 主题语义 token，保持领域语义而不是直接暴露 CSS 变量名
@@ -81,30 +83,30 @@ export interface ElementPlusPrimaryCssVars {
 // 各模式下的语义 token 定义
 export const themeSemanticTokensByMode = {
   light: {
-    appBg: "#efefef",
-    bgMute: "#efefef",
-    surface: "#ffffff",
-    sidebarBg: "#2f333b",
-    sidebarBgHover: "#3a3f47",
-    sidebarText: "#b8c0cc",
-    sidebarTextActive: "#ffffff",
-    border: "#e0e0e0",
-    textPrimary: "#1f2937",
-    textSecondary: "#6b7280",
-    textDisabled: "#a7b0bc",
+    appBg: "#f1f5f9", // slate-100 - 主背景
+    bgMute: "#e2e8f0", // slate-200
+    surface: "#ffffff", // 纯白卡片内容区
+    sidebarBg: "#f8fafc", // slate-50 - 极浅灰色侧边栏
+    sidebarBgHover: "#f1f5f9", // slate-100
+    sidebarText: "#475569", // slate-600 - 确保深色文本可读性
+    sidebarTextActive: "#0f172a", // slate-900
+    border: "#e2e8f0", // slate-200
+    textPrimary: "#0f172a", // slate-900
+    textSecondary: "#64748b", // slate-500
+    textDisabled: "#cbd5e1", // slate-300
   },
   dark: {
-    appBg: "#10131a",
-    bgMute: "#1b2230",
-    surface: "#1c2533",
-    sidebarBg: "#0f141d",
-    sidebarBgHover: "#1b2433",
-    sidebarText: "#99a6ba",
-    sidebarTextActive: "#ffffff",
-    border: "#2a3445",
-    textPrimary: "#f3f5f9",
-    textSecondary: "#95a3b8",
-    textDisabled: "#66768e",
+    appBg: "#0f172a", // slate-900 (作为主背景，不至于过黑死气沉沉)
+    bgMute: "#334155", // slate-700
+    surface: "#1e293b", // slate-800 (卡片和头部、面板更亮一些，提升通透感)
+    sidebarBg: "#0f172a", // slate-900 (侧边栏)
+    sidebarBgHover: "#334155", // slate-700
+    sidebarText: "#94a3b8", // slate-400
+    sidebarTextActive: "#f8fafc", // slate-50
+    border: "#334155", // slate-700 (大幅提亮边框，使得分割线和结构更清晰)
+    textPrimary: "#f8fafc", // slate-50
+    textSecondary: "#cbd5e1", // slate-300 (次级文字也提亮)
+    textDisabled: "#64748b", // slate-500
   },
 } satisfies Record<ResolvedThemeMode, ThemeSemanticTokens>;
 
