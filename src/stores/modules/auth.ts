@@ -1,14 +1,22 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { getProfileApi, loginApi } from "@/api/auth/api";
+import {
+  getCurrentUserApi,
+  getMenusApi,
+  getPermissionsApi,
+  getRolesApi,
+  loginApi,
+} from "@/api/auth/api";
 import type { AuthUser, LoginPayload } from "@/api/auth/types";
 import { clearToken, getToken, setToken } from "@/utils/token";
 import { useMenuStore } from "./menu";
 import { usePermissionStore } from "./permission";
+import { useTabsStore } from "./tabs";
 
 export const useAuthStore = defineStore("auth", () => {
   const menuStore = useMenuStore();
   const permissionStore = usePermissionStore();
+  const tabsStore = useTabsStore();
   const token = ref<string>(getToken());
   const user = ref<AuthUser | null>(null);
   const isInitialized = ref(false);
@@ -26,21 +34,30 @@ export const useAuthStore = defineStore("auth", () => {
     return true;
   };
 
-  const fetchProfile = async (): Promise<boolean> => {
+  const initializeSession = async (): Promise<boolean> => {
     if (!token.value) {
       throw new Error("缺少登录态");
     }
 
-    const response = await getProfileApi();
-    if (response.code !== 0) {
+    const responses = await Promise.all([
+      getCurrentUserApi(),
+      getRolesApi(),
+      getPermissionsApi(),
+      getMenusApi(),
+    ]);
+
+    if (responses.some((response) => response.code !== 0)) {
       isInitialized.value = false;
       return false;
     }
 
-    const profile = response.data;
-    user.value = profile.user;
-    permissionStore.setAccess(profile.roles, profile.permissions);
-    menuStore.setMenus(profile.menus);
+    const [userResponse, rolesResponse, permissionsResponse, menusResponse] = responses;
+
+    user.value = userResponse.data.user;
+    permissionStore.setRoles(rolesResponse.data.roles);
+    permissionStore.setPermissions(permissionsResponse.data.permissions);
+    menuStore.setMenus(menusResponse.data.menus);
+    tabsStore.syncHomeTag();
     isInitialized.value = true;
     return true;
   };
@@ -60,7 +77,7 @@ export const useAuthStore = defineStore("auth", () => {
     isInitialized,
     isLoggedIn,
     login,
-    fetchProfile,
+    initializeSession,
     logoutLocal,
   };
 });

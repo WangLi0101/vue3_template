@@ -30,8 +30,11 @@ export const usePermissionStore = defineStore("permission", () => {
     return targets.some((role) => roleSet.value.has(role));
   };
 
-  const setAccess = (nextRoles: string[], nextPermissions: string[]): void => {
+  const setRoles = (nextRoles: string[]): void => {
     roles.value = nextRoles;
+  };
+
+  const setPermissions = (nextPermissions: string[]): void => {
     permissions.value = new Set(nextPermissions);
   };
 
@@ -68,7 +71,8 @@ export const usePermissionStore = defineStore("permission", () => {
     hasAny,
     hasAll,
     hasRole,
-    setAccess,
+    setRoles,
+    setPermissions,
     mountDynamicRoutes,
     reset,
   };

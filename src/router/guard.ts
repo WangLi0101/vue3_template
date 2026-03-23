@@ -32,8 +32,8 @@ export const setupRouterGuards = (router: Router): void => {
 
     if (!authStore.isInitialized) {
       try {
-        const profileReady = await authStore.fetchProfile();
-        if (!profileReady) {
+        const sessionReady = await authStore.initializeSession();
+        if (!sessionReady) {
           authStore.logoutLocal();
           return {
             name: "Login",

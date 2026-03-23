@@ -7,7 +7,7 @@ export const useRouteTabTracking = (): void => {
   const tabsStore = useTabsStore();
 
   watch(
-    () => route.fullPath,
+    [() => route.fullPath, () => route.meta.title],
     () => {
       tabsStore.addTag({
         title: (route.meta.title as string) || "未命名页面",

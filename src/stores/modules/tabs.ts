@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { useMenuStore } from "./menu";
 
 export interface RouteTag {
   title: string;
@@ -17,15 +18,52 @@ interface AddTagPayload {
   name: string;
 }
 
-const createHomeTag = (): RouteTag => ({
-  title: "首页",
-  path: "/dashboard",
-  fullPath: "/dashboard",
+const DEFAULT_HOME_TITLE = "首页";
+const DEFAULT_HOME_PATH = "/dashboard";
+
+const createHomeTag = (
+  title = DEFAULT_HOME_TITLE,
+  path = DEFAULT_HOME_PATH,
+  fullPath = path,
+): RouteTag => ({
+  title,
+  path,
+  fullPath,
   closable: false,
 });
 
 export const useTabsStore = defineStore("tabs", () => {
+  const menuStore = useMenuStore();
   const tabs = ref<RouteTag[]>([createHomeTag()]);
+
+  const resolveHomeTag = (): RouteTag => {
+    const homeMenu = menuStore.sidebarMenus[0];
+    if (!homeMenu) {
+      return createHomeTag();
+    }
+
+    return createHomeTag(homeMenu.title, homeMenu.path);
+  };
+
+  const syncHomeTag = (): void => {
+    const nextHomeTag = resolveHomeTag();
+    const currentHomeIndex = tabs.value.findIndex((tag) => !tag.closable);
+
+    if (currentHomeIndex === -1) {
+      tabs.value.unshift(nextHomeTag);
+      return;
+    }
+
+    tabs.value[currentHomeIndex] = {
+      ...tabs.value[currentHomeIndex],
+      ...nextHomeTag,
+      closable: false,
+    };
+
+    tabs.value = tabs.value.filter(
+      (tag, index) => index === currentHomeIndex || tag.path !== nextHomeTag.path,
+    );
+  };
 
   const isTrackableRoute = (payload: AddTagPayload): boolean => {
     if (payload.isPublic) return false;
@@ -38,6 +76,8 @@ export const useTabsStore = defineStore("tabs", () => {
   const addTag = (payload: AddTagPayload): void => {
     if (!isTrackableRoute(payload)) return;
 
+    syncHomeTag();
+
     const exists = tabs.value.find((tag) => tag.path === payload.path);
     if (exists) {
       exists.title = payload.title;
@@ -49,7 +89,7 @@ export const useTabsStore = defineStore("tabs", () => {
       title: payload.title,
       path: payload.path,
       fullPath: payload.fullPath,
-      closable: payload.path !== "/dashboard",
+      closable: payload.path !== resolveHomeTag().path,
     });
   };
 
@@ -60,7 +100,7 @@ export const useTabsStore = defineStore("tabs", () => {
     tabs.value.splice(index, 1);
 
     const fallback = tabs.value[index] || tabs.value[index - 1] || tabs.value[0];
-    return fallback?.fullPath || "/dashboard";
+    return fallback?.fullPath || resolveHomeTag().fullPath;
   };
 
   const removeAllClosableTags = (): string | null => {
@@ -68,11 +108,11 @@ export const useTabsStore = defineStore("tabs", () => {
     if (remainingTabs.length === tabs.value.length) return null;
 
     tabs.value = remainingTabs;
-    return remainingTabs[remainingTabs.length - 1]?.fullPath || "/dashboard";
+    return remainingTabs[remainingTabs.length - 1]?.fullPath || resolveHomeTag().fullPath;
   };
 
   const reset = (): void => {
-    tabs.value = [createHomeTag()];
+    tabs.value = [resolveHomeTag()];
   };
 
   return {
@@ -80,6 +120,7 @@ export const useTabsStore = defineStore("tabs", () => {
     addTag,
     removeTag,
     removeAllClosableTags,
+    syncHomeTag,
     reset,
   };
 });

@@ -1,8 +1,11 @@
-import type { ProfileResponse } from "../../src/api/auth/types";
-import type { AppMenu } from "../../src/types/menu";
+import type { AuthUser, RoleCode } from "../../src/api/auth/types";
+import type { AppMenu, PermissionCode } from "../../src/types/menu";
 
-interface MockUserProfile extends Omit<ProfileResponse, "menus"> {
+interface MockUserProfile {
   password: string;
+  user: AuthUser;
+  roles: RoleCode[];
+  permissions: PermissionCode[];
   menus: AppMenu[];
 }
 

@@ -21,6 +21,28 @@ const sendJson = (res: ServerResponse, status: number, payload: ApiResponse<unkn
   res.end(JSON.stringify(payload));
 };
 
+const resolveProfileFromRequest = (req: Parameters<NonNullable<MockMethod["rawResponse"]>>[0]) => {
+  const authHeader = req.headers.authorization;
+  const bearerToken = Array.isArray(authHeader) ? authHeader[0] || "" : authHeader || "";
+  const token = bearerToken.replace(/^Bearer\s+/i, "");
+
+  if (!token) {
+    return {
+      error: fail(40101, "缺少访问令牌"),
+    };
+  }
+
+  const username = token.replace("token-", "");
+  const profile = mockProfiles[username];
+  if (!profile) {
+    return {
+      error: fail(40102, "登录已过期，请重新登录"),
+    };
+  }
+
+  return { profile };
+};
+
 const mocks: MockMethod[] = [
   {
     url: "/api/auth/login",
@@ -54,19 +76,9 @@ const mocks: MockMethod[] = [
     url: "/api/auth/me",
     method: "get",
     rawResponse: function (req, res) {
-      const authHeader = req.headers.authorization;
-      const bearerToken = Array.isArray(authHeader) ? authHeader[0] || "" : authHeader || "";
-      const token = bearerToken.replace(/^Bearer\s+/i, "");
-
-      if (!token) {
-        sendJson(res, 401, fail(40101, "缺少访问令牌"));
-        return;
-      }
-
-      const username = token.replace("token-", "");
-      const profile = mockProfiles[username];
-      if (!profile) {
-        sendJson(res, 401, fail(40102, "登录已过期，请重新登录"));
+      const { error, profile } = resolveProfileFromRequest(req);
+      if (error || !profile) {
+        sendJson(res, 401, error || fail(40102, "登录已过期，请重新登录"));
         return;
       }
 
@@ -75,8 +87,62 @@ const mocks: MockMethod[] = [
         200,
         success({
           user: profile.user,
+        }),
+      );
+    },
+  },
+  {
+    url: "/api/auth/roles",
+    method: "get",
+    rawResponse: function (req, res) {
+      const { error, profile } = resolveProfileFromRequest(req);
+      if (error || !profile) {
+        sendJson(res, 401, error || fail(40102, "登录已过期，请重新登录"));
+        return;
+      }
+
+      sendJson(
+        res,
+        200,
+        success({
           roles: [...profile.roles],
+        }),
+      );
+    },
+  },
+  {
+    url: "/api/auth/permissions",
+    method: "get",
+    rawResponse: function (req, res) {
+      const { error, profile } = resolveProfileFromRequest(req);
+      if (error || !profile) {
+        sendJson(res, 401, error || fail(40102, "登录已过期，请重新登录"));
+        return;
+      }
+
+      sendJson(
+        res,
+        200,
+        success({
           permissions: [...profile.permissions],
+        }),
+      );
+    },
+  },
+  {
+    url: "/api/auth/menus",
+    method: "get",
+    rawResponse: function (req, res) {
+      const { error, profile } = resolveProfileFromRequest(req);
+      if (error || !profile) {
+        sendJson(res, 401, error || fail(40102, "登录已过期，请重新登录"));
+        return;
+      }
+
+      sendJson(
+        res,
+        200,
+        success({
           menus: cloneMenus(profile.menus),
         }),
       );
