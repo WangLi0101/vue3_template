@@ -14,13 +14,11 @@ import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from "vue-router";
 
 export type { BreadcrumbItem, SidebarMenuItem } from "@/utils/menu";
 
-type BreadcrumbRouteLike = Pick<RouteLocationNormalizedLoaded, "path" | "fullPath" | "matched">;
+type BreadcrumbRouteLike = Pick<RouteLocationNormalizedLoaded, "path" | "matched">;
 
 export const useMenuStore = defineStore("menu", () => {
   // 原始后端菜单，作为动态路由和侧边栏的唯一源数据。
   const rawMenus = ref<AppMenu[]>([]);
-  // 记录 path 对应的最近一次 fullPath，用于保留 query 等真实访问信息。
-  const pathFullPathMap = ref<Record<string, string>>({});
 
   // 后端菜单转换后的侧边栏树。
   const backendSidebarMenus = computed<SidebarMenuItem[]>(() => toSidebarMenus(rawMenus.value));
@@ -39,70 +37,48 @@ export const useMenuStore = defineStore("menu", () => {
   // 根据后端菜单生成需要动态挂载的路由记录。
   const dynamicRoutes = computed<RouteRecordRaw[]>(() => buildRoutesFromMenus(rawMenus.value));
 
-  // 优先返回用户最近访问过的 fullPath，保留 query、hash 等真实地址信息。
-  const resolveVisitedPath = (path: string): string => pathFullPathMap.value[path] || path;
   // 当前菜单体系下“首页”的规范 path。
   const resolveHomeMenuPath = (): string => sidebarMenus.value[0]?.path || "/";
-  // 首页跳转优先复用最近真实访问地址。
-  const resolveHomePath = (): string => resolveVisitedPath(resolveHomeMenuPath());
   // 统一生成首页面包屑节点，避免首页定义分散在多个方法里。
   const createHomeBreadcrumb = (): BreadcrumbItem => ({
     title: "首页",
-    to: resolveHomePath(),
+    path: resolveHomeMenuPath(),
   });
   // 将路由 matched 链路转换成面包屑链路，兼容隐藏页和详情页。
-  const buildBreadcrumbsFromRoute = (
-    route: BreadcrumbRouteLike,
-  ): Array<BreadcrumbItem & { path: string }> => {
-    const matchedWithTitle = route.matched.reduce<Array<BreadcrumbItem & { path: string }>>(
-      (chain, record) => {
-        const title = typeof record.meta.title === "string" ? record.meta.title : "";
-        if (!title || record.path === "/") {
-          return chain;
-        }
-
-        chain.push({
-          title,
-          path: record.path,
-          to: record.path === route.path ? route.fullPath : resolveVisitedPath(record.path),
-        });
+  const buildBreadcrumbsFromRoute = (route: BreadcrumbRouteLike): BreadcrumbItem[] =>
+    route.matched.reduce<BreadcrumbItem[]>((chain, record) => {
+      const title = typeof record.meta.title === "string" ? record.meta.title : "";
+      if (!title || record.path === "/") {
         return chain;
-      },
-      [],
-    );
+      }
 
-    return matchedWithTitle;
-  };
+      chain.push({
+        title,
+        path: record.path,
+      });
+      return chain;
+    }, []);
 
   // 登录后写入当前用户可访问的后端菜单。
   const setMenus = (menus: AppMenu[]): void => {
     rawMenus.value = menus;
   };
 
-  // 在路由切换时缓存 path -> fullPath，后续首页跳转和面包屑优先使用真实地址。
-  const rememberRoute = (path: string, fullPath: string): void => {
-    // path 和 fullPath 任何一个为空都没有缓存价值。
-    if (!path || !fullPath) return;
-    pathFullPathMap.value[path] = fullPath;
-  };
-
-  // 取当前可见菜单中的第一个入口，作为默认首页跳转候选。
-  const getFirstRoutePath = (): string => resolveHomePath();
   // 仅在访问根路径时，根据当前可见菜单决定首页重定向目标。
-  const resolveRootRedirectTarget = (path: string, fullPath: string): string | null => {
+  const resolveRootRedirectTarget = (path: string): string | null => {
     // 只处理访问根路径的场景，避免干扰其他页面导航。
     if (path !== "/") return null;
 
-    const firstRoutePath = getFirstRoutePath();
-    // 没有候选首页、候选首页仍是根路径、或已经在目标页时都不重定向。
-    if (!firstRoutePath || firstRoutePath === "/" || firstRoutePath === fullPath) {
+    const homeMenuPath = resolveHomeMenuPath();
+    // 没有候选首页或候选首页仍是根路径时都不重定向。
+    if (!homeMenuPath || homeMenuPath === "/") {
       return null;
     }
 
-    return firstRoutePath;
+    return homeMenuPath;
   };
 
-  // 面包屑始终补齐“首页”，并尽量复用带参数的真实访问地址。
+  // 面包屑始终补齐“首页”，并统一返回规范路径。
   const getBreadcrumbs = (route: BreadcrumbRouteLike): BreadcrumbItem[] => {
     const home = createHomeBreadcrumb();
     const homeMenuPath = resolveHomeMenuPath();
@@ -130,7 +106,6 @@ export const useMenuStore = defineStore("menu", () => {
     const chain = (breadcrumbChainMap.value.get(route.path) || []).map((menu) => ({
       title: menu.title,
       path: menu.path,
-      to: resolveVisitedPath(menu.path),
     }));
 
     // 菜单树里找不到当前路径时，至少保证还能展示首页。
@@ -151,10 +126,9 @@ export const useMenuStore = defineStore("menu", () => {
     return chain;
   };
 
-  // 登出或切换账号时清空菜单和访问缓存。
+  // 登出或切换账号时清空菜单数据。
   const reset = (): void => {
     rawMenus.value = [];
-    pathFullPathMap.value = {};
   };
 
   return {
@@ -162,8 +136,6 @@ export const useMenuStore = defineStore("menu", () => {
     sidebarMenus,
     dynamicRoutes,
     setMenus,
-    rememberRoute,
-    getFirstRoutePath,
     resolveRootRedirectTarget,
     getBreadcrumbs,
     reset,

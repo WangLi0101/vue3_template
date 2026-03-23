@@ -45,7 +45,7 @@ export const setupRouterGuards = (router: Router): void => {
 
         permissionStore.mountDynamicRoutes(router, menuStore.dynamicRoutes);
 
-        const rootRedirectTarget = menuStore.resolveRootRedirectTarget(to.path, to.fullPath);
+        const rootRedirectTarget = menuStore.resolveRootRedirectTarget(to.path);
         if (rootRedirectTarget) {
           return {
             path: rootRedirectTarget,
@@ -68,7 +68,7 @@ export const setupRouterGuards = (router: Router): void => {
       }
     }
 
-    const rootRedirectTarget = menuStore.resolveRootRedirectTarget(to.path, to.fullPath);
+    const rootRedirectTarget = menuStore.resolveRootRedirectTarget(to.path);
     if (rootRedirectTarget) {
       return {
         path: rootRedirectTarget,

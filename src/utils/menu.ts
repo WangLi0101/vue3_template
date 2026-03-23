@@ -21,8 +21,8 @@ export interface SidebarMenuItem {
 export interface BreadcrumbItem {
   // 面包屑文案。
   title: string;
-  // 点击后跳转的目标地址。
-  to: string;
+  // 对应的规范路由路径，用于标识当前面包屑节点。
+  path: string;
 }
 
 // 统一拼接父子路径，避免出现重复斜杠，并兼容绝对路径子节点。
