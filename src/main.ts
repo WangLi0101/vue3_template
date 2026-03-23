@@ -6,7 +6,6 @@ import "element-plus/theme-chalk/dark/css-vars.css";
 import App from "@/App.vue";
 import { setupDirectives } from "@/directives";
 import { setupRouterGuards } from "@/router/guard";
-import "@/styles/tailwind.css";
 import "@/styles/index.scss";
 import { setupStore, store } from "./stores";
 import { useThemeStore } from "./stores/modules/theme";

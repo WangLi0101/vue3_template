@@ -2,16 +2,16 @@ import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 
 NProgress.configure({
-  // 动画方式
-  easing: "ease",
-  // 递增进度条的速度（毫秒），从 500 降低到 200，让进度动画更干脆快响应
-  speed: 200,
-  // 是否显示加载ico
+  // 更干脆的缓动，减少默认 ease 的拖拽感
+  easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+  // 缩短位移动画时长，让开始和结束都更利落
+  speed: 140,
+  // 是否显示加载图标
   showSpinner: false,
-  // 自动递增间隔（毫秒），从 200 降低到 50，让假进度增加得更极速
-  trickleSpeed: 50,
-  // 初始化时的最小百分比，提升到 0.4，一开始直接冲到近半位置
-  minimum: 0.4,
+  // 自动递增稍微放缓，避免频繁跳动导致体感不顺
+  trickleSpeed: 120,
+  // 降低初始进度，避免一出现就冲得过前
+  minimum: 0.08,
 });
 
 export default NProgress;

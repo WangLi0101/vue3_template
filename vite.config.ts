@@ -53,13 +53,6 @@ export default defineConfig(({ command, mode }) => {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: '@use "@/styles/variables.scss" as *;',
-        },
-      },
-    },
     build: {
       sourcemap: isDevelopment,
       reportCompressedSize: isProduction,
