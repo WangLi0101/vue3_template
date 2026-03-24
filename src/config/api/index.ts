@@ -1,6 +1,7 @@
 interface ServiceUrlMap {
   MOCK: string;
 }
+
 const SERVICE_URL_MAP = {
   MOCK: "/api",
 };
@@ -8,6 +9,7 @@ const SERVICE_URL_MAP = {
 export type ServiceName = keyof ServiceUrlMap;
 
 const env = import.meta.env.MODE;
+
 switch (env) {
   case "development":
     SERVICE_URL_MAP.MOCK = "/api";

@@ -1,6 +1,6 @@
 import type { AxiosResponse } from "axios";
+import { SERVICE_URL_MAP, type ServiceName } from "@/config/api";
 import { ApiRequestError, type ApiResponse } from "@/types/http";
-import { SERVICE_URL_MAP, type ServiceName } from "@/utils/http/config";
 import { http } from "./client";
 import {
   type DownloadDataMap,

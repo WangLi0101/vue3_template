@@ -77,7 +77,8 @@
 <script setup lang="ts">
 import { Check, Close, Monitor, Moon, Sunny } from "@element-plus/icons-vue";
 import { computed } from "vue";
-import { themeColorPresets, type ThemeMode } from "@/config/theme";
+import { themeColorPresets } from "@/config/theme";
+import type { ThemeMode } from "@/config/theme/types";
 import { useThemeStore } from "@/stores/modules/theme";
 
 interface Props {

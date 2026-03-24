@@ -1,16 +1,13 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { themeDefaults, themePersistence, themeSemanticTokensByMode } from "@/config/theme";
 import {
   buildElementPlusPrimaryCssVars,
   buildPrimaryCssVars,
   buildSemanticCssVars,
   normalizeHexColor,
-  themeDefaults,
-  themePersistence,
-  themeSemanticTokensByMode,
-  type ResolvedThemeMode,
-  type ThemeMode,
-} from "@/config/theme";
+} from "@/config/theme/utils";
+import type { ResolvedThemeMode, ThemeMode } from "@/config/theme/types";
 
 // 本地持久化数据结构
 interface PersistedThemeState {
