@@ -10,7 +10,6 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       title: "三级路由示例",
       rank: 2,
-      requiresAuth: true,
       icon: "material-symbols:account-tree",
     },
     children: [
@@ -22,7 +21,6 @@ export const routes: RouteRecordRaw[] = [
         meta: {
           title: "二级分组",
           rank: 1,
-          requiresAuth: true,
           icon: "material-symbols:account-tree",
         },
         children: [
@@ -33,7 +31,6 @@ export const routes: RouteRecordRaw[] = [
             meta: {
               title: "三级-菜单页",
               rank: 1,
-              requiresAuth: true,
               keepAlive: false,
             },
           },
@@ -44,7 +41,6 @@ export const routes: RouteRecordRaw[] = [
             meta: {
               title: "三级-角色页",
               rank: 2,
-              requiresAuth: true,
               keepAlive: false,
             },
           },

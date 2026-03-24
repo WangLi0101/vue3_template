@@ -97,7 +97,6 @@ const menuToRoute = (menu: AppMenu, parentPath = ""): RouteRecordRaw => {
     component: resolveComponent(menu),
     meta: {
       ...menu.meta,
-      requiresAuth: true,
     },
   } as RouteRecordRaw;
 

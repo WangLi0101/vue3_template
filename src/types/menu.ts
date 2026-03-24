@@ -7,7 +7,6 @@ export interface AppRouteMeta {
   hidden?: boolean;
   keepAlive?: boolean;
   permission?: PermissionCode | PermissionCode[];
-  requiresAuth?: boolean;
   public?: boolean;
 }
 

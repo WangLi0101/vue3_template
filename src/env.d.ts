@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+import type { AppRouteMeta } from "@/types/menu";
+
 declare module "*.vue" {
   import type { DefineComponent } from "vue";
 
@@ -12,4 +14,10 @@ declare module "*.svg?component" {
 
   const component: FunctionalComponent<SVGAttributes>;
   export default component;
+}
+
+declare module "vue-router" {
+  // vue-router 的类型增强必须使用 interface 声明合并。
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface RouteMeta extends AppRouteMeta {}
 }
