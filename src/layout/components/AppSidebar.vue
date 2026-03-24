@@ -1,15 +1,15 @@
 <template>
   <aside
-    class="app-sidebar z-20 h-full overflow-hidden border-0 border-r border-solid border-app-border bg-app-sidebar-bg transition-colors duration-300 [&_.el-menu--inline]:border-r-0 [&_.el-menu--inline]:bg-transparent [&_.el-menu--inline]:px-2 [&_.el-menu--inline]:py-1 [&_.el-menu-item+.el-menu-item]:mt-1 [&_.el-menu-item+.el-sub-menu]:mt-1 [&_.el-menu-item.is-active:hover]:!bg-[rgb(var(--app-primary-rgb)/1)] [&_.el-menu-item.is-active]:!bg-[rgb(var(--app-primary-rgb)/0.9)] [&_.el-menu-item.is-active]:!text-white [&_.el-menu-item:hover]:bg-[var(--app-sidebar-bg-hover)] [&_.el-menu-item:hover]:text-[var(--app-sidebar-text-active)] [&_.el-menu-item]:m-0 [&_.el-menu-item]:h-10 [&_.el-menu-item]:rounded [&_.el-menu-item]:bg-transparent [&_.el-menu-item]:leading-10 [&_.el-menu-item]:text-[var(--app-sidebar-text)] [&_.el-menu-item]:transition-colors [&_.el-menu-item]:duration-200 [&_.el-menu]:border-r-0 [&_.el-menu]:bg-transparent [&_.el-menu]:px-2 [&_.el-menu]:py-1 [&_.el-sub-menu+.el-menu-item]:mt-1 [&_.el-sub-menu+.el-sub-menu]:mt-1"
+    class="app-sidebar duration-180 [&_.el-menu-item]:duration-180 z-20 h-full overflow-hidden border-0 border-r border-solid border-app-border bg-app-sidebar-bg transition-colors ease-[cubic-bezier(0.2,0,0,1)] [&_.el-menu--inline]:border-r-0 [&_.el-menu--inline]:bg-transparent [&_.el-menu--inline]:px-2 [&_.el-menu--inline]:py-1 [&_.el-menu-item+.el-menu-item]:mt-1 [&_.el-menu-item+.el-sub-menu]:mt-1 [&_.el-menu-item.is-active:hover]:!bg-[rgb(var(--app-primary-rgb)/1)] [&_.el-menu-item.is-active]:!bg-[rgb(var(--app-primary-rgb)/0.9)] [&_.el-menu-item.is-active]:!text-white [&_.el-menu-item:hover]:bg-[var(--app-sidebar-bg-hover)] [&_.el-menu-item:hover]:text-[var(--app-sidebar-text-active)] [&_.el-menu-item]:m-0 [&_.el-menu-item]:h-10 [&_.el-menu-item]:rounded [&_.el-menu-item]:bg-transparent [&_.el-menu-item]:leading-10 [&_.el-menu-item]:text-[var(--app-sidebar-text)] [&_.el-menu-item]:transition-colors [&_.el-menu-item]:ease-[cubic-bezier(0.2,0,0,1)] [&_.el-menu]:border-r-0 [&_.el-menu]:bg-transparent [&_.el-menu]:px-2 [&_.el-menu]:py-1 [&_.el-sub-menu+.el-menu-item]:mt-1 [&_.el-sub-menu+.el-sub-menu]:mt-1"
   >
     <div
-      class="flex h-14 items-center border-0 border-b border-solid border-app-border px-4 text-base font-bold tracking-wider text-app-sidebar-active transition-all"
+      class="duration-180 flex h-14 items-center border-0 border-b border-solid border-app-border px-4 text-base font-bold tracking-wider text-app-sidebar-active transition-[padding] ease-[cubic-bezier(0.2,0,0,1)]"
       :class="uiStore.isSidebarCollapsed ? 'justify-center px-0' : 'justify-center'"
     >
       <img
         :src="uiStore.isSidebarCollapsed ? logoMiniImage : logoImage"
         alt="Company Logo"
-        class="h-8 w-auto object-contain transition-all duration-300"
+        class="h-8 w-auto object-contain"
       />
     </div>
 
@@ -54,8 +54,8 @@ const activeMenu = computed(() => route.path);
   color: var(--app-sidebar-text);
   line-height: 2.5rem;
   transition:
-    background-color 0.2s,
-    color 0.2s;
+    background-color 0.18s cubic-bezier(0.2, 0, 0, 1),
+    color 0.18s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .app-sidebar :deep(.el-sub-menu__title:hover) {
