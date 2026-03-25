@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="app-sidebar duration-180 [&_.el-menu-item]:duration-180 z-20 h-full overflow-hidden border-0 border-r border-solid border-app-border bg-app-sidebar-bg transition-colors ease-[cubic-bezier(0.2,0,0,1)] [&_.el-menu--inline]:border-r-0 [&_.el-menu--inline]:bg-transparent [&_.el-menu--inline]:px-2 [&_.el-menu--inline]:py-1 [&_.el-menu-item+.el-menu-item]:mt-1 [&_.el-menu-item+.el-sub-menu]:mt-1 [&_.el-menu-item.is-active:hover]:!bg-[rgb(var(--app-primary-rgb)/1)] [&_.el-menu-item.is-active]:!bg-[rgb(var(--app-primary-rgb)/0.9)] [&_.el-menu-item.is-active]:!text-white [&_.el-menu-item:hover]:bg-[var(--app-sidebar-bg-hover)] [&_.el-menu-item:hover]:text-[var(--app-sidebar-text-active)] [&_.el-menu-item]:m-0 [&_.el-menu-item]:h-10 [&_.el-menu-item]:rounded [&_.el-menu-item]:bg-transparent [&_.el-menu-item]:leading-10 [&_.el-menu-item]:text-[var(--app-sidebar-text)] [&_.el-menu-item]:transition-colors [&_.el-menu-item]:ease-[cubic-bezier(0.2,0,0,1)] [&_.el-menu]:border-r-0 [&_.el-menu]:bg-transparent [&_.el-menu]:px-2 [&_.el-menu]:py-1 [&_.el-sub-menu+.el-menu-item]:mt-1 [&_.el-sub-menu+.el-sub-menu]:mt-1"
+    class="app-sidebar duration-180 z-20 h-full overflow-hidden border-0 border-r border-solid border-app-border bg-app-sidebar-bg transition-colors ease-[cubic-bezier(0.2,0,0,1)] [&_.el-menu--inline]:border-r-0 [&_.el-menu--inline]:bg-transparent [&_.el-menu--inline]:px-2 [&_.el-menu-item+.el-menu-item]:mt-1 [&_.el-menu-item+.el-sub-menu]:mt-1 [&_.el-menu-item]:m-0 [&_.el-menu-item]:h-10 [&_.el-menu-item]:rounded [&_.el-menu-item]:bg-transparent [&_.el-menu-item]:leading-10 [&_.el-menu-item]:text-[var(--app-sidebar-text)] [&_.el-menu]:border-r-0 [&_.el-menu]:bg-transparent [&_.el-menu]:px-2 [&_.el-menu]:py-1 [&_.el-sub-menu+.el-menu-item]:mt-1 [&_.el-sub-menu+.el-sub-menu]:mt-1"
   >
     <div
       class="duration-180 flex h-14 items-center border-0 border-b border-solid border-app-border px-4 text-base font-bold tracking-wider text-app-sidebar-active transition-[padding] ease-[cubic-bezier(0.2,0,0,1)]"
@@ -13,7 +13,7 @@
       />
     </div>
 
-    <el-scrollbar height="calc(100vh - 56px)">
+    <div class="h-[calc(100vh-56px)] overflow-y-auto">
       <el-menu
         :default-active="activeMenu"
         :collapse="uiStore.isSidebarCollapsed"
@@ -23,7 +23,7 @@
       >
         <SidebarItem v-for="item in menuItems" :key="item.path" :item="item" />
       </el-menu>
-    </el-scrollbar>
+    </div>
   </aside>
 </template>
 
@@ -46,6 +46,32 @@ const activeMenu = computed(() => route.path);
 </script>
 
 <style scoped>
+.app-sidebar {
+  --sidebar-hover-duration: 0.14s;
+  --sidebar-hover-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-sidebar :deep(.el-menu-item) {
+  transition:
+    background-color var(--sidebar-hover-duration) var(--sidebar-hover-ease),
+    color var(--sidebar-hover-duration) var(--sidebar-hover-ease);
+  will-change: background-color, color;
+}
+
+.app-sidebar :deep(.el-menu-item:hover) {
+  background: var(--app-sidebar-bg-hover);
+  color: var(--app-sidebar-text-active);
+}
+
+.app-sidebar :deep(.el-menu-item.is-active) {
+  background: rgb(var(--app-primary-rgb) / 0.9);
+  color: #fff;
+}
+
+.app-sidebar :deep(.el-menu-item.is-active:hover) {
+  background: rgb(var(--app-primary-rgb) / 1);
+}
+
 .app-sidebar :deep(.el-sub-menu__title) {
   height: 2.5rem;
   margin: 0;
@@ -54,8 +80,9 @@ const activeMenu = computed(() => route.path);
   color: var(--app-sidebar-text);
   line-height: 2.5rem;
   transition:
-    background-color 0.18s cubic-bezier(0.2, 0, 0, 1),
-    color 0.18s cubic-bezier(0.2, 0, 0, 1);
+    background-color var(--sidebar-hover-duration) var(--sidebar-hover-ease),
+    color var(--sidebar-hover-duration) var(--sidebar-hover-ease);
+  will-change: background-color, color;
 }
 
 .app-sidebar :deep(.el-sub-menu__title:hover) {
@@ -69,6 +96,29 @@ const activeMenu = computed(() => route.path);
 
 .app-sidebar :deep(.el-sub-menu__icon-arrow) {
   color: var(--app-sidebar-text);
+  transition:
+    transform var(--sidebar-hover-duration) var(--sidebar-hover-ease),
+    color var(--sidebar-hover-duration) var(--sidebar-hover-ease);
+}
+
+.app-sidebar :deep(.el-menu--inline) {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.app-sidebar :deep(.el-menu--inline > .el-menu-item + .el-menu-item),
+.app-sidebar :deep(.el-menu--inline > .el-menu-item + .el-sub-menu),
+.app-sidebar :deep(.el-menu--inline > .el-sub-menu + .el-menu-item),
+.app-sidebar :deep(.el-menu--inline > .el-sub-menu + .el-sub-menu) {
+  margin-top: 0;
+}
+
+.app-sidebar :deep(.el-collapse-transition-enter-active),
+.app-sidebar :deep(.el-collapse-transition-leave-active) {
+  transition:
+    max-height 0.18s cubic-bezier(0.2, 0, 0, 1),
+    padding-top 0.18s cubic-bezier(0.2, 0, 0, 1),
+    padding-bottom 0.18s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .app-sidebar :deep(.el-sub-menu__title:hover .el-sub-menu__icon-arrow),
