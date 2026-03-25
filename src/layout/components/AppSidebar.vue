@@ -54,7 +54,7 @@ const activeMenu = computed(() => route.path);
   height: 3.5rem;
   padding-inline: 1rem;
   border-bottom: 1px solid var(--app-border);
-  color: var(--app-sidebar-active);
+  color: var(--app-sidebar-text-active);
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -91,7 +91,6 @@ const activeMenu = computed(() => route.path);
 
 .app-sidebar :deep(.el-menu-item),
 .app-sidebar :deep(.el-sub-menu__title) {
-  border-radius: 0.25rem;
   transition:
     background-color 0.14s cubic-bezier(0.22, 1, 0.36, 1),
     color 0.14s cubic-bezier(0.22, 1, 0.36, 1);
