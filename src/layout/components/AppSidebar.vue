@@ -1,24 +1,15 @@
 <template>
-  <aside
-    class="app-sidebar duration-180 z-20 h-full overflow-hidden border-0 border-r border-solid border-app-border bg-app-sidebar-bg transition-colors ease-[cubic-bezier(0.2,0,0,1)] [&_.el-menu--inline]:border-r-0 [&_.el-menu--inline]:bg-transparent [&_.el-menu--inline]:px-2 [&_.el-menu-item+.el-menu-item]:mt-1 [&_.el-menu-item+.el-sub-menu]:mt-1 [&_.el-menu-item]:m-0 [&_.el-menu-item]:h-10 [&_.el-menu-item]:rounded [&_.el-menu-item]:bg-transparent [&_.el-menu-item]:leading-10 [&_.el-menu-item]:text-[var(--app-sidebar-text)] [&_.el-menu]:border-r-0 [&_.el-menu]:bg-transparent [&_.el-menu]:px-2 [&_.el-menu]:py-1 [&_.el-sub-menu+.el-menu-item]:mt-1 [&_.el-sub-menu+.el-sub-menu]:mt-1"
-  >
-    <div
-      class="duration-180 flex h-14 items-center border-0 border-b border-solid border-app-border px-4 text-base font-bold tracking-wider text-app-sidebar-active transition-[padding] ease-[cubic-bezier(0.2,0,0,1)]"
-      :class="uiStore.isSidebarCollapsed ? 'justify-center px-0' : 'justify-center'"
-    >
-      <img
-        :src="uiStore.isSidebarCollapsed ? logoMiniImage : logoImage"
-        alt="Company Logo"
-        class="h-8 w-auto object-contain"
-      />
+  <aside class="app-sidebar">
+    <div class="sidebar-brand" :class="{ 'is-collapsed': uiStore.isSidebarCollapsed }">
+      <img :src="uiStore.isSidebarCollapsed ? logoMiniImage : logoImage" alt="Company Logo" />
     </div>
 
-    <div class="h-[calc(100vh-56px)] overflow-y-auto">
+    <div class="sidebar-menu-wrap">
       <el-menu
         :default-active="activeMenu"
         :collapse="uiStore.isSidebarCollapsed"
         :collapse-transition="false"
-        class="border-r-0 bg-transparent"
+        class="sidebar-menu"
         router
       >
         <SidebarItem v-for="item in menuItems" :key="item.path" :item="item" />
@@ -41,24 +32,73 @@ const menuStore = useMenuStore();
 const uiStore = useUiStore();
 
 const menuItems = computed(() => menuStore.sidebarMenus);
-
 const activeMenu = computed(() => route.path);
 </script>
 
 <style scoped>
 .app-sidebar {
-  --sidebar-hover-duration: 0.14s;
-  --sidebar-hover-ease: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.app-sidebar :deep(.el-menu-item) {
+  z-index: 20;
+  height: 100%;
+  overflow: hidden;
+  border-right: 1px solid var(--app-border);
+  background: var(--app-sidebar-bg);
   transition:
-    background-color var(--sidebar-hover-duration) var(--sidebar-hover-ease),
-    color var(--sidebar-hover-duration) var(--sidebar-hover-ease);
-  will-change: background-color, color;
+    background-color 0.18s cubic-bezier(0.2, 0, 0, 1),
+    border-color 0.18s cubic-bezier(0.2, 0, 0, 1);
 }
 
-.app-sidebar :deep(.el-menu-item:hover) {
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.5rem;
+  padding-inline: 1rem;
+  border-bottom: 1px solid var(--app-border);
+  color: var(--app-sidebar-active);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transition:
+    padding 0.18s cubic-bezier(0.2, 0, 0, 1),
+    border-color 0.18s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.sidebar-brand.is-collapsed {
+  padding-inline: 0;
+}
+
+.sidebar-brand img {
+  width: auto;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.sidebar-menu-wrap {
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+
+.sidebar-menu {
+  border-right: 0;
+  background: transparent;
+  --el-menu-bg-color: transparent;
+  --el-menu-border-color: transparent;
+  --el-menu-text-color: var(--app-sidebar-text);
+  --el-menu-hover-text-color: var(--app-sidebar-text-active);
+  --el-menu-hover-bg-color: var(--app-sidebar-bg-hover);
+  --el-menu-active-color: var(--app-sidebar-text-active);
+}
+
+.app-sidebar :deep(.el-menu-item),
+.app-sidebar :deep(.el-sub-menu__title) {
+  border-radius: 0.25rem;
+  transition:
+    background-color 0.14s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.14s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-sidebar :deep(.el-menu-item:hover),
+.app-sidebar :deep(.el-sub-menu__title:hover) {
   background: var(--app-sidebar-bg-hover);
   color: var(--app-sidebar-text-active);
 }
@@ -72,53 +112,8 @@ const activeMenu = computed(() => route.path);
   background: rgb(var(--app-primary-rgb) / 1);
 }
 
-.app-sidebar :deep(.el-sub-menu__title) {
-  height: 2.5rem;
-  margin: 0;
-  border-radius: 0.25rem;
-  background: transparent;
-  color: var(--app-sidebar-text);
-  line-height: 2.5rem;
-  transition:
-    background-color var(--sidebar-hover-duration) var(--sidebar-hover-ease),
-    color var(--sidebar-hover-duration) var(--sidebar-hover-ease);
-  will-change: background-color, color;
-}
-
-.app-sidebar :deep(.el-sub-menu__title:hover) {
-  background: var(--app-sidebar-bg-hover);
-  color: var(--app-sidebar-text-active);
-}
-
 .app-sidebar :deep(.el-sub-menu.is-opened > .el-sub-menu__title) {
   color: var(--app-sidebar-text-active);
-}
-
-.app-sidebar :deep(.el-sub-menu__icon-arrow) {
-  color: var(--app-sidebar-text);
-  transition:
-    transform var(--sidebar-hover-duration) var(--sidebar-hover-ease),
-    color var(--sidebar-hover-duration) var(--sidebar-hover-ease);
-}
-
-.app-sidebar :deep(.el-menu--inline) {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.app-sidebar :deep(.el-menu--inline > .el-menu-item + .el-menu-item),
-.app-sidebar :deep(.el-menu--inline > .el-menu-item + .el-sub-menu),
-.app-sidebar :deep(.el-menu--inline > .el-sub-menu + .el-menu-item),
-.app-sidebar :deep(.el-menu--inline > .el-sub-menu + .el-sub-menu) {
-  margin-top: 0;
-}
-
-.app-sidebar :deep(.el-collapse-transition-enter-active),
-.app-sidebar :deep(.el-collapse-transition-leave-active) {
-  transition:
-    max-height 0.18s cubic-bezier(0.2, 0, 0, 1),
-    padding-top 0.18s cubic-bezier(0.2, 0, 0, 1),
-    padding-bottom 0.18s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .app-sidebar :deep(.el-sub-menu__title:hover .el-sub-menu__icon-arrow),

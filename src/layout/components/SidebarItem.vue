@@ -10,13 +10,9 @@
     <SidebarItem v-for="child in item.children" :key="child.path" :item="child" />
   </el-sub-menu>
 
-  <el-menu-item
-    v-else
-    :index="item.path"
-    class="[&_.el-menu-tooltip__trigger]:flex [&_.el-menu-tooltip__trigger]:items-center [&_.el-menu-tooltip__trigger]:justify-center [&_.el-menu-tooltip__trigger]:!px-0"
-  >
+  <el-menu-item v-else :index="item.path">
     <el-icon v-if="item.icon">
-      <IconifyIconOnline :icon="normalizeIcon(item.icon)" class="!text-xl" />
+      <IconifyIconOnline :icon="normalizeIcon(item.icon)" class="text-xl" />
     </el-icon>
     <template #title>
       <span>{{ item.title }}</span>
@@ -28,14 +24,15 @@
 import { IconifyIconOnline } from "@/components/ReIcon";
 import type { SidebarMenuItem } from "@/stores/modules/menu";
 
+defineOptions({
+  name: "SidebarItem",
+});
+
 interface Props {
   item: SidebarMenuItem;
 }
 
 defineProps<Props>();
 
-const normalizeIcon = (icon?: string): string => {
-  if (!icon) return "codicon:blank";
-  return icon;
-};
+const normalizeIcon = (icon?: string): string => icon ?? "codicon:blank";
 </script>
