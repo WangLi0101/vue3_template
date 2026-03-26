@@ -76,14 +76,6 @@ export const setupRouterGuards = (router: Router): void => {
       };
     }
 
-    const requiredPermission = to.meta.permission as string | string[] | undefined;
-    if (requiredPermission && !permissionStore.hasAll(requiredPermission)) {
-      return {
-        name: "Forbidden",
-        replace: true,
-      };
-    }
-
     return true;
   });
 

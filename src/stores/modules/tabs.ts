@@ -18,14 +18,7 @@ interface AddTagPayload {
   name: string;
 }
 
-const DEFAULT_HOME_TITLE = "首页";
-const DEFAULT_HOME_PATH = "/dashboard";
-
-const createHomeTag = (
-  title = DEFAULT_HOME_TITLE,
-  path = DEFAULT_HOME_PATH,
-  fullPath = path,
-): RouteTag => ({
+const createHomeTag = (title: string, path: string, fullPath = path): RouteTag => ({
   title,
   path,
   fullPath,
@@ -34,12 +27,12 @@ const createHomeTag = (
 
 export const useTabsStore = defineStore("tabs", () => {
   const menuStore = useMenuStore();
-  const tabs = ref<RouteTag[]>([createHomeTag()]);
+  const tabs = ref<RouteTag[]>([]);
 
-  const resolveHomeTag = (): RouteTag => {
-    const homeMenu = menuStore.sidebarMenus[0];
+  const resolveHomeTag = (): RouteTag | null => {
+    const homeMenu = menuStore.resolveHomeMenu();
     if (!homeMenu) {
-      return createHomeTag();
+      return null;
     }
 
     return createHomeTag(homeMenu.title, homeMenu.path);
@@ -47,6 +40,11 @@ export const useTabsStore = defineStore("tabs", () => {
 
   const syncHomeTag = (): void => {
     const nextHomeTag = resolveHomeTag();
+    if (!nextHomeTag) {
+      tabs.value = [];
+      return;
+    }
+
     const currentHomeIndex = tabs.value.findIndex((tag) => !tag.closable);
 
     if (currentHomeIndex === -1) {
@@ -69,6 +67,7 @@ export const useTabsStore = defineStore("tabs", () => {
     if (payload.isPublic) return false;
     if (payload.hidden) return false;
     if (!payload.path || !payload.title) return false;
+    if (payload.path === "/" || payload.name === "Root") return false;
     if (payload.name === "Forbidden" || payload.name === "NotFound") return false;
     return true;
   };
@@ -89,9 +88,11 @@ export const useTabsStore = defineStore("tabs", () => {
       title: payload.title,
       path: payload.path,
       fullPath: payload.fullPath,
-      closable: payload.path !== resolveHomeTag().path,
+      closable: payload.path !== nextHomePath(),
     });
   };
+
+  const nextHomePath = (): string | null => resolveHomeTag()?.path || null;
 
   const removeTag = (path: string): string | null => {
     const index = tabs.value.findIndex((tag) => tag.path === path);
@@ -100,7 +101,7 @@ export const useTabsStore = defineStore("tabs", () => {
     tabs.value.splice(index, 1);
 
     const fallback = tabs.value[index] || tabs.value[index - 1] || tabs.value[0];
-    return fallback?.fullPath || resolveHomeTag().fullPath;
+    return fallback?.fullPath || nextHomePath();
   };
 
   const removeAllClosableTags = (): string | null => {
@@ -108,11 +109,11 @@ export const useTabsStore = defineStore("tabs", () => {
     if (remainingTabs.length === tabs.value.length) return null;
 
     tabs.value = remainingTabs;
-    return remainingTabs[remainingTabs.length - 1]?.fullPath || resolveHomeTag().fullPath;
+    return remainingTabs[remainingTabs.length - 1]?.fullPath || nextHomePath();
   };
 
   const reset = (): void => {
-    tabs.value = [resolveHomeTag()];
+    tabs.value = [];
   };
 
   return {

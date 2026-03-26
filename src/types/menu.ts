@@ -6,7 +6,6 @@ export interface AppRouteMeta {
   rank?: number;
   hidden?: boolean;
   keepAlive?: boolean;
-  permission?: PermissionCode | PermissionCode[];
   public?: boolean;
 }
 

@@ -37,8 +37,10 @@ export const useMenuStore = defineStore("menu", () => {
   // 根据后端菜单生成需要动态挂载的路由记录。
   const dynamicRoutes = computed<RouteRecordRaw[]>(() => buildRoutesFromMenus(rawMenus.value));
 
+  // 当前侧边栏中的首个可见菜单，作为系统首页来源。
+  const resolveHomeMenu = (): SidebarMenuItem | null => sidebarMenus.value[0] || null;
   // 当前菜单体系下“首页”的规范 path。
-  const resolveHomeMenuPath = (): string => sidebarMenus.value[0]?.path || "/";
+  const resolveHomeMenuPath = (): string => resolveHomeMenu()?.path || "/";
   // 统一生成首页面包屑节点，避免首页定义分散在多个方法里。
   const createHomeBreadcrumb = (): BreadcrumbItem => ({
     title: "首页",
@@ -135,6 +137,7 @@ export const useMenuStore = defineStore("menu", () => {
     rawMenus,
     sidebarMenus,
     dynamicRoutes,
+    resolveHomeMenu,
     setMenus,
     resolveRootRedirectTarget,
     getBreadcrumbs,

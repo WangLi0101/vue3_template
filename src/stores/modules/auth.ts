@@ -67,6 +67,7 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = null;
     isInitialized.value = false;
     clearToken();
+    tabsStore.reset();
     permissionStore.reset();
     menuStore.reset();
   };

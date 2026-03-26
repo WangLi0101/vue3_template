@@ -38,7 +38,6 @@ const adminMenus: AppMenu[] = [
         component: "system/UserPage",
         meta: {
           title: "用户管理",
-          permission: "sys:user:view",
           rank: 1,
           keepAlive: true,
         },
@@ -50,8 +49,6 @@ const adminMenus: AppMenu[] = [
         component: "system/RolePage",
         meta: {
           title: "角色管理",
-
-          permission: "sys:role:view",
           rank: 2,
         },
       },
@@ -62,8 +59,6 @@ const adminMenus: AppMenu[] = [
         component: "system/MenuPage",
         meta: {
           title: "菜单管理",
-
-          permission: "sys:menu:view",
           rank: 3,
         },
       },
@@ -74,7 +69,6 @@ const adminMenus: AppMenu[] = [
         component: "system/PermissionPage",
         meta: {
           title: "权限管理",
-          permission: "sys:permission:view",
           rank: 4,
         },
       },
@@ -111,7 +105,6 @@ const auditorMenus: AppMenu[] = [
         component: "system/PermissionPage",
         meta: {
           title: "权限管理",
-          permission: "sys:permission:view",
           rank: 4,
         },
       },
