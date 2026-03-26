@@ -30,10 +30,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onUnmounted, ref } from "vue";
+
+defineOptions({
+  name: "UserPage",
+});
 
 const tableData = ref([
   { id: 1, username: "admin", role: "super_admin", status: "启用" },
   { id: 2, username: "auditor", role: "auditor", status: "启用" },
 ]);
+onUnmounted(() => {
+  // eslint-disable-next-line no-console
+  console.log("UserPage unmounted");
+});
 </script>

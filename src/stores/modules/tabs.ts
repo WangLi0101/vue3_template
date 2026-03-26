@@ -30,7 +30,7 @@ export const useTabsStore = defineStore("tabs", () => {
   const tabs = ref<RouteTag[]>([]);
 
   const resolveHomeTag = (): RouteTag | null => {
-    const homeMenu = menuStore.resolveHomeMenu();
+    const homeMenu = menuStore.homeMenu;
     if (!homeMenu) {
       return null;
     }

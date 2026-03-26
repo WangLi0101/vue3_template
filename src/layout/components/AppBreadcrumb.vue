@@ -23,18 +23,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRoute } from "vue-router";
-import { useMenuStore } from "@/stores/modules/menu";
+import { useBreadcrumbs } from "@/composables/useBreadcrumbs";
 
 defineOptions({
   name: "AppBreadcrumb",
 });
 
-const route = useRoute();
-const menuStore = useMenuStore();
-
-const breadcrumbs = computed(() => menuStore.getBreadcrumbs(route));
+const { breadcrumbs } = useBreadcrumbs();
 
 const isActiveItem = (index: number): boolean => index === breadcrumbs.value.length - 1;
 </script>

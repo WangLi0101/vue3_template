@@ -14,6 +14,8 @@ export interface SidebarMenuItem {
   icon?: string;
   // 排序权重，值越小越靠前。
   rank?: number;
+  // 是否隐藏，仅用于控制导航展示，不影响路由和面包屑索引。
+  hidden?: boolean;
   // 子菜单节点，叶子节点时为空。
   children?: SidebarMenuItem[];
 }
@@ -59,35 +61,29 @@ const sortWithRank = <T>(list: T[], getRank: (item: T) => number): T[] => {
   );
 };
 
-// 后端菜单树转换为侧边栏结构，隐藏菜单在这里直接剔除。
-export const toSidebarMenus = (menus: AppMenu[], parentPath = ""): SidebarMenuItem[] => {
-  return (
-    sortWithRank(menus, (menu) => resolveRank(menu.meta.rank))
-      // hidden 菜单不进入侧边栏树。
-      .filter((menu) => !menu.meta.hidden)
-      .map((menu) => {
-        // 对后端返回的相对路径补齐父级路径，产出完整菜单路径。
-        const currentPath = joinPath(parentPath, menu.path);
-        // 递归转换子节点，保持侧边栏结构与菜单树一致。
-        const children = menu.children?.length
-          ? toSidebarMenus(menu.children, currentPath)
-          : undefined;
+// 后端菜单树转换为完整菜单结构，保留 hidden 信息供不同场景决定是否展示。
+export const toMenuItems = (menus: AppMenu[], parentPath = ""): SidebarMenuItem[] => {
+  return sortWithRank(menus, (menu) => resolveRank(menu.meta.rank)).map((menu) => {
+    // 对后端返回的相对路径补齐父级路径，产出完整菜单路径。
+    const currentPath = joinPath(parentPath, menu.path);
+    // 递归转换子节点，保持菜单树结构与源数据一致。
+    const children = menu.children?.length ? toMenuItems(menu.children, currentPath) : undefined;
 
-        return {
-          id: menu.id,
-          name: menu.name,
-          path: currentPath,
-          title: menu.meta.title,
-          icon: menu.meta.icon,
-          rank: resolveRank(menu.meta.rank),
-          children,
-        };
-      })
-  );
+    return {
+      id: menu.id,
+      name: menu.name,
+      path: currentPath,
+      title: menu.meta.title,
+      icon: menu.meta.icon,
+      rank: resolveRank(menu.meta.rank),
+      hidden: Boolean(menu.meta.hidden),
+      children,
+    };
+  });
 };
 
-// 模块路由也可参与侧边栏渲染；没有 title 的容器节点会被其子节点“抬平”。
-export const toSidebarMenusFromRoutes = (
+// 模块路由转换为完整菜单结构；没有 title 的容器节点会被其子节点“抬平”。
+export const toMenuItemsFromRoutes = (
   routes: RouteRecordRaw[],
   parentPath = "",
 ): SidebarMenuItem[] => {
@@ -96,16 +92,15 @@ export const toSidebarMenusFromRoutes = (
   ).flatMap((route, index) => {
     // RouteRecordRaw.meta 默认是宽泛类型，这里收敛成可安全读取的对象。
     const routeMeta = (route.meta || {}) as Record<string, unknown>;
-    // 隐藏路由不参与侧边栏。
-    if (routeMeta.hidden) return [];
 
     // 当前路由完整路径，用于后续侧边栏点击和面包屑展示。
     const currentPath = joinPath(parentPath, route.path);
     const routeChildren = (route.children || []) as RouteRecordRaw[];
     // 递归处理路由子节点。
-    const children = toSidebarMenusFromRoutes(routeChildren, currentPath);
+    const children = toMenuItemsFromRoutes(routeChildren, currentPath);
     const title = typeof routeMeta.title === "string" ? routeMeta.title : "";
     const icon = typeof routeMeta.icon === "string" ? routeMeta.icon : undefined;
+    const hidden = Boolean(routeMeta.hidden);
 
     if (!title) {
       // 容器节点自身不展示时，直接提升其子节点。
@@ -120,14 +115,15 @@ export const toSidebarMenusFromRoutes = (
         title,
         icon,
         rank: resolveRank(routeMeta.rank),
+        hidden,
         children: children.length ? children : undefined,
       },
     ];
   });
 };
 
-// 侧边栏同时支持后端菜单和本地模块路由，按 path 去重后再统一排序。
-export const mergeSidebarMenus = (
+// 合并后端菜单和本地模块路由，按 path 去重后再统一排序。
+export const mergeMenus = (
   backendMenus: SidebarMenuItem[],
   moduleMenus: SidebarMenuItem[],
 ): SidebarMenuItem[] => {
@@ -143,6 +139,24 @@ export const mergeSidebarMenus = (
 
   // 合并完成后再统一按 rank 排序，保证最终展示顺序稳定。
   return sortWithRank(merged, (menu) => resolveRank(menu.rank));
+};
+
+// 侧边栏只展示非 hidden 菜单；隐藏父节点的可见子节点会被提升，避免整支丢失。
+export const toSidebarMenus = (menus: SidebarMenuItem[]): SidebarMenuItem[] => {
+  return menus.flatMap((menu) => {
+    const children = menu.children?.length ? toSidebarMenus(menu.children) : undefined;
+
+    if (menu.hidden) {
+      return children || [];
+    }
+
+    return [
+      {
+        ...menu,
+        children: children?.length ? children : undefined,
+      },
+    ];
+  });
 };
 
 // 菜单结构变化时一次性构建 path -> 面包屑链路索引，避免每次查询都 DFS 整棵树。

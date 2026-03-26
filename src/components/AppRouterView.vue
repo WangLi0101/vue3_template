@@ -1,13 +1,19 @@
 <template>
   <div class="app-router-view">
     <RouterView v-slot="{ Component, route }">
-      <Transition name="route-switch" mode="out-in">
-        <KeepAlive v-if="route.meta.keepAlive">
-          <component :is="Component" :key="String(route.name || route.path)" />
-        </KeepAlive>
+      <template v-if="route.meta.keepAlive">
+        <Transition name="route-switch" mode="out-in">
+          <KeepAlive>
+            <component :is="Component" :key="String(route.name || route.path)" />
+          </KeepAlive>
+        </Transition>
+      </template>
 
-        <component :is="Component" v-else :key="route.fullPath" />
-      </Transition>
+      <template v-else>
+        <Transition name="route-switch" mode="out-in">
+          <component :is="Component" :key="route.fullPath" />
+        </Transition>
+      </template>
     </RouterView>
   </div>
 </template>

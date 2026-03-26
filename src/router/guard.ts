@@ -4,6 +4,15 @@ import { usePermissionStore } from "@/stores/modules/permission";
 import type { Router } from "vue-router";
 import NProgress from "@/utils/progress";
 
+const resolveRootRedirectTarget = (path: string, homeMenuPath: string): string | null => {
+  if (path !== "/") return null;
+  if (!homeMenuPath || homeMenuPath === "/") {
+    return null;
+  }
+
+  return homeMenuPath;
+};
+
 export const setupRouterGuards = (router: Router): void => {
   router.beforeEach(async (to, from) => {
     if (to.fullPath !== from.fullPath) {
@@ -45,7 +54,7 @@ export const setupRouterGuards = (router: Router): void => {
 
         permissionStore.mountDynamicRoutes(router, menuStore.dynamicRoutes);
 
-        const rootRedirectTarget = menuStore.resolveRootRedirectTarget(to.path);
+        const rootRedirectTarget = resolveRootRedirectTarget(to.path, menuStore.homeMenuPath);
         if (rootRedirectTarget) {
           return {
             path: rootRedirectTarget,
@@ -68,7 +77,7 @@ export const setupRouterGuards = (router: Router): void => {
       }
     }
 
-    const rootRedirectTarget = menuStore.resolveRootRedirectTarget(to.path);
+    const rootRedirectTarget = resolveRootRedirectTarget(to.path, menuStore.homeMenuPath);
     if (rootRedirectTarget) {
       return {
         path: rootRedirectTarget,

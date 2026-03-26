@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { IconifyIconOnline } from "@/components/ReIcon";
-import type { SidebarMenuItem } from "@/stores/modules/menu";
+import type { SidebarMenuItem } from "@/utils/menu";
 
 defineOptions({
   name: "SidebarItem",
