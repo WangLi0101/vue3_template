@@ -10,7 +10,7 @@ export default [
     ignores: ["dist/**", "node_modules/**", ".pnpm-store/**", "coverage/**", "*.min.js"],
   },
   {
-    files: ["**/*.{js,mjs,cjs,ts,mts,cts,vue}"],
+    files: ["**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx,vue}"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
@@ -56,7 +56,7 @@ export default [
     },
   },
   {
-    files: ["**/*.{ts,mts,cts,vue}"],
+    files: ["**/*.{ts,mts,cts,tsx,vue}"],
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/consistent-type-imports": [

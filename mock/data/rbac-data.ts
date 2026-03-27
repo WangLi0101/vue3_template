@@ -39,7 +39,7 @@ const adminMenus: AppMenu[] = [
         meta: {
           title: "用户管理",
           rank: 1,
-          keepAlive: true,
+          keepAlive: false,
         },
       },
       {
