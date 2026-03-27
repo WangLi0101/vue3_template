@@ -59,6 +59,7 @@
           v-loading="loading"
           :data="tableData"
           border
+          stripe
           height="100%"
           row-key="id"
           @selection-change="handleSelectionChange"
