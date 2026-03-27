@@ -1,5 +1,4 @@
-export type UserStatus = 0 | 1;
-export type UserDialogMode = "create" | "edit";
+import type { UserStatus } from "./constants";
 
 export interface RoleOption {
   label: string;

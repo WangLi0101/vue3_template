@@ -92,8 +92,8 @@
             <el-form-item label="状态" prop="status">
               <el-switch
                 v-model="form.status"
-                :active-value="1"
-                :inactive-value="0"
+                :active-value="USER_STATUS.ENABLED"
+                :inactive-value="USER_STATUS.DISABLED"
                 active-text="启用"
                 inactive-text="停用"
               />
@@ -129,8 +129,8 @@ import {
   createUserApi,
   updateUserApi,
   type RoleOption,
+  USER_STATUS,
   type UserItem,
-  type UserStatus,
 } from "@/api/system/user";
 
 interface Props {
@@ -156,7 +156,7 @@ const form = ref({
   phone: "",
   email: "",
   roleIds: [] as number[],
-  status: 1 as UserStatus,
+  status: USER_STATUS.ENABLED,
   remark: "",
 });
 type FormKey = keyof typeof form.value;

@@ -4,14 +4,16 @@
 
 This reference captures the standard CRUD page pattern used in the current Vue 3 + Element Plus project.
 
+For generic dialog rules in this repository, also follow `docs/08-弹窗组件规范.md`.
+
 ## Directory Pattern
 
 ```text
-src/views/<module>/index.vue
-src/views/<module>/components/<XxxFormDialog>.vue
-src/api/<module>/api.ts
-src/api/<module>/types.ts
-src/api/<module>/index.ts
+src/views/system/<module>/index.vue
+src/views/system/<module>/components/<XxxFormDialog>.vue
+src/api/system/<module>/api.ts
+src/api/system/<module>/types.ts
+src/api/system/<module>/index.ts
 mock/<module>.ts
 ```
 
@@ -37,6 +39,12 @@ mock/<module>.ts
 - `add`
 - `edit`
 - `submitForm`
+
+For non-CRUD business dialogs:
+
+- use `XxxActionDialog.vue` for business actions
+- use `XxxDetailDialog.vue` for read-only details
+- keep concrete naming and responsibilities aligned with `docs/08-弹窗组件规范.md`
 
 ## Naming Baseline
 
@@ -92,6 +100,7 @@ mock/<module>.ts
 - use `useTemplateRef<FormInstance>("formRef")`
 - populate edit data in `open`
 - reset with `formRef.value?.resetFields()` in `closed`
+- emit `success` after a successful submit
 
 ## Form Pattern
 
@@ -113,14 +122,14 @@ const getFormData = () => ({
 Keep `add` and `edit` separate, but avoid duplicating all field extraction:
 
 ```ts
-const add = async () => {
+const add = () => {
   const { confirmPassword, ...payload } = getFormData();
-  return await createXxxApi(payload);
+  return createXxxApi(payload);
 };
 
-const edit = async () => {
+const edit = () => {
   const { username, password, confirmPassword, ...payload } = getFormData();
-  return await updateXxxApi({
+  return updateXxxApi({
     id: props.row!.id,
     ...payload,
   });
@@ -132,7 +141,9 @@ const edit = async () => {
 - Is the search area an `el-form`?
 - Is dialog state handled with `defineModel<boolean>()`?
 - Are `open` and `closed` present?
+- Is `success` emitted after a successful submit?
 - Are `add/edit/submitForm` separated?
+- Do `add/edit` use concise direct returns?
 - Does `getFormData()` reduce duplication?
 - Are API and types split out by module?
 - If mock is used, are list/create/update/delete endpoints present?

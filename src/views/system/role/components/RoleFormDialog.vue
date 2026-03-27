@@ -40,8 +40,8 @@
           <el-form-item label="状态" prop="status">
             <el-switch
               v-model="form.status"
-              :active-value="1"
-              :inactive-value="0"
+              :active-value="ROLE_STATUS.ENABLED"
+              :inactive-value="ROLE_STATUS.DISABLED"
               active-text="启用"
               inactive-text="停用"
             />
@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, type FormInstance, type FormRules } from "element-plus";
-import { createRoleApi, updateRoleApi, type RoleItem, type RoleStatus } from "@/api/system/role";
+import { createRoleApi, ROLE_STATUS, updateRoleApi, type RoleItem } from "@/api/system/role";
 
 interface Props {
   isEdit: boolean;
@@ -91,7 +91,7 @@ const createDefaultForm = () => ({
   name: "",
   code: "",
   sort: 0,
-  status: 1 as RoleStatus,
+  status: ROLE_STATUS.ENABLED,
   remark: "",
 });
 

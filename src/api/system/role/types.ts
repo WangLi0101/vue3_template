@@ -1,4 +1,4 @@
-export type RoleStatus = 0 | 1;
+import type { RoleStatus } from "./constants";
 
 export interface RoleItem {
   id: number;

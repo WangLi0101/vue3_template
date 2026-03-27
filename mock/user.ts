@@ -1,5 +1,7 @@
 import type { ServerResponse } from "node:http";
 import type { MockMethod } from "vite-plugin-mock";
+import { ROLE_STATUS, type RoleStatus } from "../src/api/system/role/constants";
+import { USER_STATUS, type UserStatus } from "../src/api/system/user/constants";
 import type { ApiResponse } from "../src/types/http";
 import { mockProfiles } from "./data/rbac-data";
 
@@ -11,7 +13,7 @@ interface MockUserRecord {
   phone: string;
   email: string;
   roleIds: number[];
-  status: 0 | 1;
+  status: UserStatus;
   remark: string;
   createdAt: string;
 }
@@ -21,7 +23,7 @@ interface MockRoleRecord {
   name: string;
   code: string;
   sort: number;
-  status: 0 | 1;
+  status: RoleStatus;
   remark: string;
   createdAt: string;
 }
@@ -48,7 +50,7 @@ interface CreateUserPayload {
   phone?: string;
   email?: string;
   roleIds?: number[];
-  status?: 0 | 1;
+  status?: UserStatus;
   remark?: string;
 }
 
@@ -60,7 +62,7 @@ interface CreateRolePayload {
   name?: string;
   code?: string;
   sort?: number;
-  status?: 0 | 1;
+  status?: RoleStatus;
   remark?: string;
 }
 
@@ -74,7 +76,7 @@ const initialRoles: MockRoleRecord[] = [
     name: "超级管理员",
     code: "super_admin",
     sort: 1,
-    status: 1,
+    status: ROLE_STATUS.ENABLED,
     remark: "拥有全部系统权限",
     createdAt: "2026-03-01 09:00:00",
   },
@@ -83,7 +85,7 @@ const initialRoles: MockRoleRecord[] = [
     name: "审计员",
     code: "auditor",
     sort: 2,
-    status: 1,
+    status: ROLE_STATUS.ENABLED,
     remark: "负责审计与查询",
     createdAt: "2026-03-03 10:30:00",
   },
@@ -92,7 +94,7 @@ const initialRoles: MockRoleRecord[] = [
     name: "运营专员",
     code: "operator",
     sort: 3,
-    status: 0,
+    status: ROLE_STATUS.DISABLED,
     remark: "负责日常运营配置",
     createdAt: "2026-03-05 14:20:00",
   },
@@ -107,7 +109,7 @@ const initialUsers: MockUserRecord[] = [
     phone: "13800138000",
     email: "admin@example.com",
     roleIds: [1],
-    status: 1,
+    status: USER_STATUS.ENABLED,
     remark: "拥有全部系统权限",
     createdAt: "2026-03-01 09:00:00",
   },
@@ -119,7 +121,7 @@ const initialUsers: MockUserRecord[] = [
     phone: "13800138001",
     email: "auditor@example.com",
     roleIds: [2],
-    status: 1,
+    status: USER_STATUS.ENABLED,
     remark: "负责审计与查询",
     createdAt: "2026-03-03 10:30:00",
   },
@@ -131,7 +133,7 @@ const initialUsers: MockUserRecord[] = [
     phone: "13800138002",
     email: "operator@example.com",
     roleIds: [3],
-    status: 0,
+    status: USER_STATUS.DISABLED,
     remark: "负责日常运营配置",
     createdAt: "2026-03-05 14:20:00",
   },
@@ -350,7 +352,7 @@ const mocks: MockMethod[] = [
           name,
           code,
           sort: Number(body.sort ?? 0),
-          status: body.status ?? 1,
+          status: body.status ?? ROLE_STATUS.ENABLED,
           remark: body.remark?.trim() || "",
           createdAt: new Date().toLocaleString("zh-CN", { hour12: false }).replace(/\//g, "-"),
         },
@@ -512,7 +514,7 @@ const mocks: MockMethod[] = [
           phone: body.phone?.trim() || "",
           email: body.email?.trim() || "",
           roleIds,
-          status: body.status ?? 1,
+          status: body.status ?? USER_STATUS.ENABLED,
           remark: body.remark?.trim() || "",
           createdAt: new Date().toLocaleString("zh-CN", { hour12: false }).replace(/\//g, "-"),
         },

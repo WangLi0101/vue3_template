@@ -20,8 +20,12 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="query.status" placeholder="全部状态" clearable class="w-36">
-            <el-option label="启用" :value="1" />
-            <el-option label="停用" :value="0" />
+            <el-option
+              v-for="item in USER_STATUS_OPTIONS"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="角色" prop="roleId">
@@ -75,8 +79,8 @@
           <el-table-column prop="phone" label="手机号" min-width="140" />
           <el-table-column prop="status" label="状态" width="100" align="center">
             <template #default="{ row }">
-              <el-tag :type="row.status === 1 ? 'success' : 'info'">
-                {{ row.status === 1 ? "启用" : "停用" }}
+              <el-tag :type="row.status === USER_STATUS.ENABLED ? 'success' : 'info'">
+                {{ USER_STATUS_LABEL_MAP[row.status as UserStatus] }}
               </el-tag>
             </template>
           </el-table-column>
@@ -124,8 +128,12 @@ import {
   getRoleOptionsApi,
   getUserListApi,
   type RoleOption,
+  USER_STATUS,
+  USER_STATUS_LABEL_MAP,
+  USER_STATUS_OPTIONS,
   type UserItem,
   type UserListQuery,
+  type UserStatus,
 } from "@/api/system/user";
 import UserFormDialog from "./components/UserFormDialog.vue";
 
