@@ -53,6 +53,7 @@ export default [
       ],
       "vue/no-v-html": "warn",
       "vue/padding-line-between-blocks": ["error", "always"],
+      "vue/prefer-use-template-ref": "error",
     },
   },
   {

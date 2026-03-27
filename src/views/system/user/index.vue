@@ -120,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance } from "element-plus";
 import {
@@ -142,7 +142,7 @@ defineOptions({
   name: "UserPage",
 });
 
-const queryFormRef = ref<FormInstance>();
+const queryFormRef = useTemplateRef<FormInstance>("queryFormRef");
 const loading = ref(false);
 const total = ref(0);
 const tableData = ref<UserItem[]>([]);

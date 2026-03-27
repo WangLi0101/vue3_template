@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance } from "element-plus";
 import {
@@ -100,7 +100,7 @@ defineOptions({
   name: "RolePage",
 });
 
-const queryFormRef = ref<FormInstance>();
+const queryFormRef = useTemplateRef<FormInstance>("queryFormRef");
 const loading = ref(false);
 const tableData = ref<RoleItem[]>([]);
 const selectedIds = ref<number[]>([]);

@@ -85,7 +85,7 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
-import { reactive, ref } from "vue";
+import { reactive, ref, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/modules/auth";
 
@@ -93,7 +93,7 @@ const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
 
-const formRef = ref<FormInstance>();
+const formRef = useTemplateRef<FormInstance>("formRef");
 const loading = ref(false);
 
 const formState = reactive({
