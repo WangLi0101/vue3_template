@@ -262,13 +262,12 @@ const submitForm = () => {
     isSubmitLoading.value = true;
     try {
       const res = props.isEdit ? await edit() : await add();
-      isSubmitLoading.value = false;
       if (res.code === 0) {
         emit("success");
         ElMessage.success(`${props.isEdit ? "编辑" : "添加"}成功`);
         dialogVisible.value = false;
       }
-    } catch {
+    } finally {
       isSubmitLoading.value = false;
     }
   });
