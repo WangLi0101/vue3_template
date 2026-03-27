@@ -16,6 +16,16 @@ interface MockUserRecord {
   createdAt: string;
 }
 
+interface MockRoleRecord {
+  id: number;
+  name: string;
+  code: string;
+  sort: number;
+  status: 0 | 1;
+  remark: string;
+  createdAt: string;
+}
+
 interface UserListQuery {
   pageNum?: string;
   pageSize?: string;
@@ -23,6 +33,12 @@ interface UserListQuery {
   nickname?: string;
   status?: string;
   roleId?: string;
+}
+
+interface RoleListQuery {
+  name?: string;
+  code?: string;
+  status?: string;
 }
 
 interface CreateUserPayload {
@@ -36,20 +52,50 @@ interface CreateUserPayload {
   remark?: string;
 }
 
-interface UpdateUserPayload {
+interface UpdateUserPayload extends Omit<CreateUserPayload, "username" | "password"> {
   id?: number;
-  nickname?: string;
-  phone?: string;
-  email?: string;
-  roleIds?: number[];
+}
+
+interface CreateRolePayload {
+  name?: string;
+  code?: string;
+  sort?: number;
   status?: 0 | 1;
   remark?: string;
 }
 
-const roleOptions: Array<{ label: string; value: number; code: string }> = [
-  { label: "超级管理员", value: 1, code: "super_admin" },
-  { label: "审计员", value: 2, code: "auditor" },
-  { label: "运营专员", value: 3, code: "operator" },
+interface UpdateRolePayload extends CreateRolePayload {
+  id?: number;
+}
+
+const initialRoles: MockRoleRecord[] = [
+  {
+    id: 1,
+    name: "超级管理员",
+    code: "super_admin",
+    sort: 1,
+    status: 1,
+    remark: "拥有全部系统权限",
+    createdAt: "2026-03-01 09:00:00",
+  },
+  {
+    id: 2,
+    name: "审计员",
+    code: "auditor",
+    sort: 2,
+    status: 1,
+    remark: "负责审计与查询",
+    createdAt: "2026-03-03 10:30:00",
+  },
+  {
+    id: 3,
+    name: "运营专员",
+    code: "operator",
+    sort: 3,
+    status: 0,
+    remark: "负责日常运营配置",
+    createdAt: "2026-03-05 14:20:00",
+  },
 ];
 
 const initialUsers: MockUserRecord[] = [
@@ -91,7 +137,9 @@ const initialUsers: MockUserRecord[] = [
   },
 ];
 
+let mockRoles = initialRoles.map((item) => ({ ...item }));
 let mockUsers = initialUsers.map((item) => ({ ...item }));
+let nextRoleId = Math.max(...initialRoles.map((item) => item.id)) + 1;
 let nextUserId = Math.max(...initialUsers.map((item) => item.id)) + 1;
 
 const success = <T>(data: T, message = "success"): ApiResponse<T> => ({
@@ -131,10 +179,30 @@ const ensureAuthorized = (req: Parameters<NonNullable<MockMethod["rawResponse"]>
 
 const parseUrl = (url = "") => new URL(url, "http://localhost");
 
+const serializeRoleOption = (role: MockRoleRecord) => ({
+  label: role.name,
+  value: role.id,
+  code: role.code,
+});
+
 const resolveRoleNames = (roleIds: number[]) =>
   roleIds
-    .map((roleId) => roleOptions.find((item) => item.value === roleId)?.label)
+    .map((roleId) => mockRoles.find((item) => item.id === roleId)?.name)
     .filter((item): item is string => Boolean(item));
+
+const countUsersByRoleId = (roleId: number) =>
+  mockUsers.filter((item) => item.roleIds.includes(roleId)).length;
+
+const serializeRole = (role: MockRoleRecord) => ({
+  id: role.id,
+  name: role.name,
+  code: role.code,
+  sort: role.sort,
+  status: role.status,
+  remark: role.remark,
+  createdAt: role.createdAt,
+  userCount: countUsersByRoleId(role.id),
+});
 
 const serializeUser = (user: MockUserRecord) => ({
   id: user.id,
@@ -150,6 +218,15 @@ const serializeUser = (user: MockUserRecord) => ({
 });
 
 const getUserIdFromRequest = (
+  req: Parameters<NonNullable<MockMethod["rawResponse"]>>[0],
+  fallbackId?: number,
+) => {
+  const searchId = Number(parseUrl(req.url).searchParams.get("id") || 0);
+  const value = fallbackId ?? searchId;
+  return Number.isFinite(value) ? value : 0;
+};
+
+const getRoleIdFromRequest = (
   req: Parameters<NonNullable<MockMethod["rawResponse"]>>[0],
   fallbackId?: number,
 ) => {
@@ -181,6 +258,26 @@ const listUsers = (query: UserListQuery) => {
   };
 };
 
+const listRoles = (query: RoleListQuery) => {
+  const name = query.name?.trim().toLowerCase() || "";
+  const code = query.code?.trim().toLowerCase() || "";
+  const status = query.status;
+
+  const filtered = mockRoles
+    .filter((item) => {
+      const matchName = !name || item.name.toLowerCase().includes(name);
+      const matchCode = !code || item.code.toLowerCase().includes(code);
+      const matchStatus = status === undefined || status === "" || Number(status) === item.status;
+      return matchName && matchCode && matchStatus;
+    })
+    .sort((a, b) => a.sort - b.sort || a.id - b.id);
+
+  return {
+    list: filtered.map(serializeRole),
+    total: filtered.length,
+  };
+};
+
 const mocks: MockMethod[] = [
   {
     url: "/api/system/roles/options",
@@ -192,7 +289,178 @@ const mocks: MockMethod[] = [
         return;
       }
 
-      sendJson(res, 200, success([...roleOptions]));
+      sendJson(
+        res,
+        200,
+        success(
+          mockRoles
+            .slice()
+            .sort((a, b) => a.sort - b.sort || a.id - b.id)
+            .map(serializeRoleOption),
+        ),
+      );
+    },
+  },
+  {
+    url: "/api/system/roles",
+    method: "get",
+    rawResponse(req, res) {
+      const authError = ensureAuthorized(req);
+      if (authError) {
+        sendJson(res, 401, authError);
+        return;
+      }
+
+      const query = Object.fromEntries(parseUrl(req.url).searchParams.entries()) as RoleListQuery;
+      sendJson(res, 200, success(listRoles(query)));
+    },
+  },
+  {
+    url: "/api/system/roles",
+    method: "post",
+    rawResponse: async function (req, res) {
+      const authError = ensureAuthorized(req);
+      if (authError) {
+        sendJson(res, 401, authError);
+        return;
+      }
+
+      const body = (await this.parseJson()) as CreateRolePayload;
+      const name = body.name?.trim();
+      const code = body.code?.trim().toLowerCase();
+
+      if (!name || !code) {
+        sendJson(res, 200, fail(40001, "请求参数不完整"));
+        return;
+      }
+
+      if (mockRoles.some((item) => item.name === name)) {
+        sendJson(res, 200, fail(40002, "角色名称已存在"));
+        return;
+      }
+
+      if (mockRoles.some((item) => item.code === code)) {
+        sendJson(res, 200, fail(40003, "角色编码已存在"));
+        return;
+      }
+
+      mockRoles = [
+        {
+          id: nextRoleId++,
+          name,
+          code,
+          sort: Number(body.sort ?? 0),
+          status: body.status ?? 1,
+          remark: body.remark?.trim() || "",
+          createdAt: new Date().toLocaleString("zh-CN", { hour12: false }).replace(/\//g, "-"),
+        },
+        ...mockRoles,
+      ];
+
+      sendJson(res, 200, success({ success: true }, "新增成功"));
+    },
+  },
+  {
+    url: "/api/system/roles",
+    method: "put",
+    rawResponse: async function (req, res) {
+      const authError = ensureAuthorized(req);
+      if (authError) {
+        sendJson(res, 401, authError);
+        return;
+      }
+
+      const body = (await this.parseJson()) as UpdateRolePayload;
+      const roleId = getRoleIdFromRequest(req, body.id);
+      const target = mockRoles.find((item) => item.id === roleId);
+      const name = body.name?.trim();
+      const code = body.code?.trim().toLowerCase();
+
+      if (!target) {
+        sendJson(res, 200, fail(40401, "角色不存在"));
+        return;
+      }
+
+      if (!name || !code) {
+        sendJson(res, 200, fail(40001, "请求参数不完整"));
+        return;
+      }
+
+      if (mockRoles.some((item) => item.id !== roleId && item.name === name)) {
+        sendJson(res, 200, fail(40002, "角色名称已存在"));
+        return;
+      }
+
+      if (mockRoles.some((item) => item.id !== roleId && item.code === code)) {
+        sendJson(res, 200, fail(40003, "角色编码已存在"));
+        return;
+      }
+
+      target.name = name;
+      target.code = code;
+      target.sort = Number(body.sort ?? target.sort);
+      target.status = body.status ?? target.status;
+      target.remark = body.remark?.trim() || "";
+
+      sendJson(res, 200, success({ success: true }, "编辑成功"));
+    },
+  },
+  {
+    url: "/api/system/roles",
+    method: "delete",
+    rawResponse(req, res) {
+      const authError = ensureAuthorized(req);
+      if (authError) {
+        sendJson(res, 401, authError);
+        return;
+      }
+
+      const roleId = getRoleIdFromRequest(req);
+      const target = mockRoles.find((item) => item.id === roleId);
+
+      if (!target) {
+        sendJson(res, 200, fail(40401, "角色不存在"));
+        return;
+      }
+
+      if (countUsersByRoleId(roleId) > 0) {
+        sendJson(res, 200, fail(40004, "角色已关联用户，无法删除"));
+        return;
+      }
+
+      mockRoles = mockRoles.filter((item) => item.id !== roleId);
+      sendJson(res, 200, success({ success: true }, "删除成功"));
+    },
+  },
+  {
+    url: "/api/system/roles/batch-delete",
+    method: "post",
+    rawResponse: async function (req, res) {
+      const authError = ensureAuthorized(req);
+      if (authError) {
+        sendJson(res, 401, authError);
+        return;
+      }
+
+      const body = (await this.parseJson()) as { ids?: number[] };
+      const ids = Array.isArray(body.ids) ? body.ids : [];
+
+      if (!ids.length) {
+        sendJson(res, 200, fail(40001, "请选择要删除的角色"));
+        return;
+      }
+
+      const blockedRoles = mockRoles
+        .filter((item) => ids.includes(item.id) && countUsersByRoleId(item.id) > 0)
+        .map((item) => item.name);
+
+      if (blockedRoles.length) {
+        sendJson(res, 200, fail(40004, `角色「${blockedRoles.join("、")}」已关联用户，无法删除`));
+        return;
+      }
+
+      mockRoles = mockRoles.filter((item) => !ids.includes(item.id));
+      sendJson(res, 200, success({ success: true }, "批量删除成功"));
     },
   },
   {
