@@ -13,7 +13,7 @@
           <el-col :span="12">
             <el-form-item label="用户名" prop="username">
               <el-input
-                v-model.trim="form.username"
+                v-model="form.username"
                 :disabled="isEdit"
                 placeholder="请输入用户名"
                 style="width: 260px"
@@ -59,12 +59,12 @@
         <el-row :gutter="16">
           <el-col :span="12">
             <el-form-item label="手机号" prop="phone">
-              <el-input v-model.trim="form.phone" placeholder="请输入手机号" style="width: 260px" />
+              <el-input v-model="form.phone" placeholder="请输入手机号" style="width: 260px" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model.trim="form.email" placeholder="请输入邮箱" style="width: 260px" />
+              <el-input v-model="form.email" placeholder="请输入邮箱" style="width: 260px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -102,7 +102,7 @@
         </el-row>
         <el-form-item label="备注" prop="remark">
           <el-input
-            v-model.trim="form.remark"
+            v-model="form.remark"
             type="textarea"
             :rows="3"
             maxlength="200"
@@ -132,6 +132,7 @@ import {
   USER_STATUS,
   type UserItem,
 } from "@/api/system/user";
+import { removeAllSpace } from "@/utils/tool";
 
 interface Props {
   isEdit: boolean;
@@ -160,6 +161,7 @@ const form = ref({
   remark: "",
 });
 type FormKey = keyof typeof form.value;
+
 const open = () => {
   if (props.isEdit && props.row) {
     for (const key of Object.keys(form.value) as FormKey[]) {
@@ -230,6 +232,9 @@ const rules = reactive<FormRules<typeof form.value>>({
 
 const getFormData = () => ({
   ...form.value,
+  username: removeAllSpace(form.value.username),
+  phone: removeAllSpace(form.value.phone),
+  email: removeAllSpace(form.value.email),
   roleIds: [...form.value.roleIds],
 });
 

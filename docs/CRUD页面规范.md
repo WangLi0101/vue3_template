@@ -160,7 +160,7 @@ mock/
 ```vue
 <el-form ref="queryFormRef" :model="query" inline>
   <el-form-item label="用户名" prop="username">
-    <el-input v-model.trim="query.username" />
+    <el-input v-model="query.username" />
   </el-form-item>
   <el-form-item label="状态" prop="status">
     <el-select v-model="query.status" clearable />
@@ -176,6 +176,7 @@ mock/
 
 - 有分页时，查询前重置页码到第 1 页
 - 重置时调用 `resetFields()`，再刷新列表
+- 关键标识字段（如用户名、编码、路径、手机号、邮箱）不要只依赖 `trim`，优先在查询请求参数中使用 `removeAllSpace()` 去除所有空白字符，兼容粘贴场景
 
 ## 6. 列表区规范
 
@@ -244,7 +245,7 @@ const closed = () => {
 示例：
 
 ```vue
-<el-input v-model.trim="form.username" />
+<el-input v-model="form.username" />
 ```
 
 公共数据提取：
@@ -260,6 +261,7 @@ const getFormData = () => ({
 
 - 使用 `...form.value` 降低后续新增字段的维护成本
 - 数组字段单独拷贝，避免引用污染
+- 关键标识字段（如用户名、编码、路径、手机号、邮箱）优先在 `getFormData()` 中使用 `removeAllSpace()` 统一清理全部空白字符
 
 ## 9. 新增与编辑提交规范
 

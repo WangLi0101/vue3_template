@@ -136,6 +136,7 @@ import {
   type UserListQuery,
   type UserStatus,
 } from "@/api/system/user";
+import { removeAllSpace } from "@/utils/tool";
 import UserFormDialog from "./components/UserFormDialog.vue";
 
 defineOptions({
@@ -173,7 +174,7 @@ const fetchList = async () => {
   try {
     const response = await getUserListApi({
       ...query,
-      username: query.username?.trim(),
+      username: removeAllSpace(query.username || ""),
       nickname: query.nickname?.trim(),
     });
 

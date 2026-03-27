@@ -88,6 +88,7 @@ import type { FormInstance, FormRules } from "element-plus";
 import { reactive, ref, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/modules/auth";
+import { removeAllSpace } from "@/utils/tool";
 
 const router = useRouter();
 const route = useRoute();
@@ -114,7 +115,10 @@ const handleLogin = async (): Promise<void> => {
 
     loading.value = true;
     try {
-      const loginSuccess = await authStore.login(formState);
+      const loginSuccess = await authStore.login({
+        username: removeAllSpace(formState.username),
+        password: formState.password,
+      });
       if (!loginSuccess) {
         return;
       }

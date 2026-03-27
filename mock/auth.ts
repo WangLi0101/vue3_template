@@ -1,6 +1,7 @@
 import type { ServerResponse } from "node:http";
 import type { MockMethod } from "vite-plugin-mock";
 import type { ApiResponse } from "../src/types/http";
+import { removeAllSpace } from "../src/utils/tool";
 import { cloneMenus, mockProfiles } from "./data/rbac-data";
 
 const success = <T>(data: T, message = "success"): ApiResponse<T> => ({
@@ -49,7 +50,7 @@ const mocks: MockMethod[] = [
     method: "post",
     rawResponse: async function (_req, res) {
       const body = (await this.parseJson()) as { username?: string; password?: string };
-      const username = body?.username?.trim();
+      const username = removeAllSpace(body?.username?.trim() || "");
       const password = body?.password?.trim();
 
       if (!username || !password) {

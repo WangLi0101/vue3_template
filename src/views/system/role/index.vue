@@ -94,6 +94,7 @@ import {
   type RoleItem,
   type RoleListQuery,
 } from "@/api/system/role";
+import { removeAllSpace } from "@/utils/tool";
 import RoleFormDialog from "./components/RoleFormDialog.vue";
 
 defineOptions({
@@ -119,7 +120,7 @@ const fetchList = async () => {
     const response = await getRoleListApi({
       ...query,
       name: query.name?.trim(),
-      code: query.code?.trim(),
+      code: removeAllSpace(query.code || ""),
     });
 
     if (response.code !== 0) {

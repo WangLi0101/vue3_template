@@ -22,7 +22,7 @@
         <el-col :span="12">
           <el-form-item label="角色编码" prop="code">
             <el-input
-              v-model.trim="form.code"
+              v-model="form.code"
               maxlength="30"
               placeholder="请输入角色编码"
               style="width: 220px"
@@ -50,7 +50,7 @@
       </el-row>
       <el-form-item label="备注" prop="remark">
         <el-input
-          v-model.trim="form.remark"
+          v-model="form.remark"
           type="textarea"
           :rows="3"
           maxlength="200"
@@ -72,6 +72,7 @@
 import { reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, type FormInstance, type FormRules } from "element-plus";
 import { createRoleApi, ROLE_STATUS, updateRoleApi, type RoleItem } from "@/api/system/role";
+import { removeAllSpace } from "@/utils/tool";
 
 interface Props {
   isEdit: boolean;
@@ -127,6 +128,7 @@ const rules = reactive<FormRules<typeof form.value>>({
 
 const getFormData = () => ({
   ...form.value,
+  code: removeAllSpace(form.value.code),
 });
 
 const add = () => {

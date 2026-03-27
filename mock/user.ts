@@ -3,6 +3,7 @@ import type { MockMethod } from "vite-plugin-mock";
 import { ROLE_STATUS, type RoleStatus } from "../src/api/system/role/constants";
 import { USER_STATUS, type UserStatus } from "../src/api/system/user/constants";
 import type { ApiResponse } from "../src/types/http";
+import { removeAllSpace } from "../src/utils/tool";
 import { mockProfiles } from "./data/rbac-data";
 
 interface MockUserRecord {
@@ -240,7 +241,7 @@ const getRoleIdFromRequest = (
 const listUsers = (query: UserListQuery) => {
   const pageNum = Math.max(Number(query.pageNum || 1), 1);
   const pageSize = Math.max(Number(query.pageSize || 10), 1);
-  const username = query.username?.trim().toLowerCase() || "";
+  const username = removeAllSpace(query.username?.trim() || "").toLowerCase();
   const nickname = query.nickname?.trim().toLowerCase() || "";
   const status = query.status;
   const roleId = Number(query.roleId || 0);
@@ -262,7 +263,7 @@ const listUsers = (query: UserListQuery) => {
 
 const listRoles = (query: RoleListQuery) => {
   const name = query.name?.trim().toLowerCase() || "";
-  const code = query.code?.trim().toLowerCase() || "";
+  const code = removeAllSpace(query.code?.trim() || "").toLowerCase();
   const status = query.status;
 
   const filtered = mockRoles
@@ -329,7 +330,7 @@ const mocks: MockMethod[] = [
 
       const body = (await this.parseJson()) as CreateRolePayload;
       const name = body.name?.trim();
-      const code = body.code?.trim().toLowerCase();
+      const code = removeAllSpace(body.code?.trim() || "").toLowerCase();
 
       if (!name || !code) {
         sendJson(res, 200, fail(40001, "请求参数不完整"));
@@ -353,7 +354,7 @@ const mocks: MockMethod[] = [
           code,
           sort: Number(body.sort ?? 0),
           status: body.status ?? ROLE_STATUS.ENABLED,
-          remark: body.remark?.trim() || "",
+          remark: body.remark || "",
           createdAt: new Date().toLocaleString("zh-CN", { hour12: false }).replace(/\//g, "-"),
         },
         ...mockRoles,
@@ -376,7 +377,7 @@ const mocks: MockMethod[] = [
       const roleId = getRoleIdFromRequest(req, body.id);
       const target = mockRoles.find((item) => item.id === roleId);
       const name = body.name?.trim();
-      const code = body.code?.trim().toLowerCase();
+      const code = removeAllSpace(body.code?.trim() || "").toLowerCase();
 
       if (!target) {
         sendJson(res, 200, fail(40401, "角色不存在"));
@@ -402,7 +403,7 @@ const mocks: MockMethod[] = [
       target.code = code;
       target.sort = Number(body.sort ?? target.sort);
       target.status = body.status ?? target.status;
-      target.remark = body.remark?.trim() || "";
+      target.remark = body.remark || "";
 
       sendJson(res, 200, success({ success: true }, "编辑成功"));
     },
@@ -490,7 +491,7 @@ const mocks: MockMethod[] = [
       }
 
       const body = (await this.parseJson()) as CreateUserPayload;
-      const username = body.username?.trim();
+      const username = removeAllSpace(body.username?.trim() || "");
       const nickname = body.nickname?.trim();
       const password = body.password?.trim();
       const roleIds = Array.isArray(body.roleIds) ? body.roleIds : [];
@@ -511,11 +512,11 @@ const mocks: MockMethod[] = [
           username,
           nickname,
           password,
-          phone: body.phone?.trim() || "",
-          email: body.email?.trim() || "",
+          phone: removeAllSpace(body.phone?.trim() || ""),
+          email: removeAllSpace(body.email?.trim() || ""),
           roleIds,
           status: body.status ?? USER_STATUS.ENABLED,
-          remark: body.remark?.trim() || "",
+          remark: body.remark || "",
           createdAt: new Date().toLocaleString("zh-CN", { hour12: false }).replace(/\//g, "-"),
         },
         ...mockUsers,
@@ -549,11 +550,11 @@ const mocks: MockMethod[] = [
       }
 
       target.nickname = body.nickname.trim();
-      target.phone = body.phone?.trim() || "";
-      target.email = body.email?.trim() || "";
+      target.phone = removeAllSpace(body.phone?.trim() || "");
+      target.email = removeAllSpace(body.email?.trim() || "");
       target.roleIds = body.roleIds;
       target.status = body.status ?? target.status;
-      target.remark = body.remark?.trim() || "";
+      target.remark = body.remark || "";
 
       sendJson(res, 200, success({ success: true }, "编辑成功"));
     },
