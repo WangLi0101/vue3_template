@@ -71,14 +71,7 @@
 <script setup lang="ts">
 import { reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, type FormInstance, type FormRules } from "element-plus";
-import {
-  createRoleApi,
-  updateRoleApi,
-  type CreateRolePayload,
-  type RoleItem,
-  type RoleStatus,
-  type UpdateRolePayload,
-} from "@/api/system/role";
+import { createRoleApi, updateRoleApi, type RoleItem, type RoleStatus } from "@/api/system/role";
 
 interface Props {
   isEdit: boolean;
@@ -139,19 +132,17 @@ const getFormData = () => ({
   ...form.value,
 });
 
-const add = async () => {
-  const res = await createRoleApi({
+const add = () => {
+  return createRoleApi({
     ...getFormData(),
-  } satisfies CreateRolePayload);
-  return res;
+  });
 };
 
-const edit = async () => {
-  const res = await updateRoleApi({
+const edit = () => {
+  return updateRoleApi({
     id: props.row!.id,
     ...getFormData(),
-  } satisfies UpdateRolePayload);
-  return res;
+  });
 };
 
 const isSubmitLoading = ref(false);

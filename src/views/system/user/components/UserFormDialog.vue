@@ -128,9 +128,7 @@ import { ElMessage, type FormInstance, type FormRules } from "element-plus";
 import {
   createUserApi,
   updateUserApi,
-  type CreateUserPayload,
   type RoleOption,
-  type UpdateUserPayload,
   type UserItem,
   type UserStatus,
 } from "@/api/system/user";
@@ -235,26 +233,24 @@ const getFormData = () => ({
   roleIds: [...form.value.roleIds],
 });
 
-const add = async () => {
+const add = () => {
   const { confirmPassword: _confirmPassword, ...payload } = getFormData();
-  const res = await createUserApi({
+  return createUserApi({
     ...payload,
-  } satisfies CreateUserPayload);
-  return res;
+  });
 };
 
-const edit = async () => {
+const edit = () => {
   const {
     username: _username,
     password: _password,
     confirmPassword: _confirmPassword,
     ...payload
   } = getFormData();
-  const res = await updateUserApi({
+  return updateUserApi({
     id: props.row!.id,
     ...payload,
-  } satisfies UpdateUserPayload);
-  return res;
+  });
 };
 
 const isSubmitLoading = ref(false);
