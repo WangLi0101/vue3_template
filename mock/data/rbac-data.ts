@@ -56,7 +56,7 @@ const adminMenus: AppMenu[] = [
         id: "230",
         name: "SystemMenu",
         path: "menu",
-        component: "system/MenuPage",
+        component: "system/menu/index",
         meta: {
           title: "菜单管理",
           rank: 3,
@@ -66,7 +66,7 @@ const adminMenus: AppMenu[] = [
         id: "240",
         name: "SystemPermission",
         path: "permission",
-        component: "system/PermissionPage",
+        component: "system/permission/index",
         meta: {
           title: "权限管理",
           rank: 4,
@@ -102,7 +102,7 @@ const auditorMenus: AppMenu[] = [
         id: "240",
         name: "SystemPermission",
         path: "permission",
-        component: "system/PermissionPage",
+        component: "system/permission/index",
         meta: {
           title: "权限管理",
           rank: 4,
