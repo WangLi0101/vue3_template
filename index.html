@@ -4,9 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vue3 RBAC 管理后台</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/loading.css" />
   </head>
+
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <!-- 首屏加载动画 — Vue 挂载后自动消失 -->
+      <div class="app-loading">
+        <div class="loading-logo-wrap">
+          <div class="pulse-glow"></div>
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+          <div class="logo-icon">
+            <img src="/loading.svg" alt="Loading" />
+          </div>
+        </div>
+        <div class="loading-bar">
+          <div class="bar-inner"></div>
+        </div>
+        <div class="loading-text">正在加载…</div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -1,0 +1,160 @@
+/* ===== 首屏加载动画 ===== */
+.app-loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f0f2f5;
+  z-index: 9999;
+  gap: 28px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .app-loading {
+    background: #0a0a0a;
+  }
+
+  .app-loading .loading-text {
+    color: rgba(255, 255, 255, 0.65) !important;
+  }
+}
+
+/* 旋转 Logo 容器 */
+.loading-logo-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+/* 外圈旋转环 */
+.loading-logo-wrap .spinner-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #2563eb;
+  border-right-color: #2563eb;
+  animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.loading-logo-wrap .spinner-ring:nth-child(2) {
+  inset: -16px;
+  border-top-color: rgba(37, 99, 235, 0.3);
+  border-right-color: transparent;
+  border-bottom-color: rgba(37, 99, 235, 0.3);
+  animation: spin-reverse 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* 脉冲光晕 */
+.loading-logo-wrap .pulse-glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Logo 图标 */
+.loading-logo-wrap .logo-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-logo-wrap .logo-icon img {
+  width: 40px;
+  height: 40px;
+  animation: logo-breathe 2s ease-in-out infinite;
+}
+
+/* 进度条 */
+.loading-bar {
+  width: 160px;
+  height: 3px;
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.loading-bar .bar-inner {
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, #2563eb, transparent);
+  border-radius: 3px;
+  animation: slide 1.2s ease-in-out infinite;
+}
+
+/* 加载文字 */
+.loading-text {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: rgba(0, 0, 0, 0.45);
+  animation: text-fade 2s ease-in-out infinite;
+}
+
+/* ===== 动画关键帧 ===== */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes logo-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(0.92);
+    opacity: 0.7;
+  }
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-160px);
+  }
+
+  100% {
+    transform: translateX(400px);
+  }
+}
+
+@keyframes text-fade {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+}

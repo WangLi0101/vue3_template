@@ -2,7 +2,7 @@
   <el-dialog
     v-model="dialogVisible"
     :title="isEdit ? '编辑角色' : '添加角色'"
-    width="560px"
+    width="640px"
     :close-on-click-modal="false"
     @open="open"
     @closed="closed"
@@ -87,15 +87,13 @@ const emit = defineEmits<Emits>();
 const dialogVisible = defineModel<boolean>();
 const formRef = useTemplateRef<FormInstance>("formRef");
 
-const createDefaultForm = () => ({
+const form = ref({
   name: "",
   code: "",
   sort: 0,
   status: ROLE_STATUS.ENABLED,
   remark: "",
 });
-
-const form = ref(createDefaultForm());
 type FormKey = keyof typeof form.value;
 
 const open = () => {
@@ -110,7 +108,6 @@ const open = () => {
 
 const closed = () => {
   formRef.value?.resetFields();
-  form.value = createDefaultForm();
 };
 
 const rules = reactive<FormRules<typeof form.value>>({
