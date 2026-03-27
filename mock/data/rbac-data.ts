@@ -35,7 +35,7 @@ const adminMenus: AppMenu[] = [
         id: "210",
         name: "SystemUser",
         path: "user",
-        component: "system/UserPage",
+        component: "system/user/index",
         meta: {
           title: "用户管理",
           rank: 1,
@@ -46,7 +46,7 @@ const adminMenus: AppMenu[] = [
         id: "220",
         name: "SystemRole",
         path: "role",
-        component: "system/RolePage",
+        component: "system/role/index",
         meta: {
           title: "角色管理",
           rank: 2,

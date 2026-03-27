@@ -1,0 +1,64 @@
+export type UserStatus = 0 | 1;
+export type UserDialogMode = "create" | "edit";
+
+export interface RoleOption {
+  label: string;
+  value: number;
+  code: string;
+}
+
+export interface UserItem {
+  id: number;
+  username: string;
+  nickname: string;
+  phone: string;
+  email: string;
+  roleIds: number[];
+  roleNames: string[];
+  status: UserStatus;
+  remark: string;
+  createdAt: string;
+}
+
+export interface UserListQuery {
+  pageNum: number;
+  pageSize: number;
+  username?: string;
+  nickname?: string;
+  status?: UserStatus;
+  roleId?: number;
+}
+
+export interface UserListResponse {
+  list: UserItem[];
+  total: number;
+}
+
+export interface CreateUserPayload {
+  username: string;
+  nickname: string;
+  password: string;
+  phone: string;
+  email: string;
+  roleIds: number[];
+  status: UserStatus;
+  remark: string;
+}
+
+export interface UpdateUserPayload {
+  id: number;
+  nickname: string;
+  phone: string;
+  email: string;
+  roleIds: number[];
+  status: UserStatus;
+  remark: string;
+}
+
+export interface BatchDeleteUsersPayload {
+  ids: number[];
+}
+
+export interface UserMutationResponse {
+  success: boolean;
+}

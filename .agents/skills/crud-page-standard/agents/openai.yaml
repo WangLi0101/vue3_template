@@ -1,0 +1,4 @@
+interface:
+  display_name: "CRUD Page Standard"
+  short_description: "Standard Vue Element Plus CRUD page pattern"
+  default_prompt: "Use $crud-page-standard to scaffold or review a standard CRUD page in this project."
