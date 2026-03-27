@@ -10,9 +10,9 @@ import type {
 } from "@/api/system/user/types";
 
 export const getUserListApi = (params: UserListQuery) => {
-  return request<UserListResponse>("/system/users", "MOCK", {
-    method: "get",
-    params,
+  return request<UserListResponse>("/system/users/list", "MOCK", {
+    method: "post",
+    data: params,
   });
 };
 

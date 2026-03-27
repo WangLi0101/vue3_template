@@ -304,16 +304,16 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/roles",
-    method: "get",
-    rawResponse(req, res) {
+    url: "/api/system/roles/list",
+    method: "post",
+    rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
         sendJson(res, 401, authError);
         return;
       }
 
-      const query = Object.fromEntries(parseUrl(req.url).searchParams.entries()) as RoleListQuery;
+      const query = (await this.parseJson()) as RoleListQuery;
       sendJson(res, 200, success(listRoles(query)));
     },
   },
@@ -466,16 +466,16 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/users",
-    method: "get",
-    rawResponse(req, res) {
+    url: "/api/system/users/list",
+    method: "post",
+    rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
         sendJson(res, 401, authError);
         return;
       }
 
-      const query = Object.fromEntries(parseUrl(req.url).searchParams.entries()) as UserListQuery;
+      const query = (await this.parseJson()) as UserListQuery;
       sendJson(res, 200, success(listUsers(query)));
     },
   },

@@ -9,9 +9,9 @@ import type {
 } from "@/api/system/role/types";
 
 export const getRoleListApi = (params: RoleListQuery) => {
-  return request<RoleListResponse>("/system/roles", "MOCK", {
-    method: "get",
-    params,
+  return request<RoleListResponse>("/system/roles/list", "MOCK", {
+    method: "post",
+    data: params,
   });
 };
 
