@@ -133,15 +133,6 @@ defineOptions({
   name: "UserPage",
 });
 
-const createDefaultQuery = (): UserListQuery => ({
-  pageNum: 1,
-  pageSize: 10,
-  username: "",
-  nickname: "",
-  status: undefined,
-  roleId: undefined,
-});
-
 const queryFormRef = ref<FormInstance>();
 const loading = ref(false);
 const total = ref(0);
@@ -151,7 +142,14 @@ const selectedIds = ref<number[]>([]);
 const dialogVisible = ref(false);
 const isEdit = ref(false);
 const currentRow = ref<UserItem | null>(null);
-const query = reactive<UserListQuery>(createDefaultQuery());
+const query = reactive<UserListQuery>({
+  pageNum: 1,
+  pageSize: 10,
+  username: "",
+  nickname: "",
+  status: undefined,
+  roleId: undefined,
+});
 
 const fetchRoleOptions = async () => {
   const response = await getRoleOptionsApi();

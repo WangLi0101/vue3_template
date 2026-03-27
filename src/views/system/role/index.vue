@@ -99,12 +99,6 @@ defineOptions({
   name: "RolePage",
 });
 
-const createDefaultQuery = (): RoleListQuery => ({
-  name: "",
-  code: "",
-  status: undefined,
-});
-
 const queryFormRef = ref<FormInstance>();
 const loading = ref(false);
 const tableData = ref<RoleItem[]>([]);
@@ -112,7 +106,11 @@ const selectedIds = ref<number[]>([]);
 const dialogVisible = ref(false);
 const isEdit = ref(false);
 const currentRow = ref<RoleItem | null>(null);
-const query = reactive<RoleListQuery>(createDefaultQuery());
+const query = reactive<RoleListQuery>({
+  name: "",
+  code: "",
+  status: undefined,
+});
 
 const fetchList = async () => {
   loading.value = true;

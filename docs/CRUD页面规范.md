@@ -12,7 +12,8 @@
 适用场景：
 
 - 标准后台列表页
-- 包含查询、分页、新增、编辑、删除、批量删除的管理页面
+- 包含查询、新增、编辑、删除、批量删除的管理页面
+- 分页按页面实际需要决定，可选
 
 ## 2. 推荐目录结构
 
@@ -26,10 +27,7 @@ src/
           XxxFormDialog.vue
   api/
     system/
-      xxx/
-        api.ts
-        types.ts
-        index.ts
+      xxx.ts
 mock/
   xxx.ts
 ```
@@ -38,7 +36,7 @@ mock/
 
 - 列表页使用 `index.vue`
 - 页面私有弹窗放在同级 `components/`
-- 接口与类型拆到 `api/模块名/`
+- 接口与类型优先收敛在 `api/模块名.ts`
 - 本地联调时同步补 `mock/`
 
 ## 3. 页面职责拆分
@@ -49,7 +47,7 @@ mock/
 
 - 查询表单
 - 表格展示
-- 分页
+- 分页状态与分页交互（仅在页面需要分页时）
 - 单删与批量删除
 - 弹窗开关
 - 当前编辑行数据
@@ -72,7 +70,7 @@ mock/
 
 不负责：
 
-- 列表分页
+- 列表分页状态与分页交互
 - 表格数据刷新
 - 删除逻辑
 
@@ -83,7 +81,6 @@ mock/
 - `query`
 - `queryFormRef`
 - `tableData`
-- `total`
 - `loading`
 - `selectedIds`
 - `dialogVisible`
@@ -91,19 +88,27 @@ mock/
 - `currentRow`
 - `roleOptions`
 
+按需补充：
+
+- `total`
+- `pageNum / pageSize`
+
 方法命名：
 
 - `fetchList`
 - `fetchRoleOptions`
 - `handleSearch`
 - `handleReset`
-- `handleSizeChange`
 - `handleSelectionChange`
 - `handleCreate`
 - `handleEdit`
 - `handleDelete`
 - `handleBatchDelete`
 - `handleDialogSuccess`
+
+有分页时再补：
+
+- `handleSizeChange`
 
 ### 4.2 弹窗
 
@@ -157,7 +162,7 @@ mock/
 
 约定：
 
-- 查询前重置页码到第 1 页
+- 有分页时，查询前重置页码到第 1 页
 - 重置时调用 `resetFields()`，再刷新列表
 
 ## 6. 列表区规范
@@ -166,7 +171,7 @@ mock/
 
 - 工具栏
 - 表格
-- 分页
+- 分页（可选）
 
 默认能力：
 
@@ -282,11 +287,14 @@ const submitForm = () => {
 
 ## 10. API 与类型规范
 
-每个 CRUD 模块至少包含：
+每个 CRUD 模块默认使用单文件：
 
-- `types.ts`
-- `api.ts`
-- `index.ts`
+- `src/api/system/xxx.ts`
+
+推荐做法：
+
+- 在一个文件中同时维护接口方法和相关类型
+- 模块变复杂后，再拆分为文件夹结构，不要过早分层
 
 推荐接口：
 
@@ -304,6 +312,11 @@ const submitForm = () => {
 - `XxxListResponse`
 - `CreateXxxPayload`
 - `UpdateXxxPayload`
+
+说明：
+
+- 如果页面没有分页，可不定义 `pageNum / pageSize / total`
+- 如果页面没有选项型依赖，可不定义 `getXxxOptionsApi`
 
 ## 11. Mock规范
 
@@ -325,7 +338,7 @@ const submitForm = () => {
 
 新增一个 CRUD 页面后，至少确认：
 
-1. 查询、重置、分页可用
+1. 查询、重置可用；有分页时再确认分页可用
 2. 新增成功后列表可刷新
 3. 编辑时弹窗能正确回显
 4. 关闭弹窗后再次打开无脏数据
@@ -338,8 +351,7 @@ const submitForm = () => {
 
 - `src/views/system/user/index.vue`
 - `src/views/system/user/components/UserFormDialog.vue`
-- `src/api/system/user/api.ts`
-- `src/api/system/user/types.ts`
+- `src/api/system/user.ts`
 - `mock/user.ts`
 
 不建议一开始就做过度抽象。先在 2 到 3 个页面中复用这套结构，等模式稳定后，再考虑抽公共 `composable` 或模板。
