@@ -1,0 +1,4 @@
+interface:
+  display_name: "Form Dialog Standard"
+  short_description: "Standard Vue Element Plus form dialog pattern"
+  default_prompt: "Use $form-dialog-standard to scaffold or review a create/edit form dialog that matches this project's conventions."

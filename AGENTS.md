@@ -1,331 +1,216 @@
 # AGENTS.md
 
-本文件为 AI 编码代理提供项目上下文、实现约束与交付准则，适用于当前仓库根目录及其所有子目录。
+本文件为仓库根目录级别的协作说明，作用域覆盖整个项目。
 
-## 1. 使用目标
+## 1. 项目概览
 
-代理在本项目中工作时，应优先做到以下几点：
+- 项目定位：`Vue 3 + TypeScript + Vite` 的 RBAC 管理后台模板。
+- 当前技术栈：`Vue 3`、`Vue Router 4`、`Pinia`、`Element Plus`、`Tailwind CSS`、`SCSS`、`Axios`、`vite-plugin-mock`。
+- 包管理器：仅使用 `pnpm`。
+- 语言风格：界面文案、文档说明、代码注释以中文为主，保持与现有项目一致。
 
-1. **遵循现有模式**：优先复用项目中已有实现，避免引入新的风格分支。
-2. **小步且精确**：仅修改与任务直接相关的文件，不顺手重构无关代码。
-3. **修复根因**：能从源头解决的问题，不做表层补丁式修改。
-4. **保持可通过检查**：修改后尽量保证类型、Lint、格式化规则可通过。
-5. **文档同步更新**：若改动影响约定、结构、命名或用法，应同步更新相关文档。
-
-## 2. 项目概览
-
-- 项目类型：Vue 3 RBAC 管理后台
-- 技术核心：Vue 3 + TypeScript + Vite 8 + Element Plus + Pinia
-- UI 方案：Element Plus + Tailwind CSS + SCSS
-- 状态管理：Pinia + persistedstate plugin
-- 路由方案：Vue Router 4
-- 网络请求：Axios
-- Mock 方案：vite-plugin-mock
-- 包管理器：`pnpm`
-
-## 3. 环境要求
+## 2. 环境与常用命令
 
 - Node.js：`^20.19.0 || >=22.12.0`
 - pnpm：`>=10 <11`
 
-代理执行命令时默认使用 `pnpm`，不要混用 `npm`、`yarn` 或其他包管理器。
-
-## 4. 常用命令
+常用命令：
 
 ```bash
-# 开发
+pnpm install
 pnpm dev
-
-# 构建
+pnpm run typecheck
+pnpm run lint
+pnpm run check
+pnpm run format
+pnpm run format:check
 pnpm run build:dev
 pnpm run build:staging
 pnpm run build:prod
-pnpm run preview
-
-# 检查
-pnpm run typecheck
-pnpm run lint
-pnpm run lint:fix
-pnpm run format
-pnpm run format:check
-pnpm run check
 ```
 
-说明：
+## 3. 修改前必须了解的约束
 
-- `pnpm run check` = `typecheck + lint`
-- 提交前会执行 `pnpm run check` 与 `pnpm run format:check`
+- 优先做“小而准”的改动，不要随意重构既有目录结构。
+- 不要无故新增依赖；能复用现有工具链时优先复用。
+- 所有导入优先使用 `@/` 别名，不要新增深层相对路径风格。
+- 必须保持 TypeScript 严格模式可通过，避免引入 `any`。
+- 仅类型导入必须使用 `import type`。
+- 不要在 API 层混入页面逻辑，不要在 Store 中堆叠与本模块无关的职责。
+- 如果功能变更会影响文档、Mock、类型或权限配置，必须同步更新。
 
-## 5. 目录结构
+## 4. 目录职责
+
+### 启动与布局
+
+- `src/main.ts`：应用初始化入口。
+- `src/App.vue`：应用根组件。
+- `src/layout/*`：后台布局壳、头部、侧边栏、标签栏、设置抽屉等。
+- `src/components/AppRouterView.vue`：嵌套路由容器与页面承载。
+
+### 路由
+
+- `src/router/static-routes.ts`：登录页、403、404、根布局等静态入口路由。
+- `src/router/module-routes.ts`：聚合静态模块路由。
+- `src/router/modules/*.ts`：新增固定页面时优先在这里加模块路由。
+- `src/router/dynamic-routes.ts`：后端菜单转动态路由。
+- `src/router/guard.ts`：登录校验、会话初始化、动态路由挂载、权限兜底。
+
+### 状态管理
+
+- `src/stores/modules/auth.ts`：登录态、用户信息、会话初始化。
+- `src/stores/modules/permission.ts`：角色、权限、动态路由生命周期。
+- `src/stores/modules/menu.ts`：菜单树、侧边栏、面包屑、首页跳转目标。
+- `src/stores/modules/tabs.ts`：标签页状态。
+- `src/stores/modules/ui.ts`：界面状态，如侧边栏折叠。
+- `src/stores/modules/theme.ts`：主题模式、主题色、CSS 变量同步。
+
+新增状态逻辑时，先判断应落在哪个 store，避免跨模块职责漂移。
+
+### 接口与类型
+
+- `src/api/<domain>/api.ts`：接口函数。
+- `src/api/<domain>/types.ts`：领域类型。
+- `src/api/<domain>/constants.ts`：领域常量。
+- `src/api/<domain>/index.ts`：统一导出。
+- `src/utils/http/*`：请求封装、拦截器、服务地址配置。
+- `src/types/*`：跨领域通用类型。
+
+### 视图与组合逻辑
+
+- `src/views/*`：业务页面。
+- `src/composables/*`：组合式逻辑，适合抽离页面或布局复用行为。
+- `src/directives/modules/*`：按钮级权限指令。
+
+## 5. 代码风格与实现习惯
+
+### Vue 组件
+
+- 统一使用 Vue 3 Composition API 与 `<script setup lang="ts">`。
+- 组件命名遵循现有约定：
+  - 页面组件优先使用 `XxxPage.vue`
+  - 弹窗表单组件优先使用 `XxxFormDialog.vue`
+  - 非页面公共组件使用多单词命名
+- 遵循现有 ESLint 规则，尤其注意：
+  - 必须使用大括号
+  - 严格相等
+  - 不保留 `debugger`
+  - 未使用变量需清理，保留时使用 `_` 前缀
+- 块顺序、模板与脚本分隔、空行风格交给 ESLint/Prettier 保持一致，不要手工对抗格式化结果。
+
+### 表单弹窗
+
+- 参考现有实现：
+  - `src/views/system/role/components/RoleFormDialog.vue`
+  - `src/views/system/user/components/UserFormDialog.vue`
+- 推荐保持以下模式一致：
+  - `defineProps` + `defineEmits` + `defineModel`
+  - 使用 `useTemplateRef` 获取 `FormInstance`
+  - 在 `open` 时回填编辑数据
+  - 在 `closed` 时 `resetFields`
+  - 使用独立的 `isSubmitLoading`
+  - 成功后关闭弹窗并触发 `success`
+
+### API 与类型
+
+- 接口函数命名统一为 `XxxApi`。
+- 请求与响应类型按现有约定命名：
+  - 请求体：`XxxPayload`
+  - 查询参数：`XxxQuery`
+  - 列表项：`XxxItem`
+  - 响应体：`XxxResponse`
+- 统一通过 `request<T>()` 发请求，不要在业务 API 中直接散落 Axios 调用。
+- 服务地址通过 `ServiceName` 选择，不要在 API 层写死 `baseURL`。
+- 保持现有响应壳结构：`{ code, data, message }`。
+- 数据字段类型以现有领域定义为准；如果某个模块当前使用 `number` 类型 ID，不要单独改成 `string`，除非连同接口、Mock、表格和表单一起做完整一致性改造。
+
+### Store 与权限
+
+- `auth` 只处理登录态与用户会话。
+- `permission` 只处理角色、权限集合和动态路由挂载。
+- `menu` 只处理菜单衍生结构与导航体验。
+- 页面级权限走路由 `meta.permission` 与守卫。
+- 按钮级权限走 `v-permission` 或 `v-role`。
+
+## 6. 功能开发落点规则
+
+### 新增页面
+
+1. 在 `src/views/...` 新建页面组件。
+2. 根据需求选择路由接入方式：
+   - 固定页面：加到 `src/router/modules/*.ts`
+   - 动态页面：由后端或 Mock 的 `menus` 返回菜单节点
+3. 页面需要出现在导航中时，补齐 `meta.title`，按需配置 `icon`、`rank`、`hidden`。
+4. 需要权限控制时，补 `meta.permission`。
+5. 页面内按钮权限使用 `v-permission` 或 `v-role`。
+
+### 新增接口域
+
+目录结构保持为：
 
 ```text
-src/
-├── api/              # API 模块，按业务域组织
-├── assets/           # 静态资源
-├── components/       # 公共组件
-├── composables/      # 组合式函数
-├── config/           # 配置文件
-├── directives/       # 自定义指令
-├── layout/           # 布局组件
-├── router/           # 路由配置
-├── stores/           # Pinia 状态管理
-├── styles/           # 全局样式
-├── types/            # 全局类型定义
-├── utils/            # 工具函数
-└── views/            # 页面组件
-mock/                 # Mock 数据
-docs/                 # 项目文档
+src/api/example/
+  api.ts
+  types.ts
+  constants.ts   # 仅在确有领域常量时添加
+  index.ts
 ```
 
-## 6. 代理实现原则
+同时关注：
 
-### 6.1 修改策略
+- 必要时同步补 `mock/`。
+- 如果接口接入新服务地址，先改 `src/utils/http` 相关配置。
+- 不要把字段转换、表单回填、消息提示等页面逻辑塞进 `api.ts`。
 
-- 优先查找相邻模块、同类页面、同业务域实现后再动手。
-- 若用户要求新增页面、表单、弹窗、接口，优先参考已有同类目录结构。
-- 不主动修改无关命名、排序、文件位置、导出方式。
-- 除非任务明确要求，否则不要引入新依赖。
-- 除非任务明确要求，否则不要大规模格式化整个仓库。
-
-### 6.2 输出质量
+### 新增权限点
 
-- 保持 TypeScript 严格模式兼容。
-- 避免使用 `any`，未知结构使用 `unknown`。
-- 类型导入必须使用 `import type`。
-- 代码应与现有风格保持一致，避免“看起来像另一套模板”。
+- 页面级：路由增加 `meta.permission`。
+- 按钮级：模板增加 `v-permission` 或 `v-role`。
+- 同步更新权限来源：
+  - Mock 或后端返回的 `permissions`
+  - 如需出现在菜单中，还要同步 `menus`
 
-### 6.3 优先参考
-
-以下内容优先作为实现基准：
+### 新增动态菜单页面
 
-- CRUD 页面：参考 `src/views/system/user/`
-- API 模块：参考 `src/api/system/user/`
-- 详细规范：参考 `docs/` 目录对应文档
+- 菜单节点的 `component` 字段必须相对 `src/views`，且不带 `.vue`。
+- `name` 必须稳定且唯一。
+- 容器路由使用 `router-view` 语义时，优先保持与现有动态路由转换逻辑兼容。
 
-## 7. 代码规范
+## 7. 变更同步原则
 
-### 7.1 Prettier
+以下改动通常需要联动更新，不要只改一处：
 
-- 行宽：100
-- 缩进：2 空格
-- 引号：双引号
-- 分号：必须保留
-- 尾随逗号：全部保留
-- 箭头函数参数括号：始终保留
-- 换行符：LF
-- 使用 `prettier-plugin-tailwindcss` 自动排序 Tailwind 类名
+- 改接口字段：同步改 `types`、页面消费代码、Mock、必要文档。
+- 改权限：同步改路由、按钮指令、权限数据、菜单数据。
+- 改动态路由：同步验证侧边栏、面包屑、标签页、首页跳转逻辑。
+- 改主题/UI 状态：同步检查持久化逻辑与默认值兼容性。
+- 改登录/初始化链路：同步检查守卫、动态路由挂载、退出登录清理。
 
-### 7.2 ESLint 关键规则
+## 8. 提交前检查
 
-- `curly: ["error", "all"]`：所有控制语句必须使用花括号
-- `eqeqeq: ["error", "always"]`：必须使用严格相等
-- `no-debugger: "error"`：禁止 `debugger`
-- `no-console: "warn"`：仅允许 `console.warn` / `console.error`
-- `@typescript-eslint/consistent-type-imports: "error"`：类型导入必须使用 `import type`
-- `@typescript-eslint/no-unused-vars: "error"`：未使用变量会报错，`_` 前缀例外
-- `vue/block-order`：Vue SFC 块顺序必须为 `template` → `script` → `style`
-- `vue/padding-line-between-blocks: ["error", "always"]`：SFC 块之间必须保留空行
-- `vue/multi-word-component-names: "error"`：组件名必须为多词，`Index` 例外
-- `vue/prefer-use-template-ref: "error"`：优先使用 `useTemplateRef`
-
-### 7.3 TypeScript 约定
+至少根据改动范围执行对应检查：
 
-- 开启严格模式
-- 路径别名：`@/*` → `src/*`
-- 对象结构优先使用 `interface`
-- 联合类型、映射类型、工具类型优先使用 `type`
-
-## 8. 命名约定
-
-| 类型        | 命名格式          | 示例                       |
-| ----------- | ----------------- | -------------------------- |
-| 组件文件    | PascalCase        | `UserFormDialog.vue`       |
-| 组合式函数  | `use` + camelCase | `useBreadcrumbs.ts`        |
-| Store 模块  | camelCase         | `useAuthStore`             |
-| API 函数    | camelCase + `Api` | `getUserListApi`           |
-| 类型 / 接口 | PascalCase        | `UserItem`、`LoginPayload` |
-| 常量        | UPPER_SNAKE_CASE  | `USER_STATUS`              |
+- 类型相关改动后执行：`pnpm run typecheck`
+- 代码改动后执行：`pnpm run lint`
+- 提交前建议执行：`pnpm run check`
+- 批量改动或样式调整后执行：`pnpm run format` 与 `pnpm run format:check`
 
-## 9. Vue 组件约定
+如果改动涉及以下关键链路，建议手工验证：
 
-### 9.1 推荐结构
+- 登录
+- 首次进入受保护页面
+- 动态路由注入
+- 标签页联动
+- 权限按钮显示/隐藏
+- 退出登录后的路由清理
 
-```vue
-<template>
-  <!-- 模板内容 -->
-</template>
-
-<script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
-import type { FormInstance } from "element-plus";
+## 9. 参考文档
 
-defineOptions({ name: "ComponentName" });
+以下文档是本仓库的重要补充说明，修改相关模块前建议先看：
 
-const props = defineProps<{
-  /* ... */
-}>();
-
-const emit = defineEmits<{
-  /* ... */
-}>();
+- `docs/01-项目架构.md`
+- `docs/05-开发与扩展.md`
+- `docs/06.代码规范.md`
+- `docs/07.接口和类型规范.md`
 
-const loading = ref(false);
-const formData = reactive({
-  /* ... */
-});
-
-const handleSubmit = async () => {
-  /* ... */
-};
-
-onMounted(() => {
-  /* ... */
-});
-</script>
-
-<style scoped lang="scss">
-/* 样式 */
-</style>
-```
-
-### 9.2 编写要求
-
-- 使用 Vue 3 Composition API 与 `<script setup>`
-- 组件名应与文件职责一致，且使用多词命名
-- Props、Emits、状态、方法、生命周期建议按固定顺序组织
-- 模板引用优先使用 `useTemplateRef`
-- 关键标识字段（如用户名、编码、路径、手机号、邮箱）不要只依赖 `trim`，优先在 `getFormData()`、查询请求参数或提交载荷中使用 `removeAllSpace()` 去除所有空白字符
-
-## 10. API 模块规范
-
-### 10.1 推荐目录结构
-
-```text
-src/api/system/user/
-├── api.ts
-├── types.ts
-├── constants.ts
-└── index.ts
-```
-
-### 10.2 编写规范
-
-```ts
-import { request } from "@/utils/http";
-import type { UserListQuery, UserListResponse } from "./types";
-
-export const getUserListApi = (params: UserListQuery) => {
-  return request<UserListResponse>("/system/users/list", "MOCK", {
-    method: "post",
-    data: params,
-  });
-};
-```
-
-### 10.3 类型命名
-
-- 请求体：`XxxPayload`
-- 查询参数：`XxxQuery`
-- 列表项：`XxxItem`
-- 响应体：`XxxResponse`
-
-### 10.4 响应结构
-
-```ts
-interface ApiResponse<T> {
-  code: number;
-  data: T;
-  message: string;
-}
-```
-
-约定：`code === 0` 表示成功。
-
-## 11. CRUD 页面规范
-
-新增或改造 CRUD 页面时，优先对齐 `src/views/system/user/` 的组织方式。
-
-### 11.1 列表页推荐命名
-
-- `query`：查询参数
-- `queryFormRef`：查询表单引用
-- `tableData`：表格数据
-- `loading`：加载状态
-- `selectedIds`：选中 ID 集合
-- `dialogVisible`：弹窗显示状态
-- `isEdit`：是否编辑模式
-- `currentRow`：当前编辑行
-
-### 11.2 方法命名
-
-- `fetchList`：获取列表
-- `handleSearch`：执行查询
-- `handleCreate`：新增
-- `handleEdit`：编辑
-- `handleDelete`：删除
-- `handleBatchDelete`：批量删除
-
-### 11.3 弹窗组件要求
-
-- 使用 `defineModel<boolean>()` 管理显隐
-- 在 `open` 回调中处理数据回显
-- 在 `closed` 回调中重置表单状态
-- 关闭弹窗时，表单重置优先使用 `formRef.value?.resetFields()`
-- 除非存在 `resetFields()` 无法覆盖的额外本地状态，否则不要额外引入 `createDefaultForm` 一类初始化函数
-
-## 12. 错误处理约定
-
-### 12.1 API 调用
-
-```ts
-const response = await someApi(params);
-if (response.code !== 0) {
-  return;
-}
-```
-
-### 12.2 删除确认
-
-```ts
-try {
-  await ElMessageBox.confirm("确认删除？", "提示", { type: "warning" });
-} catch {
-  return;
-}
-```
-
-要求：
-
-- 业务失败时直接返回，不继续执行后续逻辑
-- 用户取消确认时直接返回，不提示错误
-
-## 13. 提交前检查
-
-Husky 会在提交前执行以下命令：
-
-- `pnpm run check`
-- `pnpm run format:check`
-
-代理在可行时应确保改动不会破坏以上检查。
-
-## 14. 文档索引
-
-如需更详细规范，请优先查看 `docs/` 目录：
-
-- `docs/01-项目架构.md`：架构设计
-- `docs/02-路由使用.md`：路由规范
-- `docs/03-RBAC与权限.md`：权限模型
-- `docs/04-Mock接口规范.md`：Mock 规范
-- `docs/06.代码规范.md`：详细代码规范
-- `docs/07.接口和类型规范.md`：API 与类型规范
-- `docs/08-弹窗组件规范.md`：弹窗规范
-- `docs/CRUD页面规范.md`：CRUD 页面规范
-
-## 15. 给代理的最终提醒
-
-在开始实现前，先判断“是否已有相似实现”；在提交修改前，再检查以下四项：
-
-1. 命名是否与本仓库一致
-2. 类型是否完整且无 `any`
-3. 结构是否沿用现有模式
-4. 是否需要同步更新文档或导出
+如果实际代码与文档不一致，以当前仓库代码实现为准；完成修复或重构后再补齐文档。
