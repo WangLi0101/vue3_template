@@ -1,9 +1,16 @@
 import js from "@eslint/js";
+import separateTypeImportsRule from "./eslint/rules/separate-type-imports.js";
 import eslintConfigPrettier from "eslint-config-prettier";
 import pluginVue from "eslint-plugin-vue";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import vueParser from "vue-eslint-parser";
+
+const localRulesPlugin = {
+  rules: {
+    "separate-type-imports": separateTypeImportsRule,
+  },
+};
 
 export default [
   {
@@ -58,12 +65,16 @@ export default [
   },
   {
     files: ["**/*.{ts,mts,cts,tsx,vue}"],
+    plugins: {
+      local: localRulesPlugin,
+    },
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/consistent-type-imports": [
         "error",
         {
           prefer: "type-imports",
+          fixStyle: "separate-type-imports",
           disallowTypeAnnotations: false,
         },
       ],
@@ -75,6 +86,7 @@ export default [
           caughtErrorsIgnorePattern: "^_",
         },
       ],
+      "local/separate-type-imports": "error",
     },
   },
   {

@@ -1,5 +1,6 @@
 import type { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { ApiRequestError, type ApiResponse } from "@/types/http";
+import type { ApiResponse } from "@/types/http";
+import { ApiRequestError } from "@/types/http";
 import { formatToken, getToken } from "@/utils/token";
 import { handlerError, handlerHttpError } from "./code";
 import { isDownloadResponseType } from "./types";

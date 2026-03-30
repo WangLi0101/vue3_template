@@ -1,7 +1,9 @@
 import type { ServerResponse } from "node:http";
 import type { MockMethod } from "vite-plugin-mock";
-import { ROLE_STATUS, type RoleStatus } from "../src/api/system/role/constants";
-import { USER_STATUS, type UserStatus } from "../src/api/system/user/constants";
+import type { RoleStatus } from "../src/api/system/role/constants";
+import type { UserStatus } from "../src/api/system/user/constants";
+import { ROLE_STATUS } from "../src/api/system/role/constants";
+import { USER_STATUS } from "../src/api/system/user/constants";
 import type { ApiResponse } from "../src/types/http";
 import { removeAllSpace } from "../src/utils/tool";
 import { mockProfiles } from "./data/rbac-data";

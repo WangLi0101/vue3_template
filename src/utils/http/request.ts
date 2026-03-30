@@ -1,14 +1,16 @@
 import type { AxiosResponse } from "axios";
-import { SERVICE_URL_MAP, type ServiceName } from "@/config/api";
-import { ApiRequestError, type ApiResponse } from "@/types/http";
-import { http } from "./client";
-import {
-  type DownloadDataMap,
-  type DownloadRequestConfig,
-  type DownloadResponseType,
-  type RequestConfig,
-  isDownloadResponseType,
+import type { ServiceName } from "@/config/api";
+import type {
+  DownloadDataMap,
+  DownloadRequestConfig,
+  DownloadResponseType,
+  RequestConfig,
 } from "./types";
+import type { ApiResponse } from "@/types/http";
+import { SERVICE_URL_MAP } from "@/config/api";
+import { ApiRequestError } from "@/types/http";
+import { http } from "./client";
+import { isDownloadResponseType } from "./types";
 
 export function request<T, D = unknown>(
   url: string,

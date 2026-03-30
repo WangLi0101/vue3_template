@@ -87,13 +87,8 @@
 import { onMounted, reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance } from "element-plus";
-import {
-  batchDeleteRolesApi,
-  deleteRoleApi,
-  getRoleListApi,
-  type RoleItem,
-  type RoleListQuery,
-} from "@/api/system/role";
+import type { RoleItem, RoleListQuery } from "@/api/system/role";
+import { batchDeleteRolesApi, deleteRoleApi, getRoleListApi } from "@/api/system/role";
 import { removeAllSpace } from "@/utils/tool";
 import RoleFormDialog from "./components/RoleFormDialog.vue";
 

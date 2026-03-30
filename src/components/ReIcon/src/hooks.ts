@@ -1,5 +1,6 @@
 import type { iconType } from "./types";
-import { defineComponent, h, type Component } from "vue";
+import type { Component } from "vue";
+import { defineComponent, h } from "vue";
 import type { IconifyIcon as IconifyIconType } from "@iconify/vue/dist/offline";
 import { IconifyIconOnline, IconifyIconOffline, FontIcon } from "../index";
 

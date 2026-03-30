@@ -1,4 +1,5 @@
-import { h, defineComponent, type PropType } from "vue";
+import type { PropType } from "vue";
+import { h, defineComponent } from "vue";
 import { Icon as IconifyIcon } from "@iconify/vue/dist/offline";
 import type { IconifyIcon as IconifyIconType } from "@iconify/vue/dist/offline";
 

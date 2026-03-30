@@ -70,8 +70,10 @@
 
 <script setup lang="ts">
 import { reactive, ref, useTemplateRef } from "vue";
-import { ElMessage, type FormInstance, type FormRules } from "element-plus";
-import { createRoleApi, ROLE_STATUS, updateRoleApi, type RoleItem } from "@/api/system/role";
+import type { FormInstance, FormRules } from "element-plus";
+import type { RoleItem } from "@/api/system/role";
+import { ElMessage } from "element-plus";
+import { createRoleApi, ROLE_STATUS, updateRoleApi } from "@/api/system/role";
 import { removeAllSpace } from "@/utils/tool";
 
 interface Props {

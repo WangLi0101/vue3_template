@@ -124,14 +124,10 @@
 
 <script setup lang="ts">
 import { reactive, ref, useTemplateRef } from "vue";
-import { ElMessage, type FormInstance, type FormRules } from "element-plus";
-import {
-  createUserApi,
-  updateUserApi,
-  type RoleOption,
-  USER_STATUS,
-  type UserItem,
-} from "@/api/system/user";
+import type { FormInstance, FormRules } from "element-plus";
+import type { RoleOption, UserItem } from "@/api/system/user";
+import { ElMessage } from "element-plus";
+import { createUserApi, updateUserApi, USER_STATUS } from "@/api/system/user";
 import { removeAllSpace } from "@/utils/tool";
 
 interface Props {
