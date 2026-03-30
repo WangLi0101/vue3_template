@@ -7,47 +7,35 @@
     @open="open"
     @closed="closed"
   >
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="88px">
-      <el-row :gutter="16">
-        <el-col :span="12">
-          <el-form-item label="角色名称" prop="name">
-            <el-input
-              v-model.trim="form.name"
-              maxlength="20"
-              placeholder="请输入角色名称"
-              style="width: 220px"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="角色编码" prop="code">
-            <el-input
-              v-model="form.code"
-              maxlength="30"
-              placeholder="请输入角色编码"
-              style="width: 220px"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="16">
-        <el-col :span="12">
-          <el-form-item label="排序" prop="sort">
-            <el-input-number v-model="form.sort" :min="0" :max="999" style="width: 220px" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="状态" prop="status">
-            <el-switch
-              v-model="form.status"
-              :active-value="ROLE_STATUS.ENABLED"
-              :inactive-value="ROLE_STATUS.DISABLED"
-              active-text="启用"
-              inactive-text="停用"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
+    <el-form ref="formRef" :model="form" :rules="rules" label-width="88px" class="role-form">
+      <el-form-item label="角色名称" prop="name">
+        <el-input
+          v-model.trim="form.name"
+          maxlength="20"
+          placeholder="请输入角色名称"
+          style="width: 320px"
+        />
+      </el-form-item>
+      <el-form-item label="角色编码" prop="code">
+        <el-input
+          v-model="form.code"
+          maxlength="30"
+          placeholder="请输入角色编码"
+          style="width: 320px"
+        />
+      </el-form-item>
+      <el-form-item label="排序" prop="sort">
+        <el-input-number v-model="form.sort" :min="0" :max="999" style="width: 180px" />
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-switch
+          v-model="form.status"
+          :active-value="ROLE_STATUS.ENABLED"
+          :inactive-value="ROLE_STATUS.DISABLED"
+          active-text="启用"
+          inactive-text="停用"
+        />
+      </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input
           v-model="form.remark"
