@@ -11,13 +11,48 @@ const DEFAULT_RANK = Number.MAX_SAFE_INTEGER;
 const normalizeComponent = (component: string): string =>
   component.replace(/^\/+/, "").replace(/\/+$/, "");
 
-// 合并父子路由路径，同时兼容绝对路径和根路径场景。
-const joinPath = (parentPath: string, currentPath: string): string => {
-  if (currentPath.startsWith("/")) return currentPath;
+const trimSlashes = (path: string): string => path.replace(/^\/+/, "").replace(/\/+$/, "");
 
-  const normalizedParent = parentPath === "/" ? "" : parentPath;
-  const merged = `${normalizedParent}/${currentPath}`;
-  return merged.replace(/\/+/g, "/").replace(/\/$/, "") || "/";
+const normalizeFullPath = (path: string): string => {
+  const normalized = trimSlashes(path);
+  return normalized ? `/${normalized}` : "/";
+};
+
+const isNestedFullPath = (parentPath: string, currentPath: string): boolean => {
+  const normalizedParent = trimSlashes(parentPath);
+  const normalizedCurrent = trimSlashes(currentPath);
+
+  if (!normalizedParent || !normalizedCurrent) return false;
+  return (
+    normalizedCurrent === normalizedParent || normalizedCurrent.startsWith(`${normalizedParent}/`)
+  );
+};
+
+// 合并父子路由路径，同时兼容绝对路径、相对路径和完整路径场景。
+const joinPath = (parentPath: string, currentPath: string): string => {
+  if (currentPath.startsWith("/")) return normalizeFullPath(currentPath);
+  if (isNestedFullPath(parentPath, currentPath)) return normalizeFullPath(currentPath);
+
+  const normalizedParent = trimSlashes(parentPath);
+  const normalizedCurrent = trimSlashes(currentPath);
+
+  if (!normalizedParent) return normalizeFullPath(normalizedCurrent);
+  if (!normalizedCurrent) return normalizeFullPath(normalizedParent);
+  return normalizeFullPath(`${normalizedParent}/${normalizedCurrent}`);
+};
+
+// 动态路由的 child.path 仍需保持相对父级，完整路径要转换成相对段。
+const resolveRoutePath = (parentPath: string, currentPath: string): string => {
+  if (currentPath.startsWith("/")) return normalizeFullPath(currentPath);
+
+  const normalizedParent = trimSlashes(parentPath);
+  const normalizedCurrent = trimSlashes(currentPath);
+
+  if (!normalizedParent || !normalizedCurrent) return normalizedCurrent || "/";
+  if (!isNestedFullPath(parentPath, currentPath)) return normalizedCurrent;
+
+  const relativePath = normalizedCurrent.slice(normalizedParent.length).replace(/^\/+/, "");
+  return relativePath || normalizedCurrent;
 };
 
 // 提取菜单排序权重，非法值统一回退到默认值。
@@ -92,7 +127,7 @@ const menuToRoute = (menu: AppMenu, parentPath = ""): RouteRecordRaw => {
   const currentPath = joinPath(parentPath, menu.path);
   const sortedChildren = menu.children?.length ? sortMenusByRank(menu.children) : [];
   const route = {
-    path: menu.path,
+    path: resolveRoutePath(parentPath, menu.path),
     name: menu.name,
     component: resolveComponent(menu),
     meta: {

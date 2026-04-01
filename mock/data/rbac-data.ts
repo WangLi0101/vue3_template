@@ -34,7 +34,7 @@ const adminMenus: AppMenu[] = [
       {
         id: "210",
         name: "SystemUser",
-        path: "user",
+        path: "system/user",
         component: "system/user/index",
         meta: {
           title: "用户管理",
@@ -45,7 +45,7 @@ const adminMenus: AppMenu[] = [
       {
         id: "220",
         name: "SystemRole",
-        path: "role",
+        path: "system/role",
         component: "system/role/index",
         meta: {
           title: "角色管理",
@@ -55,7 +55,7 @@ const adminMenus: AppMenu[] = [
       {
         id: "230",
         name: "SystemMenu",
-        path: "menu",
+        path: "system/menu",
         component: "system/menu/index",
         meta: {
           title: "菜单管理",
@@ -65,7 +65,7 @@ const adminMenus: AppMenu[] = [
       {
         id: "240",
         name: "SystemPermission",
-        path: "permission",
+        path: "system/permission",
         component: "system/permission/index",
         meta: {
           title: "权限管理",
@@ -101,7 +101,7 @@ const auditorMenus: AppMenu[] = [
       {
         id: "240",
         name: "SystemPermission",
-        path: "permission",
+        path: "system/permission",
         component: "system/permission/index",
         meta: {
           title: "权限管理",

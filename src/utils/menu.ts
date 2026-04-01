@@ -27,16 +27,36 @@ export interface BreadcrumbItem {
   path: string;
 }
 
-// 统一拼接父子路径，避免出现重复斜杠，并兼容绝对路径子节点。
+const trimSlashes = (path: string): string => path.replace(/^\/+/, "").replace(/\/+$/, "");
+
+const normalizeFullPath = (path: string): string => {
+  const normalized = trimSlashes(path);
+  return normalized ? `/${normalized}` : "/";
+};
+
+// 兼容后端直接返回完整路径，如 "system/user"。
+const isNestedFullPath = (parentPath: string, currentPath: string): boolean => {
+  const normalizedParent = trimSlashes(parentPath);
+  const normalizedCurrent = trimSlashes(currentPath);
+
+  if (!normalizedParent || !normalizedCurrent) return false;
+  return (
+    normalizedCurrent === normalizedParent || normalizedCurrent.startsWith(`${normalizedParent}/`)
+  );
+};
+
+// 统一拼接父子路径，避免出现重复斜杠，并兼容绝对路径子节点和完整路径子节点。
 const joinPath = (parentPath: string, currentPath: string): string => {
   // 子节点如果已经是绝对路径，直接返回，避免重复拼接父路径。
-  if (currentPath.startsWith("/")) return currentPath;
+  if (currentPath.startsWith("/")) return normalizeFullPath(currentPath);
+  if (isNestedFullPath(parentPath, currentPath)) return normalizeFullPath(currentPath);
 
-  // 父路径为根时不额外保留 "/"，避免出现 "//child"。
-  const normalizedParent = parentPath === "/" ? "" : parentPath;
-  const merged = `${normalizedParent}/${currentPath}`;
-  // 清理重复斜杠，并把非根路径的尾部 "/" 去掉。
-  return merged.replace(/\/+/g, "/").replace(/\/$/, "") || "/";
+  const normalizedParent = trimSlashes(parentPath);
+  const normalizedCurrent = trimSlashes(currentPath);
+
+  if (!normalizedParent) return normalizeFullPath(normalizedCurrent);
+  if (!normalizedCurrent) return normalizeFullPath(normalizedParent);
+  return normalizeFullPath(`${normalizedParent}/${normalizedCurrent}`);
 };
 
 // 没有配置 rank 时统一放到最后。
