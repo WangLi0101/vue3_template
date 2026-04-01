@@ -5,13 +5,13 @@ export interface ApiResponse<T> {
 }
 
 export class ApiRequestError extends Error {
+  code: number;
   httpStatus: number;
-  businessCode: number;
 
-  constructor(message: string, httpStatus: number, businessCode: number) {
+  constructor(message: string, code: number, httpStatus = 0) {
     super(message);
     this.name = "ApiRequestError";
+    this.code = code;
     this.httpStatus = httpStatus;
-    this.businessCode = businessCode;
   }
 }

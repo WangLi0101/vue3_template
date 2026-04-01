@@ -1,14 +1,17 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import {
   getCurrentUserApi,
   getMenusApi,
   getPermissionsApi,
   getRolesApi,
   loginApi,
+  refreshTokenApi,
 } from "@/api/auth/api";
 import type { AuthUser, LoginPayload } from "@/api/auth/types";
-import { clearToken, getToken, setToken } from "@/utils/token";
+import router from "@/router";
+import { ApiRequestError } from "@/types/http";
+import { clearAuthTokens, getAccessToken, getRefreshToken, setAuthTokens } from "@/utils/token";
 import { useMenuStore } from "./menu";
 import { usePermissionStore } from "./permission";
 import { useTabsStore } from "./tabs";
@@ -17,10 +20,8 @@ export const useAuthStore = defineStore("auth", () => {
   const menuStore = useMenuStore();
   const permissionStore = usePermissionStore();
   const tabsStore = useTabsStore();
-  const token = ref<string>(getToken());
   const user = ref<AuthUser | null>(null);
   const isInitialized = ref(false);
-  const isLoggedIn = computed(() => Boolean(token.value));
 
   const login = async (payload: LoginPayload): Promise<boolean> => {
     const response = await loginApi(payload);
@@ -28,14 +29,31 @@ export const useAuthStore = defineStore("auth", () => {
       return false;
     }
 
-    token.value = response.data.accessToken;
-    setToken(response.data.accessToken);
+    setAuthTokens(response.data);
     isInitialized.value = false;
     return true;
   };
 
+  const refreshToken = async (): Promise<string> => {
+    const currentRefreshToken = getRefreshToken();
+    if (!currentRefreshToken) {
+      throw new ApiRequestError("缺少刷新令牌", 40102);
+    }
+
+    const response = await refreshTokenApi({
+      refreshToken: currentRefreshToken,
+    });
+
+    if (response.code !== 0) {
+      throw new ApiRequestError(response.message, response.code);
+    }
+
+    setAuthTokens(response.data);
+    return response.data.accessToken;
+  };
+
   const initializeSession = async (): Promise<boolean> => {
-    if (!token.value) {
+    if (!getAccessToken()) {
       throw new Error("缺少登录态");
     }
 
@@ -62,22 +80,28 @@ export const useAuthStore = defineStore("auth", () => {
     return true;
   };
 
-  const logoutLocal = (): void => {
-    token.value = "";
+  const logoutLocal = async (): Promise<void> => {
     user.value = null;
     isInitialized.value = false;
-    clearToken();
+    clearAuthTokens();
     tabsStore.reset();
     permissionStore.reset();
     menuStore.reset();
+
+    if (router.currentRoute.value.name === "Login") {
+      return;
+    }
+
+    await router.replace({
+      name: "Login",
+    });
   };
 
   return {
-    token,
     user,
     isInitialized,
-    isLoggedIn,
     login,
+    refreshToken,
     initializeSession,
     logoutLocal,
   };

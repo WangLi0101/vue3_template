@@ -5,6 +5,8 @@ import type {
   LoginResponse,
   MenusResponse,
   PermissionsResponse,
+  RefreshTokenPayload,
+  RefreshTokenResponse,
   RolesResponse,
 } from "@/api/auth/types";
 
@@ -12,6 +14,15 @@ export const loginApi = (payload: LoginPayload) => {
   return request<LoginResponse>("/auth/login", "MOCK", {
     method: "post",
     data: payload,
+    isPublic: true,
+  });
+};
+
+export const refreshTokenApi = (payload: RefreshTokenPayload) => {
+  return request<RefreshTokenResponse>("/auth/refresh", "MOCK", {
+    method: "post",
+    data: payload,
+    isPublic: true,
   });
 };
 

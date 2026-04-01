@@ -2,7 +2,9 @@ import type { AxiosRequestConfig, AxiosResponse } from "axios";
 import type { ApiResponse } from "@/types/http";
 
 export type HttpResponse<T> = AxiosResponse<ApiResponse<T>>;
-export type RequestConfig<D> = Omit<AxiosRequestConfig<D>, "url" | "baseURL">;
+export interface RequestConfig<D> extends Omit<AxiosRequestConfig<D>, "url" | "baseURL"> {
+  isPublic?: boolean;
+}
 
 export type DownloadResponseType = "blob" | "arraybuffer";
 

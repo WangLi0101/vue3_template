@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/stores/modules/auth";
 import { useMenuStore } from "@/stores/modules/menu";
 import { usePermissionStore } from "@/stores/modules/permission";
+import { getAccessToken } from "@/utils/token";
 import type { Router } from "vue-router";
 import NProgress from "@/utils/progress";
 
@@ -23,14 +24,14 @@ export const setupRouterGuards = (router: Router): void => {
     const permissionStore = usePermissionStore();
 
     if (to.meta.public) {
-      if (to.name === "Login" && authStore.isLoggedIn) {
+      if (to.name === "Login" && getAccessToken()) {
         return "/";
       }
 
       return true;
     }
 
-    if (!authStore.token) {
+    if (!getAccessToken()) {
       return {
         name: "Login",
         query: {
@@ -43,13 +44,8 @@ export const setupRouterGuards = (router: Router): void => {
       try {
         const sessionReady = await authStore.initializeSession();
         if (!sessionReady) {
-          authStore.logoutLocal();
-          return {
-            name: "Login",
-            query: {
-              redirect: to.fullPath,
-            },
-          };
+          await authStore.logoutLocal();
+          return false;
         }
 
         permissionStore.mountDynamicRoutes(router, menuStore.dynamicRoutes);
@@ -67,13 +63,8 @@ export const setupRouterGuards = (router: Router): void => {
           replace: true,
         };
       } catch (_error) {
-        authStore.logoutLocal();
-        return {
-          name: "Login",
-          query: {
-            redirect: to.fullPath,
-          },
-        };
+        await authStore.logoutLocal();
+        return false;
       }
     }
 

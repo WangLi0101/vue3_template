@@ -1,5 +1,6 @@
 import { ElMessage } from "element-plus";
 import type { ApiResponse } from "@/types/http";
+
 const showMessage = (message: string) => {
   ElMessage.error({
     message,
@@ -9,20 +10,19 @@ const showMessage = (message: string) => {
   });
 };
 
+interface HandlerErrorOptions {
+  silent?: boolean;
+}
+
 // 逻辑状态码
-export const handlerError = <T>(payload: ApiResponse<T>) => {
+export const handlerError = <T>(payload: ApiResponse<T>, options?: HandlerErrorOptions) => {
+  if (options?.silent) {
+    return;
+  }
+
   switch (payload.code) {
     default:
       showMessage(payload.message);
-      break;
-  }
-};
-
-// http状态码
-export const handlerHttpError = (code: number, message: string) => {
-  switch (code) {
-    default:
-      showMessage(message);
       break;
   }
 };

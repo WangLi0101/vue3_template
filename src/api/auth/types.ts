@@ -14,9 +14,18 @@ export interface LoginPayload {
   password: string;
 }
 
-export interface LoginResponse {
+export interface TokenPair {
   accessToken: string;
+  refreshToken: string;
 }
+
+export type LoginResponse = TokenPair;
+
+export interface RefreshTokenPayload {
+  refreshToken: string;
+}
+
+export type RefreshTokenResponse = TokenPair;
 
 export interface CurrentUserResponse {
   user: AuthUser;

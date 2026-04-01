@@ -66,7 +66,8 @@ viteMockServe({
 {
   "code": 0,
   "data": {
-    "accessToken": "token-admin"
+    "accessToken": "access-token-admin",
+    "refreshToken": "refresh-token-admin"
   },
   "message": "success"
 }
@@ -75,7 +76,9 @@ viteMockServe({
 后续读取用户、角色、权限、菜单时：
 
 - 通过请求头 `Authorization: Bearer <token>` 解析当前用户
-- token 规则为 `token-<username>`
+- access token 规则为 `access-token-<username>`
+- refresh token 规则为 `refresh-token-<username>`
+- `POST /api/auth/refresh` 使用请求体中的 `refreshToken` 换取新的双 token
 - 缺少 token 时返回 `401 + code=40101`
 - token 无效或登录过期时返回 `401 + code=40102`
 

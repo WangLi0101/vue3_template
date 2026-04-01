@@ -48,22 +48,23 @@ interface MenusResponse {
 ## 登录与初始化时序
 
 1. 登录页调用 `authStore.login()`。
-2. 登录成功后保存 `accessToken` 到本地存储。
-3. 进入非公开路由时，守卫检查 token；无 token 则跳到 `/login?redirect=...`。
-4. 首次有 token 且 `!authStore.isInitialized` 时，调用 `authStore.initializeSession()`。
-5. `initializeSession()` 内部并行请求：
+2. 登录成功后保存 `accessToken` 和 `refreshToken` 到本地存储。
+3. 进入非公开路由时，守卫检查 `accessToken`；无 token 则跳到 `/login?redirect=...`。
+4. 当 `accessToken` 过期且 `refreshToken` 仍有效时，请求拦截器会自动刷新 token 并重试当前请求。
+5. 首次有 token 且 `!authStore.isInitialized` 时，调用 `authStore.initializeSession()`。
+6. `initializeSession()` 内部并行请求：
    - `getCurrentUserApi()`
    - `getRolesApi()`
    - `getPermissionsApi()`
    - `getMenusApi()`
-6. 若任一接口 `code !== 0`，初始化失败，守卫会清理本地登录态并回到登录页。
-7. 初始化成功后：
+7. 若任一接口 `code !== 0`，初始化失败，守卫会清理本地登录态并回到登录页。
+8. 初始化成功后：
    - `authStore.user = 当前用户`
    - `permissionStore.setRoles(roles)`
    - `permissionStore.setPermissions(permissions)`
    - `menuStore.setMenus(menus)`
    - `tabsStore.syncHomeTag()`
-8. 守卫随后挂载动态路由，并重新进入当前目标路由。
+9. 守卫随后挂载动态路由，并重新进入当前目标路由。
 
 ## 权限校验策略
 
@@ -138,7 +139,7 @@ meta: {
 ## Store 职责划分
 
 - `auth store`
-  - 管 token、当前用户、初始化状态
+  - 管当前用户、初始化状态
   - 不直接承担角色/权限集合判断
 - `permission store`
   - 管角色、权限和动态路由生命周期

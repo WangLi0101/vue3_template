@@ -6,7 +6,7 @@ import { ROLE_STATUS } from "../src/api/system/role/constants";
 import { USER_STATUS } from "../src/api/system/user/constants";
 import type { ApiResponse } from "../src/types/http";
 import { removeAllSpace } from "../src/utils/tool";
-import { mockProfiles } from "./data/rbac-data";
+import { resolveProfileFromAccessToken, resolveRequestToken } from "./token-session";
 
 interface MockUserRecord {
   id: number;
@@ -166,17 +166,9 @@ const sendJson = (res: ServerResponse, status: number, payload: ApiResponse<unkn
 };
 
 const ensureAuthorized = (req: Parameters<NonNullable<MockMethod["rawResponse"]>>[0]) => {
-  const authHeader = req.headers.authorization;
-  const bearerToken = Array.isArray(authHeader) ? authHeader[0] || "" : authHeader || "";
-  const token = bearerToken.replace(/^Bearer\s+/i, "");
-
-  if (!token) {
-    return fail(40101, "缺少访问令牌");
-  }
-
-  const username = token.replace("token-", "");
-  if (!mockProfiles[username]) {
-    return fail(40102, "登录已过期，请重新登录");
+  const result = resolveProfileFromAccessToken(resolveRequestToken(req));
+  if ("error" in result) {
+    return fail(result.error.code, result.error.message);
   }
 
   return null;
@@ -290,7 +282,7 @@ const mocks: MockMethod[] = [
     rawResponse(req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 
@@ -312,7 +304,7 @@ const mocks: MockMethod[] = [
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 
@@ -326,7 +318,7 @@ const mocks: MockMethod[] = [
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 
@@ -371,7 +363,7 @@ const mocks: MockMethod[] = [
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 
@@ -416,7 +408,7 @@ const mocks: MockMethod[] = [
     rawResponse(req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 
@@ -443,7 +435,7 @@ const mocks: MockMethod[] = [
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 
@@ -474,7 +466,7 @@ const mocks: MockMethod[] = [
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 
@@ -488,7 +480,7 @@ const mocks: MockMethod[] = [
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 
@@ -533,7 +525,7 @@ const mocks: MockMethod[] = [
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 
@@ -567,7 +559,7 @@ const mocks: MockMethod[] = [
     rawResponse(req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 
@@ -587,7 +579,7 @@ const mocks: MockMethod[] = [
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
       if (authError) {
-        sendJson(res, 401, authError);
+        sendJson(res, 200, authError);
         return;
       }
 

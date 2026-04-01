@@ -1,4 +1,3 @@
-import type { AxiosResponse } from "axios";
 import type { ServiceName } from "@/config/api";
 import type {
   DownloadDataMap,
@@ -7,10 +6,7 @@ import type {
   RequestConfig,
 } from "./types";
 import type { ApiResponse } from "@/types/http";
-import { SERVICE_URL_MAP } from "@/config/api";
-import { ApiRequestError } from "@/types/http";
 import { http } from "./client";
-import { isDownloadResponseType } from "./types";
 
 export function request<T, D = unknown>(
   url: string,
@@ -29,25 +25,9 @@ export function request<T, D = unknown, R extends DownloadResponseType = Downloa
   serviceName: ServiceName,
   config: RequestConfig<D> | DownloadRequestConfig<D, R> = {},
 ): Promise<ApiResponse<T> | DownloadDataMap[R]> {
-  const baseURL = SERVICE_URL_MAP[serviceName];
-  if (!baseURL) {
-    return Promise.reject(new ApiRequestError("未配置服务地址", 0, -1));
-  }
-
-  return http
-    .request<
-      ApiResponse<T> | DownloadDataMap[R],
-      AxiosResponse<ApiResponse<T> | DownloadDataMap[R]>,
-      D
-    >({
-      ...config,
-      url,
-      baseURL,
-    })
-    .then((response) => {
-      if (isDownloadResponseType(response.config.responseType)) {
-        return response.data as DownloadDataMap[R];
-      }
-      return response.data as ApiResponse<T>;
-    });
+  return http.requestByService(
+    url,
+    serviceName,
+    config as RequestConfig<D> & DownloadRequestConfig<D, R>,
+  ) as Promise<ApiResponse<T> | DownloadDataMap[R]>;
 }
