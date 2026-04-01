@@ -18,15 +18,15 @@ import type {
 import { isDownloadResponseType } from "./types";
 
 interface RetryRequestConfig<D = unknown> extends InternalAxiosRequestConfig<D> {
-  // 标记原请求是否已经完成过一次自动重试，避免 401 时死循环刷新。
+  // 标记当前请求是否已经完成过一次自动重试，避免 40102 时重复刷新。
   _retry?: boolean;
-  // 公开接口不自动附带 accessToken，也不参与自动刷新流程。
+  // 公开接口不自动携带 accessToken，也不参与自动刷新流程。
   isPublic?: boolean;
 }
 
 class HttpClient {
   private readonly refreshPath = "/auth/refresh";
-  // 多个请求同时遇到 token 失效时，共享同一个刷新任务即可。
+  // 多个请求同时遇到 token 失效时，共用同一个刷新任务，避免重复刷新。
   private refreshAccessTokenPromise: Promise<string> | null = null;
   private readonly axiosInstance: AxiosInstance;
 
@@ -49,6 +49,7 @@ class HttpClient {
     return Boolean(config?.isPublic);
   }
 
+  // 统一处理 Authorization 头，兼容 AxiosHeaders 和普通对象两种写法。
   private applyAuthorizationHeader(
     config: InternalAxiosRequestConfig,
     token: string,
@@ -67,7 +68,7 @@ class HttpClient {
   private attachAuthorization = (
     config: InternalAxiosRequestConfig,
   ): InternalAxiosRequestConfig => {
-    // 登录、刷新 token 等公开接口跳过鉴权头。
+    // 登录、刷新 token 等公开接口跳过鉴权头注入。
     if (this.isPublicRequest(config as RetryRequestConfig)) {
       return config;
     }
@@ -108,6 +109,7 @@ class HttpClient {
     );
   }
 
+  // 业务码触发刷新后，重放原请求并返回新的响应结果。
   private async tryRefreshAndReplay<T>(
     response: AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>,
     config?: RetryRequestConfig,
@@ -125,7 +127,7 @@ class HttpClient {
         ApiResponse<T> | Blob | ArrayBuffer
       >;
     } catch (_refreshError) {
-      // refreshToken 也失效时，统一清会话并回到登录页。
+      // refreshToken 也失效时，统一清理会话并回到登录态。
       await this.logoutByStore();
       return null;
     }
@@ -147,7 +149,7 @@ class HttpClient {
   private handleResponseSuccess = async <T>(
     response: AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>,
   ): Promise<AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>> => {
-    // 下载类响应交给调用方自行处理，不走业务 code 判断。
+    // 下载类响应直接返回，由调用方自行处理，不参与业务 code 判断。
     if (isDownloadResponseType(response.config.responseType)) {
       return response;
     }
@@ -210,7 +212,7 @@ class HttpClient {
     serviceName: ServiceName,
     config: RequestConfig<D> | DownloadRequestConfig<D, R> = {},
   ): Promise<ApiResponse<T> | DownloadDataMap[R]> {
-    // 业务层只关心服务名，底层在这里统一换算成真实 baseURL。
+    // 业务层只需要传服务名，底层在这里统一映射成真实的 baseURL。
     const baseURL = SERVICE_URL_MAP[serviceName];
     if (!baseURL) {
       return Promise.reject(new ApiRequestError("未配置服务地址", -1));

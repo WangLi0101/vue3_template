@@ -5,7 +5,7 @@ const ACCESS_TOKEN_PREFIX = "access-token-";
 const REFRESH_TOKEN_PREFIX = "refresh-token-";
 
 export const ACCESS_TOKEN_EXPIRES_IN_MS = 5_000;
-export const REFRESH_TOKEN_EXPIRES_IN_MS = 15_000;
+export const REFRESH_TOKEN_EXPIRES_IN_MS = 30 * 60 * 1000;
 
 type TokenType = "access" | "refresh";
 
@@ -20,7 +20,15 @@ interface TokenError {
   message: string;
 }
 
-const tokenStore = new Map<string, StoredToken>();
+const MOCK_TOKEN_STORE_KEY = "__RBAC_MOCK_TOKEN_STORE__";
+
+const globalTokenStore = globalThis as typeof globalThis & {
+  [MOCK_TOKEN_STORE_KEY]?: Map<string, StoredToken>;
+};
+
+const tokenStore =
+  globalTokenStore[MOCK_TOKEN_STORE_KEY] ??
+  (globalTokenStore[MOCK_TOKEN_STORE_KEY] = new Map<string, StoredToken>());
 
 const createTokenValue = (prefix: string, username: string): string => {
   const nonce = Math.random().toString(36).slice(2, 10);
