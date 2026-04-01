@@ -56,7 +56,7 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = userResponse.data.user;
     permissionStore.setRoles(rolesResponse.data.roles);
     permissionStore.setPermissions(permissionsResponse.data.permissions);
-    menuStore.setBackendMenus(menusResponse.data.menus);
+    menuStore.setSidebarBackendMenus(menusResponse.data.menus);
     tabsStore.syncHomeTag();
     isInitialized.value = true;
     return true;
