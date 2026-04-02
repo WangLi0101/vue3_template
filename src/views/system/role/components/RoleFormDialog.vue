@@ -63,6 +63,7 @@ import type { RoleItem } from "@/api/system/role";
 import { ElMessage } from "element-plus";
 import { createRoleApi, ROLE_STATUS, updateRoleApi } from "@/api/system/role";
 import { removeAllSpace } from "@/utils/tool";
+import { ROLE_CODE_REGEXP } from "@/utils/validators";
 
 interface Props {
   isEdit: boolean;
@@ -109,7 +110,7 @@ const rules = reactive<FormRules<typeof form.value>>({
   code: [
     { required: true, message: "请输入角色编码", trigger: "blur" },
     {
-      pattern: /^[a-z][a-z0-9_]{1,29}$/,
+      pattern: ROLE_CODE_REGEXP,
       message: "角色编码需以小写字母开头，可包含小写字母、数字和下划线",
       trigger: "blur",
     },

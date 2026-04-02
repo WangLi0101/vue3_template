@@ -129,6 +129,7 @@ import type { RoleOption, UserItem } from "@/api/system/user";
 import { ElMessage } from "element-plus";
 import { createUserApi, updateUserApi, USER_STATUS } from "@/api/system/user";
 import { removeAllSpace } from "@/utils/tool";
+import { isValidPhone } from "@/utils/validators";
 
 interface Props {
   isEdit: boolean;
@@ -213,7 +214,7 @@ const rules = reactive<FormRules<typeof form.value>>({
   phone: [
     {
       validator: (_rule, value, callback) => {
-        if (value && !/^1\d{10}$/.test(value)) {
+        if (value && !isValidPhone(value)) {
           callback(new Error("请输入正确的手机号"));
           return;
         }
