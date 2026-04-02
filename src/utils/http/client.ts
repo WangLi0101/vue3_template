@@ -13,19 +13,17 @@ import type {
   DownloadDataMap,
   DownloadRequestConfig,
   DownloadResponseType,
+  RequestMeta,
   RequestConfig,
 } from "./types";
 import { isDownloadResponseType } from "./types";
 
-interface RetryRequestConfig<D = unknown> extends InternalAxiosRequestConfig<D> {
+interface InternalRequestConfig<D = unknown> extends InternalAxiosRequestConfig<D>, RequestMeta {
   // 标记当前请求是否已经完成过一次自动重试，避免 token 过期时重复刷新。
   _retry?: boolean;
-  // 公开接口不自动携带 accessToken，也不参与自动刷新流程。
-  isPublic?: boolean;
 }
 
 class HttpClient {
-  private readonly refreshPath = "/auth/refresh";
   // 多个请求同时遇到 token 失效时，共用同一个刷新任务，避免重复刷新。
   private refreshAccessTokenPromise: Promise<string> | null = null;
   private readonly axiosInstance: AxiosInstance;
@@ -90,7 +88,7 @@ class HttpClient {
   private attachAuthorization = (
     config: InternalAxiosRequestConfig,
   ): InternalAxiosRequestConfig => {
-    if (this.isPublicRequest(config as RetryRequestConfig)) {
+    if (this.isPublicRequest(config as InternalRequestConfig)) {
       return config;
     }
 
@@ -106,7 +104,7 @@ class HttpClient {
   private handleResponseSuccess = async <T>(
     response: AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>,
   ): Promise<AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>> => {
-    const originalRequest = response.config as RetryRequestConfig | undefined;
+    const originalRequest = response.config as InternalRequestConfig | undefined;
 
     if (isDownloadResponseType(response.config.responseType)) {
       return this.handleDownloadResponseSuccess(response, originalRequest);
@@ -119,7 +117,10 @@ class HttpClient {
   private handleResponseError = (error: AxiosError<ApiResponse<unknown> | Blob | ArrayBuffer>) => {
     const httpStatus = error.response?.status ?? 0;
     const message = "服务繁忙，请稍后重试";
-    showErrorMessage(message);
+    const requestConfig = error.config as InternalRequestConfig | undefined;
+    if (!this.shouldSkipErrorToast(requestConfig)) {
+      showErrorMessage(message);
+    }
 
     return Promise.reject(new ApiRequestError(message, -1, httpStatus));
   };
@@ -127,7 +128,7 @@ class HttpClient {
   // 处理普通 JSON 成功响应：code 为 0 直接放行，非 0 继续走统一业务错误链路。
   private async handleJsonResponseSuccess<T>(
     response: AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>,
-    config?: RetryRequestConfig,
+    config?: InternalRequestConfig,
   ): Promise<AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>> {
     const payload = response.data;
     if (payload instanceof Blob || payload instanceof ArrayBuffer) {
@@ -149,7 +150,7 @@ class HttpClient {
   // 处理下载响应：如果下载接口实际返回的是 JSON 错误体，则转入业务错误处理链路。
   private async handleDownloadResponseSuccess<T>(
     response: AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>,
-    config?: RetryRequestConfig,
+    config?: InternalRequestConfig,
   ): Promise<AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>> {
     const jsonPayload = await this.tryExtractJsonFromDownload<T>(response);
     if (!jsonPayload) {
@@ -191,7 +192,7 @@ class HttpClient {
   private async handleNonSuccessPayload<T>(
     payload: ApiResponse<T>,
     response: AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>,
-    config?: RetryRequestConfig,
+    config?: InternalRequestConfig,
   ): Promise<AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer> | null> {
     const replayedResponse = await this.tryRefreshAndReplay(
       {
@@ -211,7 +212,7 @@ class HttpClient {
   // 命中 token 失效业务码后，尝试刷新 accessToken 并自动重放原请求。
   private async tryRefreshAndReplay<T>(
     response: AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer>,
-    config?: RetryRequestConfig,
+    config?: InternalRequestConfig,
   ): Promise<AxiosResponse<ApiResponse<T> | Blob | ArrayBuffer> | null> {
     if (!config || !this.shouldRefreshByCode((response.data as ApiResponse<T>).code, config)) {
       return null;
@@ -236,14 +237,14 @@ class HttpClient {
   // 在无法重放时统一执行业务错误副作用，例如登出和错误提示。
   private async notifyBusinessError<T>(
     payload: ApiResponse<T>,
-    config?: RetryRequestConfig,
+    config?: InternalRequestConfig,
   ): Promise<void> {
     if (payload.code === CODE.TOKEN_EXPIRED && !this.isPublicRequest(config)) {
       await this.logoutByStore();
     }
 
     handlerError(payload, {
-      silent: this.isRefreshRequest(config?.url),
+      silent: this.shouldSkipErrorToast(config),
     });
   }
 
@@ -258,7 +259,7 @@ class HttpClient {
   }
 
   // 判断当前业务响应是否满足“可以自动刷新 token”的条件。
-  private shouldRefreshByCode(code: number, config?: RetryRequestConfig): boolean {
+  private shouldRefreshByCode(code: number, config?: InternalRequestConfig): boolean {
     return (
       code === CODE.TOKEN_EXPIRED &&
       !config?._retry &&
@@ -289,19 +290,19 @@ class HttpClient {
   }
 
   // 判断当前请求是否为公开接口，公开接口不参与鉴权头和自动刷新逻辑。
-  private isPublicRequest(config?: Pick<RetryRequestConfig, "isPublic">): boolean {
+  private isPublicRequest(config?: Pick<RequestMeta, "isPublic">): boolean {
     return Boolean(config?.isPublic);
-  }
-
-  // 判断当前请求是否是 refresh 接口，用于避免刷新失败时重复弹错。
-  private isRefreshRequest(url: string | undefined): boolean {
-    return url?.endsWith(this.refreshPath) ?? false;
   }
 
   // 从响应头中读取 content-type，供下载响应识别 JSON 错误体时使用。
   private getContentType(headers?: AxiosResponse["headers"]): string {
     const contentType = headers?.["content-type"];
     return typeof contentType === "string" ? contentType : "";
+  }
+
+  // 显式控制是否跳过统一错误提示，避免依赖 URL 约定。
+  private shouldSkipErrorToast(config?: Pick<RequestMeta, "skipErrorToast">): boolean {
+    return Boolean(config?.skipErrorToast);
   }
 
   // 判断 content-type 是否属于 JSON，兼容标准 JSON、text/json 和 +json 变体。

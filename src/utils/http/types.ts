@@ -5,12 +5,14 @@ export type HttpResponse<T> = AxiosResponse<ApiResponse<T>>;
 export type DownloadResponseType = "blob" | "arraybuffer";
 type NonDownloadResponseType = Exclude<AxiosRequestConfig["responseType"], DownloadResponseType>;
 
-export interface RequestConfig<D> extends Omit<
-  AxiosRequestConfig<D>,
-  "url" | "baseURL" | "responseType"
-> {
-  responseType?: NonDownloadResponseType;
+export interface RequestMeta {
   isPublic?: boolean;
+  skipErrorToast?: boolean;
+}
+
+export interface RequestConfig<D>
+  extends Omit<AxiosRequestConfig<D>, "url" | "baseURL" | "responseType">, RequestMeta {
+  responseType?: NonDownloadResponseType;
 }
 
 export type DownloadDataMap = {

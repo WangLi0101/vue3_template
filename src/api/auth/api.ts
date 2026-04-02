@@ -23,6 +23,7 @@ export const refreshTokenApi = (payload: RefreshTokenPayload) => {
     method: "post",
     data: payload,
     isPublic: true,
+    skipErrorToast: true,
   });
 };
 
