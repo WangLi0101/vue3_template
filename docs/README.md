@@ -4,6 +4,7 @@
 
 ## 文档索引
 
+- [00-环境准备与首次启动](./00-环境准备与首次启动.md)
 - [01-项目架构](./01-项目架构.md)
 - [02-路由使用](./02-路由使用.md)
 - [03-RBAC与权限](./03-RBAC与权限.md)
@@ -24,7 +25,7 @@ pnpm install # 安装项目依赖
 pnpm dev # 启动本地开发服务
 pnpm run typecheck # 执行 TypeScript 类型检查
 pnpm run lint # 执行 ESLint 检查
-pnpm run check # 执行综合检查（typecheck + lint）
+pnpm run check # 执行综合检查（typecheck + lint + lint:style）
 ```
 
 ## 构建命令
