@@ -1,17 +1,9 @@
-import { ElMessage } from "element-plus";
 import type { ApiResponse } from "@/types/http";
-
-export const showErrorMessage = (message: string) => {
-  ElMessage.error({
-    message,
-    duration: 3000,
-    grouping: true,
-  });
-};
-
+import { showErrorToast } from "@/utils/toast";
 interface HandlerErrorOptions {
   silent?: boolean;
 }
+
 export const CODE = {
   TOKEN_EXPIRED: 401105,
 } as const;
@@ -24,7 +16,7 @@ export const handlerError = <T>(payload: ApiResponse<T>, options?: HandlerErrorO
 
   switch (payload.code) {
     default:
-      showErrorMessage(payload.message);
+      showErrorToast(payload.message);
       break;
   }
 };

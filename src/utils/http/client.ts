@@ -7,8 +7,9 @@ import { store } from "@/stores";
 import { useAuthStore } from "@/stores/modules/auth";
 import type { ApiResponse } from "@/types/http";
 import { ApiRequestError } from "@/types/http";
+import { showErrorToast } from "@/utils/toast";
 import { formatToken, getAccessToken, getRefreshToken } from "@/utils/token";
-import { CODE, handlerError, showErrorMessage } from "./code";
+import { CODE, handlerError } from "./code";
 import type {
   DownloadDataMap,
   DownloadRequestConfig,
@@ -119,7 +120,7 @@ class HttpClient {
     const message = "服务繁忙，请稍后重试";
     const requestConfig = error.config as InternalRequestConfig | undefined;
     if (!this.shouldSkipErrorToast(requestConfig)) {
-      showErrorMessage(message);
+      showErrorToast(message);
     }
 
     return Promise.reject(new ApiRequestError(message, -1, httpStatus));
