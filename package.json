@@ -17,9 +17,11 @@
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix",
+    "lint:style": "stylelint \"src/**/*.{vue,scss,css}\" \"public/**/*.css\"",
+    "lint:style:fix": "stylelint \"src/**/*.{vue,scss,css}\" \"public/**/*.css\" --fix",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "check": "pnpm run typecheck && pnpm run lint",
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run lint:style",
     "prepare": "husky"
   },
   "dependencies": {
@@ -54,6 +56,8 @@
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "sass": "^1.90.0",
+    "stylelint": "^16.25.0",
+    "stylelint-config-standard-scss": "^16.0.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.57.0",
@@ -61,6 +65,8 @@
     "vite-plugin-mock": "^3.0.2",
     "vite-svg-loader": "^5.1.1",
     "vue-eslint-parser": "^10.4.0",
-    "vue-tsc": "^3.0.6"
+    "vue-tsc": "^3.0.6",
+    "postcss-html": "^1.8.0",
+    "postcss-scss": "^4.0.9"
   }
 }

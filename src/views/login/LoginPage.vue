@@ -139,9 +139,11 @@ const handleLogin = async (): Promise<void> => {
   100% {
     transform: translate(0, 0) scale(1);
   }
+
   33% {
     transform: translate(30px, -50px) scale(1.1);
   }
+
   66% {
     transform: translate(-20px, 20px) scale(0.9);
   }
@@ -179,7 +181,7 @@ const handleLogin = async (): Promise<void> => {
   left: -10%;
   width: 50vw;
   height: 50vw;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%);
+  background: radial-gradient(circle, rgb(59 130 246 / 40%) 0%, transparent 70%);
   animation-delay: 0s;
 }
 
@@ -188,7 +190,7 @@ const handleLogin = async (): Promise<void> => {
   right: -10%;
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, rgb(139 92 246 / 30%) 0%, transparent 70%);
   animation-delay: -5s;
 }
 
@@ -197,7 +199,7 @@ const handleLogin = async (): Promise<void> => {
   left: 60%;
   width: 40vw;
   height: 40vw;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.35) 0%, transparent 70%);
+  background: radial-gradient(circle, rgb(14 165 233 / 35%) 0%, transparent 70%);
   animation-delay: -10s;
 }
 
@@ -227,8 +229,8 @@ const handleLogin = async (): Promise<void> => {
   border-radius: 24px;
   background: var(--app-surface);
   box-shadow:
-    0 40px 80px rgb(0 0 0 / 0.1),
-    inset 0 0 0 1px rgb(255 255 255 / 0.2);
+    0 40px 80px rgb(0 0 0 / 10%),
+    inset 0 0 0 1px rgb(255 255 255 / 20%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   transform: translateY(0);
@@ -239,21 +241,21 @@ const handleLogin = async (): Promise<void> => {
   &:hover {
     transform: translateY(-5px);
     box-shadow:
-      0 50px 100px rgb(0 0 0 / 0.15),
-      inset 0 0 0 1px rgb(255 255 255 / 0.3);
+      0 50px 100px rgb(0 0 0 / 15%),
+      inset 0 0 0 1px rgb(255 255 255 / 30%);
   }
 }
 
 html.dark .login-card {
-  background: rgb(30 41 59 / 0.7);
+  background: rgb(30 41 59 / 70%);
   box-shadow:
-    0 40px 80px rgb(0 0 0 / 0.4),
-    inset 0 0 0 1px rgb(255 255 255 / 0.05);
+    0 40px 80px rgb(0 0 0 / 40%),
+    inset 0 0 0 1px rgb(255 255 255 / 5%);
 
   &:hover {
     box-shadow:
-      0 50px 100px rgb(0 0 0 / 0.5),
-      inset 0 0 0 1px rgb(255 255 255 / 0.1);
+      0 50px 100px rgb(0 0 0 / 50%),
+      inset 0 0 0 1px rgb(255 255 255 / 10%);
   }
 }
 
@@ -266,8 +268,8 @@ html.dark .login-card {
   justify-content: space-between;
   background: linear-gradient(
     135deg,
-    rgb(var(--app-primary-rgb) / 0.1) 0%,
-    rgb(var(--app-primary-rgb) / 0.02) 100%
+    rgb(var(--app-primary-rgb) / 10%) 0%,
+    rgb(var(--app-primary-rgb) / 2%) 100%
   );
   border-right: 1px solid var(--app-border);
   overflow: hidden;
@@ -299,7 +301,7 @@ html.dark .login-card {
   font-weight: 800;
   color: #fff;
   background: linear-gradient(135deg, rgb(var(--app-primary-rgb)), #6366f1);
-  box-shadow: 0 8px 16px rgb(var(--app-primary-rgb) / 0.3);
+  box-shadow: 0 8px 16px rgb(var(--app-primary-rgb) / 30%);
 }
 
 .logo-text {
@@ -337,16 +339,16 @@ html.dark .login-card {
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgb(255 255 255 / 0.4), transparent);
+  background: linear-gradient(135deg, rgb(255 255 255 / 40%), transparent);
   backdrop-filter: blur(10px);
-  border: 1px solid rgb(255 255 255 / 0.2);
+  border: 1px solid rgb(255 255 255 / 20%);
   transform: rotate(-15deg);
   pointer-events: none;
 }
 
 html.dark .glass-decoration {
-  background: linear-gradient(135deg, rgb(255 255 255 / 0.05), transparent);
-  border: 1px solid rgb(255 255 255 / 0.02);
+  background: linear-gradient(135deg, rgb(255 255 255 / 5%), transparent);
+  border: 1px solid rgb(255 255 255 / 2%);
 }
 
 .login-form-wrapper {
@@ -396,29 +398,29 @@ html.dark .glass-decoration {
   border-radius: 12px;
   box-shadow:
     0 0 0 1px transparent inset,
-    0 2px 4px rgb(0 0 0 / 0.02);
+    0 2px 4px rgb(0 0 0 / 2%);
   border: 1px solid var(--app-border);
   transition: all 0.3s ease;
   padding: 0 16px;
 }
 
 html.dark :deep(.custom-input.el-input .el-input__wrapper) {
-  background-color: rgb(0 0 0 / 0.2);
-  border: 1px solid rgb(255 255 255 / 0.1);
+  background-color: rgb(0 0 0 / 20%);
+  border: 1px solid rgb(255 255 255 / 10%);
 }
 
 :deep(.custom-input.el-input .el-input__wrapper:hover) {
-  border-color: rgb(var(--app-primary-rgb) / 0.4);
+  border-color: rgb(var(--app-primary-rgb) / 40%);
 }
 
 :deep(.custom-input.el-input .el-input__wrapper.is-focus) {
   background-color: var(--app-surface);
   border-color: rgb(var(--app-primary-rgb));
-  box-shadow: 0 0 0 4px rgb(var(--app-primary-rgb) / 0.1);
+  box-shadow: 0 0 0 4px rgb(var(--app-primary-rgb) / 10%);
 }
 
 html.dark :deep(.custom-input.el-input .el-input__wrapper.is-focus) {
-  background-color: rgb(0 0 0 / 0.4);
+  background-color: rgb(0 0 0 / 40%);
 }
 
 :deep(.custom-input.el-input .el-input__inner) {
@@ -447,8 +449,8 @@ html.dark :deep(.custom-input.el-input .el-input__wrapper.is-focus) {
   border: 1px dashed var(--app-border);
 
   html.dark & {
-    background-color: rgb(0 0 0 / 0.2);
-    border-color: rgb(255 255 255 / 0.1);
+    background-color: rgb(0 0 0 / 20%);
+    border-color: rgb(255 255 255 / 10%);
   }
 }
 
@@ -489,22 +491,23 @@ html.dark :deep(.custom-input.el-input .el-input__wrapper.is-focus) {
     border: 1px solid var(--app-border);
 
     html.dark & {
-      background-color: rgb(0 0 0 / 0.3);
-      border-color: rgb(255 255 255 / 0.1);
+      background-color: rgb(0 0 0 / 30%);
+      border-color: rgb(255 255 255 / 10%);
     }
   }
 }
 
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .login-showcase {
     padding: 32px;
   }
+
   .login-form-wrapper {
     padding: 32px;
   }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .login-card {
     flex-direction: column;
     max-width: 440px;

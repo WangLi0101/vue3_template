@@ -2,4 +2,7 @@ node_modules
 .DS_Store
 dist
 .vscode
+!.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
 .pnpm-store

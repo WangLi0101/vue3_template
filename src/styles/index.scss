@@ -1,5 +1,5 @@
-@use "./tailwind.scss";
-@use "./element.scss";
+@use "./tailwind";
+@use "./element";
 
 html,
 body,
@@ -14,7 +14,7 @@ body {
   background: var(--app-bg);
   color: var(--app-text-primary);
   font-family:
-    "Inter",
+    Inter,
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
@@ -28,7 +28,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   transition:
     background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     color 0.3s cubic-bezier(0.4, 0, 0.2, 1);

@@ -51,12 +51,14 @@ const isActiveItem = (index: number): boolean => index === breadcrumbs.value.len
 
 .breadcrumb-enter-from {
   opacity: 0;
+
   /* 为了避免水平文字重叠穿透，我们改为与主体视图一致的“上下浮上”效果 */
   transform: translateY(10px);
 }
 
 .breadcrumb-leave-to {
   opacity: 0;
+
   /* 老旧面包屑向上方轻轻飘走消失 */
   transform: translateY(-10px);
 }

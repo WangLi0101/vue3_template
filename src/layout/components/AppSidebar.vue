@@ -81,6 +81,7 @@ const activeMenu = computed(() => route.path);
 .sidebar-menu {
   border-right: 0;
   background: transparent;
+
   --el-menu-bg-color: transparent;
   --el-menu-border-color: transparent;
   --el-menu-text-color: var(--app-sidebar-text);
@@ -103,12 +104,12 @@ const activeMenu = computed(() => route.path);
 }
 
 .app-sidebar :deep(.el-menu-item.is-active) {
-  background: rgb(var(--app-primary-rgb) / 0.9);
+  background: rgb(var(--app-primary-rgb) / 90%);
   color: #fff;
 }
 
 .app-sidebar :deep(.el-menu-item.is-active:hover) {
-  background: rgb(var(--app-primary-rgb) / 1);
+  background: rgb(var(--app-primary-rgb) / 100%);
 }
 
 .app-sidebar :deep(.el-sub-menu.is-opened > .el-sub-menu__title) {

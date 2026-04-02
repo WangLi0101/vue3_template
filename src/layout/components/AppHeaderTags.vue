@@ -142,7 +142,7 @@ const handleCloseAll = async (): Promise<void> => {
 }
 
 .header-tags-scrollbar :deep(.el-scrollbar__thumb) {
-  background-color: rgb(var(--app-primary-rgb) / 0.22);
+  background-color: rgb(var(--app-primary-rgb) / 22%);
 }
 
 /* ==================== 标签页丝滑增删动画 ==================== */
@@ -155,6 +155,7 @@ const handleCloseAll = async (): Promise<void> => {
 .tags-enter-active,
 .tags-leave-active {
   transition: all 0.4s cubic-bezier(0.25, 0.8, 0.2, 1);
+
   /* 宽度塌陷时必须配合 hidden，否则文字会溢出撑起父元素高度 */
   overflow: hidden;
 }
@@ -163,6 +164,7 @@ const handleCloseAll = async (): Promise<void> => {
 .tags-leave-to {
   opacity: 0;
   transform: translateY(15px);
+
   /* 退场或入场时不仅淡出下沉，而且内外边距与最大宽度全面塌缩为0，使得右侧所有标签如丝般顺滑补位 */
   max-width: 0 !important;
   padding-left: 0 !important;
