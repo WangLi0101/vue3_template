@@ -44,7 +44,3 @@ export const clearAuthTokens = (): void => {
 export const formatToken = (token: string): string => {
   return `Bearer ${token}`;
 };
-
-export const getToken = getAccessToken;
-export const setToken = setAccessToken;
-export const clearToken = clearAuthTokens;
