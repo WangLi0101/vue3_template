@@ -1,9 +1,8 @@
 import type { App } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 import { staticRoutes } from "@/router/static-routes";
-
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: staticRoutes,
   scrollBehavior() {
     return { top: 0 };

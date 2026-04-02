@@ -30,14 +30,36 @@ const vendorChunkGroups = [
   { name: "axios", test: /[\\/]node_modules[\\/]axios[\\/]/ },
 ] as const;
 
+const normalizeBaseUrl = (baseUrl?: string) => {
+  const trimmedBaseUrl = baseUrl?.trim();
+
+  if (!trimmedBaseUrl) {
+    return "/";
+  }
+
+  let normalizedBaseUrl = trimmedBaseUrl;
+
+  if (!normalizedBaseUrl.startsWith("/")) {
+    normalizedBaseUrl = `/${normalizedBaseUrl}`;
+  }
+
+  if (!normalizedBaseUrl.endsWith("/")) {
+    normalizedBaseUrl = `${normalizedBaseUrl}/`;
+  }
+
+  return normalizedBaseUrl;
+};
+
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const isServe = command === "serve";
   const isDevelopment = mode === "development";
   const isProduction = mode === "production";
   const enableMock = isServe && env.VITE_ENABLE_MOCK !== "false";
+  const baseUrl = normalizeBaseUrl(env.VITE_APP_BASE_URL);
 
   return {
+    base: baseUrl,
     plugins: [
       svgLoader({
         defaultImport: "url",
