@@ -140,6 +140,11 @@ defineOptions({
   name: "UserPage",
 });
 
+onMounted(() => {
+  fetchRoleOptions();
+  fetchList();
+});
+
 const queryFormRef = useTemplateRef<FormInstance>("queryFormRef");
 const loading = ref(false);
 const total = ref(0);
@@ -262,9 +267,4 @@ const handleBatchDelete = async () => {
 const handleDialogSuccess = async () => {
   await fetchList();
 };
-
-onMounted(() => {
-  fetchRoleOptions();
-  fetchList();
-});
 </script>

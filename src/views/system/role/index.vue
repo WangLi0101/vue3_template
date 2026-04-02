@@ -96,6 +96,10 @@ defineOptions({
   name: "RolePage",
 });
 
+onMounted(() => {
+  void fetchList();
+});
+
 const queryFormRef = useTemplateRef<FormInstance>("queryFormRef");
 const loading = ref(false);
 const tableData = ref<RoleItem[]>([]);
@@ -199,8 +203,4 @@ const handleBatchDelete = async () => {
 const handleDialogSuccess = async () => {
   await fetchList();
 };
-
-onMounted(() => {
-  void fetchList();
-});
 </script>
