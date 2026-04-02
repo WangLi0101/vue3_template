@@ -30,6 +30,15 @@ const sendJson = (res: ServerResponse, status: number, payload: ApiResponse<unkn
   res.end(JSON.stringify(payload));
 };
 
+const sendTextFile = (res: ServerResponse, fileName: string, content: string): void => {
+  const buffer = Buffer.from(content, "utf-8");
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "text/plain; charset=utf-8");
+  res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+  res.setHeader("Content-Length", buffer.length);
+  res.end(buffer);
+};
+
 const resolveProfileFromRequest = (req: Parameters<NonNullable<MockMethod["rawResponse"]>>[0]) => {
   const result = resolveProfileFromAccessToken(resolveRequestToken(req));
   if ("error" in result) {
@@ -173,6 +182,39 @@ const mocks: MockMethod[] = [
           menus: cloneMenus(profile.menus),
         }),
       );
+    },
+  },
+  {
+    url: "/api/auth/download-token-probe",
+    method: "get",
+    rawResponse: function (req, res) {
+      const { error, profile } = resolveProfileFromRequest(req);
+      if (error || !profile) {
+        sendJson(res, 200, error || fail(40102, "登录已过期，请重新登录"));
+        return;
+      }
+
+      const content = [
+        "RBAC Dashboard Token Probe",
+        `用户：${profile.user.displayName}（${profile.user.username}）`,
+        `生成时间：${new Date().toLocaleString("zh-CN", { hour12: false })}`,
+        "说明：该文件用于验证下载接口在 accessToken 过期后，是否能够先解析 JSON 错误体，再自动刷新 token 并重放请求。",
+      ].join("\n");
+
+      sendTextFile(res, "dashboard-token-probe.txt", content);
+    },
+  },
+  {
+    url: "/api/auth/download-token-probe-error",
+    method: "get",
+    rawResponse: function (req, res) {
+      const { error, profile } = resolveProfileFromRequest(req);
+      if (error || !profile) {
+        sendJson(res, 200, error || fail(40102, "登录已过期，请重新登录"));
+        return;
+      }
+
+      sendJson(res, 200, fail(50031, "模拟下载失败：文件生成异常"));
     },
   },
 ];

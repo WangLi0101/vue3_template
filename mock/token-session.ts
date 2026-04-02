@@ -56,7 +56,7 @@ const getTokenError = (type: TokenType, missing = false): TokenError => {
   }
 
   return {
-    code: 40102,
+    code: 401105,
     message: "登录已过期，请重新登录",
   };
 };
