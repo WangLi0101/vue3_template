@@ -1,2 +1,1 @@
-pnpm run check
-pnpm run format:check
+corepack pnpm exec lint-staged

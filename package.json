@@ -24,6 +24,24 @@
     "check": "pnpm run typecheck && pnpm run lint && pnpm run lint:style",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*.vue": [
+      "eslint --fix",
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "**/*.{scss,css}": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "**/*.{json,md,html}": [
+      "prettier --write"
+    ]
+  },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
     "@iconify-icons/ep": "^1.2.12",
@@ -52,6 +70,7 @@
     "eslint-plugin-vue": "^10.8.0",
     "globals": "^17.4.0",
     "husky": "^9.1.7",
+    "lint-staged": "^16.2.4",
     "postcss": "^8.5.6",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
