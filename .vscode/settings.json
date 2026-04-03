@@ -23,6 +23,8 @@
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "css.validate": false,
+  "scss.validate": false,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"],
   "stylelint.validate": ["css", "scss", "vue"],
   "files.eol": "\n",

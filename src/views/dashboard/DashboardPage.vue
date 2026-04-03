@@ -1,3 +1,3 @@
 <template>
-  <div class="dashboard">dashboard</div>
+  <div class="no-bg-content">dashboard</div>
 </template>

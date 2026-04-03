@@ -11,9 +11,7 @@
       <AppHeader />
 
       <main class="flex-1 overflow-auto p-3">
-        <div class="s h-full overflow-auto rounded-lg bg-app-surface p-5">
-          <AppRouterView />
-        </div>
+        <AppRouterView />
       </main>
     </div>
   </div>

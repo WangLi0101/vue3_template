@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full flex-col">
+  <div class="content flex h-full flex-col">
     <div class="mb-4">
       <el-form ref="queryFormRef" :model="query" inline label-width="68px" class="flex flex-wrap">
         <el-form-item label="角色名称" prop="name">
