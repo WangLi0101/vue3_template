@@ -27,6 +27,7 @@ export const staticRoutes: RouteRecordRaw[] = [
     component: () => import("@/views/error/ForbiddenPage.vue"),
     meta: {
       title: "无权限",
+      public: true,
     },
   },
   {
@@ -44,6 +45,7 @@ export const staticRoutes: RouteRecordRaw[] = [
     component: () => import("@/views/error/NotFoundPage.vue"),
     meta: {
       title: "404",
+      public: true,
     },
   },
 ];
