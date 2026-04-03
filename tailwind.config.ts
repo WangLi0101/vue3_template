@@ -28,10 +28,7 @@ export default {
       colors: {
         primary: "rgb(var(--app-primary-rgb) / <alpha-value>)",
         app: {
-          bg: {
-            DEFAULT: "var(--app-bg)",
-            mute: "var(--app-bg-mute)",
-          },
+          bg: "var(--app-bg)",
           surface: "var(--app-surface)",
           sidebar: {
             bg: "var(--app-sidebar-bg)",
@@ -42,9 +39,16 @@ export default {
           text: {
             primary: "var(--app-text-primary)",
             secondary: "var(--app-text-secondary)",
+            tertiary: "var(--app-text-tertiary)",
             disabled: "var(--app-text-disabled)",
+            inverse: "var(--app-text-inverse)",
           },
-          border: "var(--app-border)",
+          border: {
+            DEFAULT: "var(--app-border)",
+            light: "var(--app-border-light)",
+            hover: "var(--app-border-hover)",
+            strong: "var(--app-border-strong)",
+          },
         },
       },
     },

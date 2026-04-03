@@ -26,7 +26,7 @@
         <!-- 整体风格 -->
         <section>
           <div class="mb-3 text-[14px] text-app-text-primary">整体风格</div>
-          <div class="flex items-center rounded bg-app-bg-mute bg-opacity-80 p-[3px]">
+          <div class="flex items-center rounded bg-[var(--el-fill-color-light)] p-[3px]">
             <button
               v-for="option in modeOptions"
               :key="option.value"
@@ -35,7 +35,7 @@
               :class="
                 isThemeModeActive(option.value)
                   ? '!border-[var(--el-border-color-lighter)] bg-app-surface font-medium text-app-text-primary shadow-[0_1px_3px_0_rgba(0,0,0,0.1)]'
-                  : 'text-app-text-secondary hover:text-app-text-primary'
+                  : 'text-app-text-secondary hover:bg-[var(--el-fill-color-dark)] hover:text-app-text-primary'
               "
               @click="setThemeMode(option.value)"
             >
@@ -52,16 +52,21 @@
           <div class="mb-3 text-[14px] text-app-text-primary">主题色</div>
           <div class="flex flex-wrap items-center gap-[10px]">
             <button
-              v-for="color in predefineColors"
-              :key="color"
+              v-for="preset in predefineThemes"
+              :key="preset.key"
               type="button"
               class="relative flex h-[20px] w-[20px] cursor-pointer items-center justify-center rounded-[4px] border border-black/10 shadow-sm outline-none transition-transform hover:scale-110 dark:border-white/10"
-              :style="{ backgroundColor: color }"
-              @click="setThemeColor(color)"
+              :style="{ backgroundColor: preset.cssVars['--el-color-primary'] }"
+              :title="preset.label"
+              @click="setThemePreset(preset)"
             >
               <el-icon
-                v-if="isThemeColorActive(color)"
-                :class="color.toLowerCase() === '#ffffff' ? 'text-black' : 'text-white'"
+                v-if="isThemePresetActive(preset)"
+                :class="
+                  preset.cssVars['--el-color-primary'].toLowerCase() === '#ffffff'
+                    ? 'text-black'
+                    : 'text-white'
+                "
                 size="12"
               >
                 <Check />
@@ -77,8 +82,8 @@
 <script setup lang="ts">
 import { Check, Close, Monitor, Moon, Sunny } from "@element-plus/icons-vue";
 import { computed } from "vue";
-import { themeColorPresets } from "@/config/theme";
-import type { ThemeMode } from "@/config/theme/types";
+import { themePrimaryPresets } from "@/config/theme";
+import type { ThemeMode, ThemePrimaryPreset } from "@/config/theme/types";
 import { useThemeStore } from "@/stores/modules/theme";
 
 interface Props {
@@ -107,17 +112,17 @@ const modeOptions: Array<{
   { label: "自动", value: "system", icon: Monitor },
 ];
 
-const predefineColors = [...themeColorPresets];
+const predefineThemes = [...themePrimaryPresets];
 
 const setThemeMode = (mode: ThemeMode): void => {
   themeStore.setMode(mode);
 };
 
-const setThemeColor = (color: string): void => {
-  themeStore.setPrimaryColor(color);
+const setThemePreset = (preset: ThemePrimaryPreset): void => {
+  themeStore.setThemePreset(preset.key);
 };
 
 const isThemeModeActive = (mode: ThemeMode): boolean => themeStore.mode === mode;
-const isThemeColorActive = (color: string): boolean =>
-  themeStore.primaryColor.toLowerCase() === color.toLowerCase();
+const isThemePresetActive = (preset: ThemePrimaryPreset): boolean =>
+  themeStore.presetKey === preset.key;
 </script>

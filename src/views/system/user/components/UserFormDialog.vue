@@ -275,9 +275,3 @@ const submitForm = () => {
   });
 };
 </script>
-
-<style lang="scss" scoped>
-:deep(.el-form-item__label) {
-  font-weight: 700;
-}
-</style>

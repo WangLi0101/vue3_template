@@ -1,23 +1,27 @@
-import { themeDefaults } from "@/config/theme";
 import type {
-  ElementPlusPrimaryCssVars,
+  ElementPlusBorderCssVars,
   ThemePrimaryCssVars,
+  ElementPlusPrimaryCssVars,
   ThemeSemanticTokenName,
   ThemeSemanticTokens,
 } from "@/config/theme/types";
 
 const themeSemanticCssVarMap = {
   appBg: "--app-bg",
-  bgMute: "--app-bg-mute",
   surface: "--app-surface",
   sidebarBg: "--app-sidebar-bg",
   sidebarBgHover: "--app-sidebar-bg-hover",
   sidebarText: "--app-sidebar-text",
   sidebarTextActive: "--app-sidebar-text-active",
+  borderLight: "--app-border-light",
   border: "--app-border",
+  borderHover: "--app-border-hover",
+  borderStrong: "--app-border-strong",
   textPrimary: "--app-text-primary",
   textSecondary: "--app-text-secondary",
+  textTertiary: "--app-text-tertiary",
   textDisabled: "--app-text-disabled",
+  textInverse: "--app-text-inverse",
 } as const satisfies Record<keyof ThemeSemanticTokens, `--app-${string}`>;
 
 export type ThemeSemanticCssVarName =
@@ -43,7 +47,7 @@ export const normalizeHexColor = (value: string): string | null => {
 };
 
 export const hexToRgb = (hex: string): [number, number, number] => {
-  const normalized = normalizeHexColor(hex) || themeDefaults.primaryColor;
+  const normalized = normalizeHexColor(hex) || "#0a62ca";
   const value = Number.parseInt(normalized.slice(1), 16);
   const r = (value >> 16) & 255;
   const g = (value >> 8) & 255;
@@ -71,26 +75,50 @@ export const buildSemanticCssVars = (tokens: ThemeSemanticTokens): ThemeSemantic
   return Object.fromEntries(entries) as ThemeSemanticCssVars;
 };
 
-export const buildPrimaryCssVars = (color: string): ThemePrimaryCssVars => {
-  const normalizedColor = normalizeHexColor(color) || themeDefaults.primaryColor;
-  const [r, g, b] = hexToRgb(normalizedColor);
+export const buildElementPlusBorderCssVars = (
+  tokens: ThemeSemanticTokens,
+): ElementPlusBorderCssVars => {
+  return {
+    "--el-border-color": tokens.border,
+    "--el-border-color-light": tokens.border,
+    "--el-border-color-lighter": tokens.border,
+    "--el-border-color-extra-light": tokens.borderLight,
+    "--el-border-color-dark": tokens.borderHover,
+    "--el-border-color-darker": tokens.borderStrong,
+  };
+};
+
+export const normalizeElementPlusPrimaryCssVars = (
+  vars: ElementPlusPrimaryCssVars,
+): ElementPlusPrimaryCssVars => {
+  return {
+    "--el-color-primary": normalizeHexColor(vars["--el-color-primary"]) || "#0a62ca",
+    "--el-color-primary-light-3":
+      normalizeHexColor(vars["--el-color-primary-light-3"]) || "#4080ff",
+    "--el-color-primary-light-5":
+      normalizeHexColor(vars["--el-color-primary-light-5"]) || "#94bfff",
+    "--el-color-primary-light-7":
+      normalizeHexColor(vars["--el-color-primary-light-7"]) || "#accdff",
+    "--el-color-primary-light-8":
+      normalizeHexColor(vars["--el-color-primary-light-8"]) || "#bedaff",
+    "--el-color-primary-light-9":
+      normalizeHexColor(vars["--el-color-primary-light-9"]) || "#ddecff",
+    "--el-color-primary-dark-2": normalizeHexColor(vars["--el-color-primary-dark-2"]) || "#0958b6",
+  };
+};
+
+export const buildPrimaryCssVars = (vars: ElementPlusPrimaryCssVars): ThemePrimaryCssVars => {
+  const normalizedVars = normalizeElementPlusPrimaryCssVars(vars);
+  const [r, g, b] = hexToRgb(normalizedVars["--el-color-primary"]);
 
   return {
-    "--app-primary": normalizedColor,
+    "--app-primary": normalizedVars["--el-color-primary"],
     "--app-primary-rgb": `${r} ${g} ${b}`,
   };
 };
 
-export const buildElementPlusPrimaryCssVars = (color: string): ElementPlusPrimaryCssVars => {
-  const normalizedColor = normalizeHexColor(color) || themeDefaults.primaryColor;
-
-  return {
-    "--el-color-primary": normalizedColor,
-    "--el-color-primary-light-3": mixHexColors(normalizedColor, "#ffffff", 0.3),
-    "--el-color-primary-light-5": mixHexColors(normalizedColor, "#ffffff", 0.5),
-    "--el-color-primary-light-7": mixHexColors(normalizedColor, "#ffffff", 0.7),
-    "--el-color-primary-light-8": mixHexColors(normalizedColor, "#ffffff", 0.8),
-    "--el-color-primary-light-9": mixHexColors(normalizedColor, "#ffffff", 0.9),
-    "--el-color-primary-dark-2": mixHexColors(normalizedColor, "#000000", 0.2),
-  };
+export const buildElementPlusPrimaryCssVars = (
+  vars: ElementPlusPrimaryCssVars,
+): ElementPlusPrimaryCssVars => {
+  return normalizeElementPlusPrimaryCssVars(vars);
 };

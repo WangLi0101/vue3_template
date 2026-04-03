@@ -7,7 +7,7 @@
         <el-tooltip :content="sidebarToggleLabel" placement="bottom">
           <button
             type="button"
-            class="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0 text-app-text-secondary transition-colors duration-200 hover:bg-app-bg-mute hover:text-primary"
+            class="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0 text-app-text-secondary transition-colors duration-200 hover:bg-[var(--el-fill-color-light)] hover:text-primary"
             :aria-label="sidebarToggleLabel"
             @click="emit('toggleSidebar')"
           >
@@ -24,7 +24,7 @@
         <el-tooltip content="系统配置" placement="bottom">
           <button
             type="button"
-            class="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0 text-app-text-secondary transition-colors duration-200 hover:bg-app-bg-mute hover:text-primary"
+            class="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0 text-app-text-secondary transition-colors duration-200 hover:bg-[var(--el-fill-color-light)] hover:text-primary"
             aria-label="打开系统配置"
             @click="emit('openSettings')"
           >
@@ -35,7 +35,7 @@
         <el-dropdown>
           <button
             type="button"
-            class="inline-flex cursor-pointer items-center gap-2 rounded border-0 bg-transparent px-1 py-0.5 text-app-text-primary transition-colors duration-200 hover:bg-app-bg-mute"
+            class="inline-flex cursor-pointer items-center gap-2 rounded border-0 bg-transparent px-1 py-0.5 text-app-text-primary transition-colors duration-200 hover:bg-[var(--el-fill-color-light)]"
             aria-label="打开用户菜单"
           >
             <el-avatar

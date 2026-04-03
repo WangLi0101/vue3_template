@@ -13,6 +13,15 @@ export const staticRoutes: RouteRecordRaw[] = [
     },
   },
   {
+    path: "/theme",
+    name: "Theme",
+    component: () => import("@/views/theme/index.vue"),
+    meta: {
+      title: "主题",
+      public: true,
+    },
+  },
+  {
     path: "/403",
     name: "Forbidden",
     component: () => import("@/views/error/ForbiddenPage.vue"),
