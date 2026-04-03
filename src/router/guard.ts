@@ -23,7 +23,7 @@ export const setupRouterGuards = (router: Router): void => {
     const menuStore = useMenuStore();
     const permissionStore = usePermissionStore();
 
-    if (to.meta.public) {
+    if (to.meta.skipAuth) {
       if (to.name === "Login" && getAccessToken()) {
         return "/";
       }

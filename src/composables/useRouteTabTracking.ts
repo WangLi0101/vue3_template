@@ -13,7 +13,7 @@ export const useRouteTabTracking = (): void => {
         title: (route.meta.title as string) || "未命名页面",
         path: route.path,
         fullPath: route.fullPath,
-        isPublic: Boolean(route.meta.public),
+        isPublic: Boolean(route.meta.skipAuth),
         hidden: Boolean(route.meta.hidden),
         name: route.name ? String(route.name) : "",
       });

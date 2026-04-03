@@ -6,7 +6,7 @@ export interface AppRouteMeta {
   rank?: number;
   hidden?: boolean;
   keepAlive?: boolean;
-  public?: boolean;
+  skipAuth?: boolean;
 }
 
 export interface AppMenu {

@@ -49,7 +49,7 @@ interface MenusResponse {
 
 1. 登录页调用 `authStore.login()`。
 2. 登录成功后保存 `accessToken` 和 `refreshToken` 到本地存储。
-3. 进入非公开路由时，守卫检查 `accessToken`；无 token 则跳到 `/login?redirect=...`。
+3. 进入未声明 `meta.skipAuth` 的路由时，守卫检查 `accessToken`；无 token 则跳到 `/login?redirect=...`。
 4. 当 `accessToken` 过期且 `refreshToken` 仍有效时，请求拦截器会自动刷新 token 并重试当前请求。
 5. 首次有 token 且 `!authStore.isInitialized` 时，调用 `authStore.initializeSession()`。
 6. `initializeSession()` 内部并行请求：

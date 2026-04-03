@@ -9,7 +9,7 @@ export const staticRoutes: RouteRecordRaw[] = [
     component: () => import("@/views/login/LoginPage.vue"),
     meta: {
       title: "登录",
-      public: true,
+      skipAuth: true,
     },
   },
   {
@@ -18,7 +18,7 @@ export const staticRoutes: RouteRecordRaw[] = [
     component: () => import("@/views/theme/index.vue"),
     meta: {
       title: "主题",
-      public: true,
+      skipAuth: true,
     },
   },
   {
@@ -27,7 +27,7 @@ export const staticRoutes: RouteRecordRaw[] = [
     component: () => import("@/views/error/ForbiddenPage.vue"),
     meta: {
       title: "无权限",
-      public: true,
+      skipAuth: true,
     },
   },
   {
@@ -45,7 +45,7 @@ export const staticRoutes: RouteRecordRaw[] = [
     component: () => import("@/views/error/NotFoundPage.vue"),
     meta: {
       title: "404",
-      public: true,
+      skipAuth: true,
     },
   },
 ];
