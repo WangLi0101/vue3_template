@@ -97,9 +97,9 @@ export const findThemePrimaryPresetByPrimary = (primary: string): ThemePrimaryPr
 
 export const themeSemanticTokensByMode = {
   light: {
-    appBg: "#f1f5f9",
+    appBg: "#f2f3f5",
     surface: "#ffffff",
-    sidebarBg: "#F2F3F5",
+    sidebarBg: "#f2f3f5",
     sidebarBgHover: "#e5e6eb",
     sidebarText: "#475569",
     sidebarTextActive: "#0f172a",
