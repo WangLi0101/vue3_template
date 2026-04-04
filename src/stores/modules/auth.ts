@@ -5,10 +5,9 @@ import {
   getMenusApi,
   getPermissionsApi,
   getRolesApi,
-  loginApi,
   refreshTokenApi,
 } from "@/api/auth/api";
-import type { AuthUser, LoginPayload } from "@/api/auth/types";
+import type { AuthUser, TokenPair } from "@/api/auth/types";
 import router from "@/router";
 import { ApiRequestError } from "@/types/http";
 import { clearAuthTokens, getAccessToken, getRefreshToken, setAuthTokens } from "@/utils/token";
@@ -23,15 +22,17 @@ export const useAuthStore = defineStore("auth", () => {
   const user = ref<AuthUser | null>(null);
   const isInitialized = ref(false);
 
-  const login = async (payload: LoginPayload): Promise<boolean> => {
-    const response = await loginApi(payload);
-    if (response.code !== 0) {
-      return false;
-    }
-
-    setAuthTokens(response.data);
+  const resetSessionState = (): void => {
+    user.value = null;
     isInitialized.value = false;
-    return true;
+    tabsStore.reset();
+    permissionStore.reset();
+    menuStore.reset();
+  };
+
+  const establishSession = (tokens: TokenPair): void => {
+    resetSessionState();
+    setAuthTokens(tokens);
   };
 
   const refreshToken = async (): Promise<string> => {
@@ -81,12 +82,8 @@ export const useAuthStore = defineStore("auth", () => {
   };
 
   const logoutLocal = async (): Promise<void> => {
-    user.value = null;
-    isInitialized.value = false;
+    resetSessionState();
     clearAuthTokens();
-    tabsStore.reset();
-    permissionStore.reset();
-    menuStore.reset();
 
     if (router.currentRoute.value.name === "Login") {
       return;
@@ -100,7 +97,7 @@ export const useAuthStore = defineStore("auth", () => {
   return {
     user,
     isInitialized,
-    login,
+    establishSession,
     refreshToken,
     initializeSession,
     logoutLocal,

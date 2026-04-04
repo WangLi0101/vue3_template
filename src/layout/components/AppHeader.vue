@@ -24,7 +24,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useLogoutAction } from "@/composables/useLogoutAction";
 import { useRouteTabTracking } from "@/composables/useRouteTabTracking";
 import AppHeaderContent from "@/layout/components/AppHeaderContent.vue";
 import AppHeaderTags from "@/layout/components/AppHeaderTags.vue";
@@ -35,12 +34,15 @@ import { useUiStore } from "@/stores/modules/ui";
 const route = useRoute();
 const authStore = useAuthStore();
 const uiStore = useUiStore();
-const { logout } = useLogoutAction();
 
 const isSettingsDrawerVisible = ref(false);
 
 const title = computed(() => (route.meta.title as string) || "管理后台");
 const displayName = computed(() => authStore.user?.displayName || "未知用户");
+
+const logout = async (): Promise<void> => {
+  await authStore.logoutLocal();
+};
 
 useRouteTabTracking();
 </script>

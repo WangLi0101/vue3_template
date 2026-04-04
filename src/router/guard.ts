@@ -5,6 +5,8 @@ import { getAccessToken } from "@/utils/token";
 import type { Router } from "vue-router";
 import NProgress from "@/utils/progress";
 
+const APP_TITLE = "Vue3 RBAC 管理后台";
+
 const resolveRootRedirectTarget = (path: string, homeMenuPath: string): string | null => {
   if (path !== "/") return null;
   if (!homeMenuPath || homeMenuPath === "/") {
@@ -12,6 +14,14 @@ const resolveRootRedirectTarget = (path: string, homeMenuPath: string): string |
   }
 
   return homeMenuPath;
+};
+
+const resolveDocumentTitle = (title: unknown): string => {
+  if (typeof title !== "string" || !title.trim()) {
+    return APP_TITLE;
+  }
+
+  return title === APP_TITLE ? title : `${title} - ${APP_TITLE}`;
 };
 
 export const setupRouterGuards = (router: Router): void => {
@@ -79,7 +89,8 @@ export const setupRouterGuards = (router: Router): void => {
     return true;
   });
 
-  router.afterEach(() => {
+  router.afterEach((to) => {
+    document.title = resolveDocumentTitle(to.meta.title);
     NProgress.done();
   });
 

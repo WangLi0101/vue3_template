@@ -64,8 +64,13 @@
               />
             </el-form-item>
 
-            <el-button type="primary" class="submit-btn" :loading="loading" @click="handleLogin">
-              {{ loading ? "登录中..." : "立即登录" }}
+            <el-button
+              type="primary"
+              class="submit-btn"
+              :loading="isLoginLoading"
+              @click="handleLogin"
+            >
+              {{ isLoginLoading ? "登录中..." : "立即登录" }}
             </el-button>
           </el-form>
 
@@ -85,17 +90,16 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
-import { reactive, ref, useTemplateRef } from "vue";
+import { reactive, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/modules/auth";
+import { usePasswordLogin } from "@/composables/auth/usePasswordLogin";
 import { removeAllSpace } from "@/utils/tool";
 
 const router = useRouter();
 const route = useRoute();
-const authStore = useAuthStore();
+const { isLoginLoading, loginByPassword } = usePasswordLogin();
 
 const formRef = useTemplateRef<FormInstance>("formRef");
-const loading = ref(false);
 
 const formState = reactive({
   username: "admin",
@@ -113,22 +117,17 @@ const handleLogin = async (): Promise<void> => {
   await formRef.value.validate(async (valid: boolean) => {
     if (!valid) return;
 
-    loading.value = true;
-    try {
-      const loginSuccess = await authStore.login({
-        username: removeAllSpace(formState.username),
-        password: formState.password,
-      });
-      if (!loginSuccess) {
-        return;
-      }
-
-      const redirect = (route.query.redirect as string) || "/";
-      await router.replace(redirect);
-      ElMessage.success("登录成功");
-    } finally {
-      loading.value = false;
+    const loginSuccess = await loginByPassword({
+      username: removeAllSpace(formState.username),
+      password: formState.password,
+    });
+    if (!loginSuccess) {
+      return;
     }
+
+    const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/";
+    await router.replace(redirect);
+    ElMessage.success("登录成功");
   });
 };
 </script>
