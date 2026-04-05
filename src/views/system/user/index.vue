@@ -112,7 +112,7 @@
     <UserFormDialog
       v-model="dialogVisible"
       :is-edit="isEdit"
-      :row="currentRow"
+      :user="currentUser"
       :role-options="roleOptions"
       @success="handleDialogSuccess"
     />
@@ -153,7 +153,7 @@ const roleOptions = ref<RoleOption[]>([]);
 const selectedIds = ref<number[]>([]);
 const dialogVisible = ref(false);
 const isEdit = ref(false);
-const currentRow = ref<UserItem | null>(null);
+const currentUser = ref<UserItem | null>(null);
 const query = reactive<UserListQuery>({
   pageNum: 1,
   pageSize: 10,
@@ -207,13 +207,13 @@ const handleSelectionChange = (rows: UserItem[]) => {
 
 const handleCreate = () => {
   isEdit.value = false;
-  currentRow.value = null;
+  currentUser.value = null;
   dialogVisible.value = true;
 };
 
 const handleEdit = (row: UserItem) => {
   isEdit.value = true;
-  currentRow.value = {
+  currentUser.value = {
     ...row,
     roleIds: [...row.roleIds],
     roleNames: [...row.roleNames],

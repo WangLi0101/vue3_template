@@ -67,7 +67,7 @@ import { ROLE_CODE_REGEXP } from "@/utils/validators";
 
 interface Props {
   isEdit: boolean;
-  row: RoleItem | null;
+  role: RoleItem | null;
 }
 
 interface Emits {
@@ -88,17 +88,17 @@ const form = ref({
 });
 type FormKey = keyof typeof form.value;
 
-const assignFormFromRow = (row: RoleItem) => {
+const assignFormFromRole = (role: RoleItem) => {
   for (const key of Object.keys(form.value) as FormKey[]) {
-    if (key in row) {
-      form.value[key] = row[key as keyof RoleItem] as never;
+    if (key in role) {
+      form.value[key] = role[key as keyof RoleItem] as never;
     }
   }
 };
 
 const open = () => {
-  if (props.isEdit && props.row) {
-    assignFormFromRow(props.row);
+  if (props.isEdit && props.role) {
+    assignFormFromRole(props.role);
   }
 };
 
@@ -134,7 +134,7 @@ const add = () => {
 
 const edit = () => {
   return updateRoleApi({
-    id: props.row!.id,
+    id: props.role!.id,
     ...getFormData(),
   });
 };

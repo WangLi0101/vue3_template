@@ -104,7 +104,7 @@ pnpm run build:prod
 - 弹窗层负责：表单状态、校验、回填、提交、关闭清理。
 - 页面层建议统一命名：
   - `isListLoading`、`tableData`、`total`、`selectedIds`
-  - `query`、`dialogVisible`、`isEdit`、`currentRow`
+  - `query`、`dialogVisible`、`isEdit`、`currentItem`
   - `getXxxList`、`handleSearch`、`handleReset`
   - `handleCreate`、`handleEdit`、`handleDelete`、`handleBatchDelete`
   - `handleDialogSuccess`
@@ -133,7 +133,7 @@ pnpm run build:prod
   - 备注、描述等长文本字段保持单独一行
 - 弹窗层建议统一命名：
   - `dialogVisible`、`formRef`、`form`、`rules`
-  - `isSubmitLoading`、`isEdit`、`row`
+  - `isSubmitLoading`、`isEdit`、`role` / `user` / `dept` 等领域对象名
   - `open`、`closed`、`getFormData`、`add`、`edit`、`submitForm`
 - 参考实现：
   - `src/views/system/role/components/RoleFormDialog.vue`

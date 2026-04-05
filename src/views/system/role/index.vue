@@ -77,7 +77,7 @@
     <RoleFormDialog
       v-model="dialogVisible"
       :is-edit="isEdit"
-      :row="currentRow"
+      :role="currentRole"
       @success="handleDialogSuccess"
     />
   </div>
@@ -106,7 +106,7 @@ const tableData = ref<RoleItem[]>([]);
 const selectedIds = ref<number[]>([]);
 const dialogVisible = ref(false);
 const isEdit = ref(false);
-const currentRow = ref<RoleItem | null>(null);
+const currentRole = ref<RoleItem | null>(null);
 const query = reactive<RoleListQuery>({
   name: "",
   code: "",
@@ -148,13 +148,13 @@ const handleSelectionChange = (rows: RoleItem[]) => {
 
 const handleCreate = () => {
   isEdit.value = false;
-  currentRow.value = null;
+  currentRole.value = null;
   dialogVisible.value = true;
 };
 
 const handleEdit = (row: RoleItem) => {
   isEdit.value = true;
-  currentRow.value = { ...row };
+  currentRole.value = { ...row };
   dialogVisible.value = true;
 };
 

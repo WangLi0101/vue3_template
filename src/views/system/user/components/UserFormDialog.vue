@@ -133,7 +133,7 @@ import { isValidPhone } from "@/utils/validators";
 
 interface Props {
   isEdit: boolean;
-  row: UserItem | null;
+  user: UserItem | null;
   roleOptions: RoleOption[];
 }
 
@@ -159,17 +159,17 @@ const form = ref({
 });
 type FormKey = keyof typeof form.value;
 
-const assignFormFromRow = (row: UserItem) => {
+const assignFormFromUser = (user: UserItem) => {
   for (const key of Object.keys(form.value) as FormKey[]) {
-    if (key in row) {
-      form.value[key] = row[key as keyof UserItem] as never;
+    if (key in user) {
+      form.value[key] = user[key as keyof UserItem] as never;
     }
   }
 };
 
 const open = () => {
-  if (props.isEdit && props.row) {
-    assignFormFromRow(props.row);
+  if (props.isEdit && props.user) {
+    assignFormFromUser(props.user);
   }
 };
 
@@ -254,7 +254,7 @@ const edit = () => {
     ...payload
   } = getFormData();
   return updateUserApi({
-    id: props.row!.id,
+    id: props.user!.id,
     ...payload,
   });
 };
