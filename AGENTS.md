@@ -103,9 +103,9 @@ pnpm run build:prod
 - 页面层负责：查询条件、列表、分页、选择态、打开弹窗、删除、刷新数据。
 - 弹窗层负责：表单状态、校验、回填、提交、关闭清理。
 - 页面层建议统一命名：
-  - `loading`、`tableData`、`total`、`selectedIds`
+  - `isListLoading`、`tableData`、`total`、`selectedIds`
   - `query`、`dialogVisible`、`isEdit`、`currentRow`
-  - `fetchList`、`handleSearch`、`handleReset`
+  - `getXxxList`、`handleSearch`、`handleReset`
   - `handleCreate`、`handleEdit`、`handleDelete`、`handleBatchDelete`
   - `handleDialogSuccess`
 - 优先复用现有实现风格：

@@ -41,7 +41,7 @@
 
       <div class="min-h-0 flex-1">
         <el-table
-          v-loading="loading"
+          v-loading="isListLoading"
           :data="tableData"
           border
           stripe
@@ -97,11 +97,11 @@ defineOptions({
 });
 
 onMounted(() => {
-  void fetchList();
+  void getRoleList();
 });
 
 const queryFormRef = useTemplateRef<FormInstance>("queryFormRef");
-const loading = ref(false);
+const isListLoading = ref(false);
 const tableData = ref<RoleItem[]>([]);
 const selectedIds = ref<number[]>([]);
 const dialogVisible = ref(false);
@@ -113,8 +113,8 @@ const query = reactive<RoleListQuery>({
   status: undefined,
 });
 
-const fetchList = async () => {
-  loading.value = true;
+const getRoleList = async () => {
+  isListLoading.value = true;
   try {
     const response = await getRoleListApi({
       ...query,
@@ -129,17 +129,17 @@ const fetchList = async () => {
     tableData.value = response.data.list;
     selectedIds.value = [];
   } finally {
-    loading.value = false;
+    isListLoading.value = false;
   }
 };
 
 const handleSearch = async () => {
-  await fetchList();
+  await getRoleList();
 };
 
 const handleReset = async () => {
   queryFormRef.value?.resetFields();
-  await fetchList();
+  await getRoleList();
 };
 
 const handleSelectionChange = (rows: RoleItem[]) => {
@@ -173,7 +173,7 @@ const handleDelete = async (row: RoleItem) => {
   }
 
   ElMessage.success("删除成功");
-  await fetchList();
+  await getRoleList();
 };
 
 const handleBatchDelete = async () => {
@@ -197,10 +197,10 @@ const handleBatchDelete = async () => {
   }
 
   ElMessage.success("批量删除成功");
-  await fetchList();
+  await getRoleList();
 };
 
 const handleDialogSuccess = async () => {
-  await fetchList();
+  await getRoleList();
 };
 </script>

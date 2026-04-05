@@ -56,7 +56,7 @@
       <!-- 表格容器自适应高度 -->
       <div class="min-h-0 flex-1">
         <el-table
-          v-loading="loading"
+          v-loading="isListLoading"
           :data="tableData"
           border
           stripe
@@ -103,7 +103,7 @@
           layout="total, sizes, prev, pager, next, jumper"
           :page-sizes="[10, 20, 50, 100]"
           :total="total"
-          @current-change="fetchList"
+          @current-change="getUserList"
           @size-change="handleSizeChange"
         />
       </div>
@@ -142,11 +142,11 @@ defineOptions({
 
 onMounted(() => {
   fetchRoleOptions();
-  fetchList();
+  getUserList();
 });
 
 const queryFormRef = useTemplateRef<FormInstance>("queryFormRef");
-const loading = ref(false);
+const isListLoading = ref(false);
 const total = ref(0);
 const tableData = ref<UserItem[]>([]);
 const roleOptions = ref<RoleOption[]>([]);
@@ -171,8 +171,8 @@ const fetchRoleOptions = async () => {
   roleOptions.value = response.data;
 };
 
-const fetchList = async () => {
-  loading.value = true;
+const getUserList = async () => {
+  isListLoading.value = true;
   try {
     const response = await getUserListApi({
       ...query,
@@ -187,18 +187,18 @@ const fetchList = async () => {
     tableData.value = response.data.list;
     total.value = response.data.total;
   } finally {
-    loading.value = false;
+    isListLoading.value = false;
   }
 };
 
 const handleSearch = async () => {
   query.pageNum = 1;
-  await fetchList();
+  await getUserList();
 };
 
 const handleSizeChange = async () => {
   query.pageNum = 1;
-  await fetchList();
+  await getUserList();
 };
 
 const handleSelectionChange = (rows: UserItem[]) => {
@@ -236,7 +236,7 @@ const handleDelete = async (row: UserItem) => {
   }
 
   ElMessage.success("删除成功");
-  await fetchList();
+  await getUserList();
 };
 
 const handleBatchDelete = async () => {
@@ -261,10 +261,10 @@ const handleBatchDelete = async () => {
   }
 
   ElMessage.success("批量删除成功");
-  await fetchList();
+  await getUserList();
 };
 
 const handleDialogSuccess = async () => {
-  await fetchList();
+  await getUserList();
 };
 </script>

@@ -19,8 +19,9 @@ Treat `docs/08-弹窗组件规范.md` as the canonical rule source for dialog cl
 2. Keep the page/dialog boundary stable: the page opens the dialog and refreshes data after success; the dialog owns form state, validation, submission, and cleanup.
 3. Implement the standard dialog lifecycle with `defineModel<boolean>()`, `open`, `closed`, `getFormData`, `add`, `edit`, and `submitForm`.
 4. For edit-mode form backfill, prefer reusing the existing loop-based assignment pattern and extract it into a small method such as `assignFormFromRow`, so `open` stays focused on flow control.
-5. Keep project naming unchanged: `dialogVisible`, `formRef`, `form`, `rules`, `isSubmitLoading`, `isEdit`, and `row`.
+5. Keep project naming unchanged: `dialogVisible`, `formRef`, `form`, `rules`, `isSubmitLoading`, `isEdit`, and `row`. When coordinating with the page, prefer page-side boolean loading names such as `isListLoading`.
 6. Reuse nearby implementation patterns before inventing new abstractions.
+7. When the page refreshes table data after dialog success, prefer page-side names such as `getRoleList` or `getUserList` instead of generic `fetchList`.
 
 ## Baseline
 
