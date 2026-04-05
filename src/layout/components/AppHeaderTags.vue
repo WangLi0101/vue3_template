@@ -1,10 +1,11 @@
 <template>
   <div class="flex h-[38px] items-center bg-app-surface px-2">
-    <el-scrollbar class="header-tags-scrollbar h-full min-w-0 flex-1">
+    <el-scrollbar ref="scrollbarRef" class="header-tags-scrollbar h-full min-w-0 flex-1">
       <transition-group name="tags" tag="div" class="flex h-full min-w-max items-stretch">
         <div
           v-for="tag in tabsStore.tabs"
           :key="tag.path"
+          :ref="(el) => setTagRef(tag.path, el)"
           class="group/tag relative inline-flex h-[38px] cursor-pointer select-none items-center whitespace-nowrap border-0 border-r border-solid border-transparent bg-transparent px-3 text-[13px] transition-all duration-300 active:scale-[0.96] max-md:px-2.5"
           :class="[
             activeTagPath === tag.path
@@ -79,18 +80,69 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, nextTick, useTemplateRef, watch } from "vue";
+import type { ComponentPublicInstance } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ArrowDown, Close } from "@element-plus/icons-vue";
+import type { ScrollbarInstance } from "element-plus/es/components/scrollbar";
 import { useTabsStore } from "@/stores/modules/tabs";
 import type { RouteTag } from "@/stores/modules/tabs";
 
 const route = useRoute();
 const router = useRouter();
 const tabsStore = useTabsStore();
+const scrollbarRef = useTemplateRef<ScrollbarInstance>("scrollbarRef");
+const tagRefs = new Map<string, HTMLDivElement>();
 
 const activeTagPath = computed(() => route.path);
 const hasClosableTags = computed(() => tabsStore.tabs.some((tag) => tag.closable));
+
+const setTagRef = (path: string, el: Element | ComponentPublicInstance | null): void => {
+  if (el instanceof HTMLDivElement) {
+    tagRefs.set(path, el);
+    return;
+  }
+
+  tagRefs.delete(path);
+};
+
+const scrollActiveTagIntoView = (): void => {
+  const wrapRef = scrollbarRef.value?.wrapRef;
+  const activeTagRef = tagRefs.get(activeTagPath.value);
+  if (!wrapRef || !activeTagRef) {
+    return;
+  }
+
+  const padding = 12;
+  const tagLeft = activeTagRef.offsetLeft;
+  const tagRight = tagLeft + activeTagRef.offsetWidth;
+  const visibleLeft = wrapRef.scrollLeft;
+  const visibleRight = visibleLeft + wrapRef.clientWidth;
+
+  if (tagLeft < visibleLeft) {
+    wrapRef.scrollTo({
+      left: Math.max(tagLeft - padding, 0),
+      behavior: "smooth",
+    });
+    return;
+  }
+
+  if (tagRight > visibleRight) {
+    wrapRef.scrollTo({
+      left: tagRight - wrapRef.clientWidth + padding,
+      behavior: "smooth",
+    });
+  }
+};
+
+watch(
+  [activeTagPath, () => tabsStore.tabs.length],
+  async () => {
+    await nextTick();
+    scrollActiveTagIntoView();
+  },
+  { immediate: true },
+);
 
 const handleTagClick = async (tag: RouteTag): Promise<void> => {
   if (route.fullPath === tag.fullPath) return;

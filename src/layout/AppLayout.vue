@@ -10,7 +10,7 @@
     <div class="flex min-w-0 flex-1 flex-col bg-app-bg">
       <AppHeader />
 
-      <main class="flex-1 overflow-auto p-3">
+      <main ref="mainContentRef" class="flex-1 overflow-auto p-3">
         <AppRouterView />
       </main>
     </div>
@@ -18,13 +18,29 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, nextTick, useTemplateRef, watch } from "vue";
+import { useRoute } from "vue-router";
 import AppHeader from "@/layout/components/AppHeader.vue";
 import AppSidebar from "@/layout/components/AppSidebar.vue";
 import AppRouterView from "@/components/AppRouterView.vue";
 import { useUiStore } from "@/stores/modules/ui";
 
 const uiStore = useUiStore();
+const route = useRoute();
+const mainContentRef = useTemplateRef<HTMLElement>("mainContentRef");
 
 const sidebarWidthClass = computed(() => (uiStore.isSidebarCollapsed ? "w-[64px]" : "w-[220px]"));
+
+watch(
+  () => route.fullPath,
+  async () => {
+    await nextTick();
+    mainContentRef.value?.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+  },
+  { flush: "post" },
+);
 </script>
