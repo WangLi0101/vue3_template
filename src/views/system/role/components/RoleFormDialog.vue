@@ -88,13 +88,17 @@ const form = ref({
 });
 type FormKey = keyof typeof form.value;
 
+const assignFormFromRow = (row: RoleItem) => {
+  for (const key of Object.keys(form.value) as FormKey[]) {
+    if (key in row) {
+      form.value[key] = row[key as keyof RoleItem] as never;
+    }
+  }
+};
+
 const open = () => {
   if (props.isEdit && props.row) {
-    for (const key of Object.keys(form.value) as FormKey[]) {
-      if (key in props.row) {
-        form.value[key] = props.row[key as keyof RoleItem] as never;
-      }
-    }
+    assignFormFromRow(props.row);
   }
 };
 
