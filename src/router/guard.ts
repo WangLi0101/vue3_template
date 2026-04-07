@@ -24,6 +24,12 @@ const resolveDocumentTitle = (title: unknown): string => {
   return title === APP_TITLE ? title : `${title} - ${APP_TITLE}`;
 };
 
+const mountDynamicRoutes = (router: Router): void => {
+  const menuStore = useMenuStore();
+  const permissionStore = usePermissionStore();
+  permissionStore.mountDynamicRoutes(router, menuStore.dynamicRoutes);
+};
+
 export const setupRouterGuards = (router: Router): void => {
   router.beforeEach(async (to, from) => {
     if (to.fullPath !== from.fullPath) {
@@ -31,7 +37,6 @@ export const setupRouterGuards = (router: Router): void => {
     }
     const authStore = useAuthStore();
     const menuStore = useMenuStore();
-    const permissionStore = usePermissionStore();
 
     if (to.meta.skipAuth) {
       if (to.name === "Login" && getAccessToken()) {
@@ -58,7 +63,7 @@ export const setupRouterGuards = (router: Router): void => {
           return false;
         }
 
-        permissionStore.mountDynamicRoutes(router, menuStore.dynamicRoutes);
+        mountDynamicRoutes(router);
 
         const rootRedirectTarget = resolveRootRedirectTarget(to.path, menuStore.homeMenuPath);
         if (rootRedirectTarget) {
