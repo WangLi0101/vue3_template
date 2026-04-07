@@ -5,7 +5,7 @@ export interface DictionaryItem {
   info: string;
   level: number;
   parentUuid: string | null;
-  children?: DictionaryItem[];
+  children: DictionaryItem[] | null;
 }
 
 export interface DictionaryListQuery {
