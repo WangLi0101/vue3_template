@@ -252,11 +252,10 @@ const listUsers = (query: UserListQuery) => {
   const start = pageNum * pageSize;
   const total = filtered.length;
   return {
-    total,
-    totalPages: Math.ceil(total / pageSize),
-    page: pageNum,
+    pageNo: pageNum,
     pageSize,
-    pageData: filtered.slice(start, start + pageSize).map(serializeUser),
+    total,
+    records: filtered.slice(start, start + pageSize).map(serializeUser),
   };
 };
 
@@ -278,11 +277,10 @@ const listRoles = (query: RoleListQuery) => {
   const total = filtered.length;
   const pageSize = total || 10;
   return {
-    total,
-    totalPages: total > 0 ? 1 : 0,
-    page: 0,
+    pageNo: 0,
     pageSize,
-    pageData: filtered.map(serializeRole),
+    total,
+    records: filtered.map(serializeRole),
   };
 };
 

@@ -187,7 +187,7 @@ const getUserList = async () => {
       return;
     }
 
-    tableData.value = response.data.pageData;
+    tableData.value = response.data.records;
     total.value = response.data.total;
   } finally {
     isListLoading.value = false;

@@ -127,7 +127,7 @@ const getRoleList = async () => {
       return;
     }
 
-    tableData.value = response.data.pageData;
+    tableData.value = response.data.records;
     selectedIds.value = [];
   } finally {
     isListLoading.value = false;

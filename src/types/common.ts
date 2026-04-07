@@ -1,7 +1,6 @@
 export interface PageResponse<T> {
-  total: number;
-  totalPages: number;
-  page: number;
+  pageNo: number;
   pageSize: number;
-  pageData: T[];
+  total: number;
+  records: T[];
 }
