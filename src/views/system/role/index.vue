@@ -110,7 +110,7 @@ const currentRole = ref<RoleItem | null>(null);
 const query = reactive<RoleListPayload>({
   name: "",
   code: "",
-  status: undefined,
+  status: null,
 });
 
 const getRoleList = async () => {
@@ -120,6 +120,7 @@ const getRoleList = async () => {
       ...query,
       name: query.name?.trim(),
       code: removeAllSpace(query.code || ""),
+      status: query.status ?? null,
     });
 
     if (response.code !== 0) {

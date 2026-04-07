@@ -14,7 +14,7 @@ export interface RoleItem {
 export interface RoleListPayload {
   name?: string;
   code?: string;
-  status?: RoleStatus;
+  status?: RoleStatus | null;
 }
 
 export interface RoleListResponse {

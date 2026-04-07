@@ -24,8 +24,8 @@ export interface UserListPayload {
   pageSize: number;
   username?: string;
   nickname?: string;
-  status?: UserStatus;
-  roleId?: number;
+  status?: UserStatus | null;
+  roleId?: number | null;
 }
 
 export interface UserListResponse {

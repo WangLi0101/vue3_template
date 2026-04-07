@@ -119,6 +119,23 @@ viteMockServe({
 - 与真实后端路径、方法和字段名保持一致
 - 涉及权限时尽量同步补齐角色、权限码和菜单数据
 
+补充约定：
+
+- 前端业务层若使用 `null` 表示“未筛选”，Mock 也必须按“未筛选”处理，不能把 `null` 误判成有效筛选值
+- 涉及状态、角色、类型等数字筛选项时，判断条件不能只覆盖 `undefined` 和空字符串，也要显式覆盖 `null`
+- 若前端分页组件为 `1` 基、接口入参为 `0` 基，Mock 的分页切片也要与接口语义保持一致
+
+示例：
+
+```ts
+const matchStatus =
+  status === undefined || status === null || status === "" || Number(status) === item.status;
+```
+
+```ts
+const start = pageNum * pageSize;
+```
+
 示例：
 
 ```ts

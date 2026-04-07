@@ -32,12 +32,12 @@ interface MockRoleRecord {
 }
 
 interface UserListQuery {
-  pageNum?: string;
-  pageSize?: string;
+  pageNum?: string | number;
+  pageSize?: string | number;
   username?: string;
   nickname?: string;
-  status?: string;
-  roleId?: string;
+  status?: string | number | null;
+  roleId?: string | number | null;
 }
 
 interface RoleListQuery {
@@ -233,7 +233,7 @@ const getRoleIdFromRequest = (
 };
 
 const listUsers = (query: UserListQuery) => {
-  const pageNum = Math.max(Number(query.pageNum || 1), 1);
+  const pageNum = Math.max(Number(query.pageNum ?? 0), 0);
   const pageSize = Math.max(Number(query.pageSize || 10), 1);
   const username = removeAllSpace(query.username?.trim() || "").toLowerCase();
   const nickname = query.nickname?.trim().toLowerCase() || "";
@@ -243,12 +243,13 @@ const listUsers = (query: UserListQuery) => {
   const filtered = mockUsers.filter((item) => {
     const matchUsername = !username || item.username.toLowerCase().includes(username);
     const matchNickname = !nickname || item.nickname.toLowerCase().includes(nickname);
-    const matchStatus = status === undefined || status === "" || Number(status) === item.status;
+    const matchStatus =
+      status === undefined || status === null || status === "" || Number(status) === item.status;
     const matchRole = !roleId || item.roleIds.includes(roleId);
     return matchUsername && matchNickname && matchStatus && matchRole;
   });
 
-  const start = (pageNum - 1) * pageSize;
+  const start = pageNum * pageSize;
   return {
     list: filtered.slice(start, start + pageSize).map(serializeUser),
     total: filtered.length,
@@ -264,7 +265,8 @@ const listRoles = (query: RoleListQuery) => {
     .filter((item) => {
       const matchName = !name || item.name.toLowerCase().includes(name);
       const matchCode = !code || item.code.toLowerCase().includes(code);
-      const matchStatus = status === undefined || status === "" || Number(status) === item.status;
+      const matchStatus =
+        status === undefined || status === null || status === "" || Number(status) === item.status;
       return matchName && matchCode && matchStatus;
     })
     .sort((a, b) => a.sort - b.sort || a.id - b.id);

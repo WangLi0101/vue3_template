@@ -159,8 +159,8 @@ const query = reactive<UserListPayload>({
   pageSize: 10,
   username: "",
   nickname: "",
-  status: undefined,
-  roleId: undefined,
+  status: null,
+  roleId: null,
 });
 
 const fetchRoleOptions = async () => {
@@ -176,8 +176,11 @@ const getUserList = async () => {
   try {
     const response = await getUserListApi({
       ...query,
+      pageNum: query.pageNum - 1,
       username: removeAllSpace(query.username || ""),
       nickname: query.nickname?.trim(),
+      status: query.status ?? null,
+      roleId: query.roleId ?? null,
     });
 
     if (response.code !== 0) {
