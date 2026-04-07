@@ -19,7 +19,7 @@ export interface UserItem {
   createdAt: string;
 }
 
-export interface UserListQuery {
+export interface UserListPayload {
   pageNum: number;
   pageSize: number;
   username?: string;

@@ -123,7 +123,7 @@
 import { onMounted, reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance } from "element-plus";
-import type { RoleOption, UserItem, UserListQuery, UserStatus } from "@/api/system/user";
+import type { RoleOption, UserItem, UserListPayload, UserStatus } from "@/api/system/user";
 import {
   batchDeleteUsersApi,
   deleteUserApi,
@@ -154,7 +154,7 @@ const selectedIds = ref<number[]>([]);
 const dialogVisible = ref(false);
 const isEdit = ref(false);
 const currentUser = ref<UserItem | null>(null);
-const query = reactive<UserListQuery>({
+const query = reactive<UserListPayload>({
   pageNum: 1,
   pageSize: 10,
   username: "",

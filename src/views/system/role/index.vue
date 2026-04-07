@@ -87,7 +87,7 @@
 import { onMounted, reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance } from "element-plus";
-import type { RoleItem, RoleListQuery } from "@/api/system/role";
+import type { RoleItem, RoleListPayload } from "@/api/system/role";
 import { batchDeleteRolesApi, deleteRoleApi, getRoleListApi } from "@/api/system/role";
 import { removeAllSpace } from "@/utils/tool";
 import RoleFormDialog from "./components/RoleFormDialog.vue";
@@ -107,7 +107,7 @@ const selectedIds = ref<number[]>([]);
 const dialogVisible = ref(false);
 const isEdit = ref(false);
 const currentRole = ref<RoleItem | null>(null);
-const query = reactive<RoleListQuery>({
+const query = reactive<RoleListPayload>({
   name: "",
   code: "",
   status: undefined,

@@ -4,15 +4,15 @@ import type {
   CreateUserPayload,
   RoleOption,
   UpdateUserPayload,
-  UserListQuery,
+  UserListPayload,
   UserListResponse,
   UserMutationResponse,
 } from "@/api/system/user/types";
 
-export const getUserListApi = (params: UserListQuery) => {
+export const getUserListApi = (payload: UserListPayload) => {
   return request<UserListResponse>("/system/users/list", "MOCK", {
     method: "post",
-    data: params,
+    data: payload,
   });
 };
 

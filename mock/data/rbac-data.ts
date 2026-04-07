@@ -72,6 +72,16 @@ const adminMenus: AppMenu[] = [
           rank: 4,
         },
       },
+      {
+        id: "250",
+        name: "SystemDictionary",
+        path: "system/dictionary",
+        component: "system/dictionary/index",
+        meta: {
+          title: "字典管理",
+          rank: 5,
+        },
+      },
     ],
   },
 ];

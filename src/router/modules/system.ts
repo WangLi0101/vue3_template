@@ -59,6 +59,15 @@ export const routes: RouteRecordRaw[] = [
           rank: 4,
         },
       },
+      {
+        path: "dictionary",
+        name: "SystemDictionary",
+        component: () => import("@/views/system/dictionary/index.vue"),
+        meta: {
+          title: "字典管理",
+          rank: 5,
+        },
+      },
     ],
   },
 ];

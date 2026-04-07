@@ -11,7 +11,7 @@ export interface RoleItem {
   userCount: number;
 }
 
-export interface RoleListQuery {
+export interface RoleListPayload {
   name?: string;
   code?: string;
   status?: RoleStatus;

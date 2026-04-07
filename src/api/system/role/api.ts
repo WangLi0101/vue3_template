@@ -2,16 +2,16 @@ import { request } from "@/utils/http";
 import type {
   BatchDeleteRolesPayload,
   CreateRolePayload,
-  RoleListQuery,
+  RoleListPayload,
   RoleListResponse,
   RoleMutationResponse,
   UpdateRolePayload,
 } from "@/api/system/role/types";
 
-export const getRoleListApi = (params: RoleListQuery) => {
+export const getRoleListApi = (payload: RoleListPayload) => {
   return request<RoleListResponse>("/system/roles/list", "MOCK", {
     method: "post",
-    data: params,
+    data: payload,
   });
 };
 
