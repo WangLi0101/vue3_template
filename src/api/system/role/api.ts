@@ -1,15 +1,16 @@
 import { request } from "@/utils/http";
+import type { PageResponse } from "@/types/common";
 import type {
   BatchDeleteRolesPayload,
   CreateRolePayload,
+  RoleItem,
   RoleListPayload,
-  RoleListResponse,
   RoleMutationResponse,
   UpdateRolePayload,
 } from "@/api/system/role/types";
 
 export const getRoleListApi = (payload: RoleListPayload) => {
-  return request<RoleListResponse>("/system/roles/list", "MOCK", {
+  return request<PageResponse<RoleItem>>("/system/roles/list", "MOCK", {
     method: "post",
     data: payload,
   });

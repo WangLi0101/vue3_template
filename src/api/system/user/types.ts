@@ -28,11 +28,6 @@ export interface UserListPayload {
   roleId: number | null;
 }
 
-export interface UserListResponse {
-  list: UserItem[];
-  total: number;
-}
-
 export interface CreateUserPayload {
   username: string;
   nickname: string;

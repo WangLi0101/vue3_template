@@ -250,9 +250,13 @@ const listUsers = (query: UserListQuery) => {
   });
 
   const start = pageNum * pageSize;
+  const total = filtered.length;
   return {
-    list: filtered.slice(start, start + pageSize).map(serializeUser),
-    total: filtered.length,
+    total,
+    totalPages: Math.ceil(total / pageSize),
+    page: pageNum,
+    pageSize,
+    pageData: filtered.slice(start, start + pageSize).map(serializeUser),
   };
 };
 
@@ -271,9 +275,14 @@ const listRoles = (query: RoleListQuery) => {
     })
     .sort((a, b) => a.sort - b.sort || a.id - b.id);
 
+  const total = filtered.length;
+  const pageSize = total || 10;
   return {
-    list: filtered.map(serializeRole),
-    total: filtered.length,
+    total,
+    totalPages: total > 0 ? 1 : 0,
+    page: 0,
+    pageSize,
+    pageData: filtered.map(serializeRole),
   };
 };
 

@@ -17,11 +17,6 @@ export interface RoleListPayload {
   status: RoleStatus | null;
 }
 
-export interface RoleListResponse {
-  list: RoleItem[];
-  total: number;
-}
-
 export interface CreateRolePayload {
   name: string;
   code: string;

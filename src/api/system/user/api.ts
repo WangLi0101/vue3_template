@@ -1,16 +1,17 @@
 import { request } from "@/utils/http";
+import type { PageResponse } from "@/types/common";
 import type {
   BatchDeleteUsersPayload,
   CreateUserPayload,
   RoleOption,
   UpdateUserPayload,
   UserListPayload,
-  UserListResponse,
+  UserItem,
   UserMutationResponse,
 } from "@/api/system/user/types";
 
 export const getUserListApi = (payload: UserListPayload) => {
-  return request<UserListResponse>("/system/users/list", "MOCK", {
+  return request<PageResponse<UserItem>>("/system/users/list", "MOCK", {
     method: "post",
     data: payload,
   });
