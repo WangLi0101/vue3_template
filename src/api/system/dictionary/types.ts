@@ -9,8 +9,8 @@ export interface DictionaryItem {
 }
 
 export interface DictionaryListQuery {
-  dictKey?: string;
-  info?: string;
+  dictKey: string;
+  info: string;
 }
 
 export interface DictionaryListResponse {

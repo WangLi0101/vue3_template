@@ -22,10 +22,10 @@ export interface UserItem {
 export interface UserListPayload {
   pageNum: number;
   pageSize: number;
-  username?: string;
-  nickname?: string;
-  status?: UserStatus | null;
-  roleId?: number | null;
+  username: string;
+  nickname: string;
+  status: UserStatus | null;
+  roleId: number | null;
 }
 
 export interface UserListResponse {

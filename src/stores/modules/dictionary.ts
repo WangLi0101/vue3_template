@@ -17,7 +17,7 @@ export const useDictionaryStore = defineStore(
       });
     });
 
-    const loadDictionaryList = async (params: DictionaryListQuery = {}) => {
+    const loadDictionaryList = async (params: DictionaryListQuery = { dictKey: "", info: "" }) => {
       isLoading.value = true;
       try {
         const response = await getDictionaryListApi(params);

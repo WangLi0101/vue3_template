@@ -12,9 +12,9 @@ export interface RoleItem {
 }
 
 export interface RoleListPayload {
-  name?: string;
-  code?: string;
-  status?: RoleStatus | null;
+  name: string;
+  code: string;
+  status: RoleStatus | null;
 }
 
 export interface RoleListResponse {
