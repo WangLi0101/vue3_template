@@ -64,9 +64,9 @@
           row-key="id"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="52" align="center" />
-          <el-table-column prop="id" label="ID" width="80" align="center" />
-          <el-table-column prop="username" label="用户名" min-width="140" />
+          <el-table-column type="selection" width="52" align="center" fixed="left" />
+          <el-table-column prop="id" label="ID" width="80" align="center" fixed="left" />
+          <el-table-column prop="username" label="用户名" min-width="140" fixed="left" />
           <el-table-column prop="nickname" label="昵称" min-width="140" />
           <el-table-column label="角色" min-width="180">
             <template #default="{ row }">

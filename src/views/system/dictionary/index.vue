@@ -41,7 +41,7 @@
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
           default-expand-all
         >
-          <el-table-column prop="dictKey" label="字典键" min-width="180" />
+          <el-table-column prop="dictKey" label="字典键" min-width="180" fixed="left" />
           <el-table-column prop="value" label="字典值" min-width="160" />
           <el-table-column prop="info" label="字典说明" min-width="220" show-overflow-tooltip />
           <el-table-column prop="level" label="层级" width="100" align="center">

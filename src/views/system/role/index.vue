@@ -49,9 +49,9 @@
           row-key="id"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="52" align="center" />
-          <el-table-column prop="id" label="ID" width="80" align="center" />
-          <el-table-column prop="name" label="角色名称" min-width="160" />
+          <el-table-column type="selection" width="52" align="center" fixed="left" />
+          <el-table-column prop="id" label="ID" width="80" align="center" fixed="left" />
+          <el-table-column prop="name" label="角色名称" min-width="160" fixed="left" />
           <el-table-column prop="code" label="角色编码" min-width="180" />
           <el-table-column prop="userCount" label="关联用户" width="100" align="center" />
           <el-table-column prop="sort" label="排序" width="90" align="center" />
