@@ -94,6 +94,7 @@ import { reactive, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { usePasswordLogin } from "@/composables/auth/usePasswordLogin";
 import { removeAllSpace } from "@/utils/tool";
+import { getAuthTokens } from "@/utils/token";
 
 const router = useRouter();
 const route = useRoute();
@@ -124,11 +125,24 @@ const handleLogin = async (): Promise<void> => {
     if (!loginSuccess) {
       return;
     }
-
-    const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/";
-    await router.replace(redirect);
+    jumpToTarget();
     ElMessage.success("登录成功");
   });
+};
+
+const jumpToTarget = () => {
+  const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/systemList";
+  if (redirect.startsWith("http")) {
+    // 跳转到外部网站 拼接token和accesstoken
+    const authTokens = getAuthTokens();
+    const url = new URL(redirect);
+    url.searchParams.set("accessToken", authTokens.accessToken);
+    url.searchParams.set("refreshToken", authTokens.refreshToken);
+    // 本标签页打开
+    window.location.href = url.toString();
+  } else {
+    router.replace(redirect);
+  }
 };
 </script>
 

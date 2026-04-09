@@ -13,6 +13,14 @@ export const staticRoutes: RouteRecordRaw[] = [
     },
   },
   {
+    path: "/systemList",
+    name: "SystemList",
+    component: () => import("@/views/systemList/index.vue"),
+    meta: {
+      title: "系统列表",
+    },
+  },
+  {
     path: "/theme",
     name: "Theme",
     component: () => import("@/views/theme/index.vue"),
