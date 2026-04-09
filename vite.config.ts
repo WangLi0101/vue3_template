@@ -77,6 +77,9 @@ export default defineConfig(({ command, mode }) => {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
+    server: {
+      port: 5173,
+    },
     build: {
       sourcemap: isDevelopment,
       reportCompressedSize: isProduction,
