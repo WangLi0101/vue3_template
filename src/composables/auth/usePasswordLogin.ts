@@ -19,7 +19,6 @@ export const usePasswordLogin = () => {
       if (response.code !== 0) {
         return false;
       }
-
       authStore.establishSession(response.data);
       return true;
     } finally {

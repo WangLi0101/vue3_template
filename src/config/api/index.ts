@@ -1,7 +1,6 @@
 export interface SystemItem {
   name: string;
   url: string;
-  type: "this" | "external";
   roles?: string[];
 }
 
@@ -24,12 +23,10 @@ const SYSTEM_DEFINITIONS: SystemDefinition[] = [
   {
     key: "admin",
     name: "管理系统",
-    type: "this",
   },
   {
     key: "purchase",
     name: "采购平台",
-    type: "external",
   },
 ];
 

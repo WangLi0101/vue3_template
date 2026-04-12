@@ -38,7 +38,7 @@
         v-else
         class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 p-0"
       >
-        <li v-for="item in systemItems" :key="`${item.type}-${item.url}`" class="min-w-0">
+        <li v-for="item in systemItems" :key="item.url" class="min-w-0">
           <button
             class="group flex w-full cursor-pointer flex-col rounded-[24px] border border-app-border bg-app-surface p-7 text-left shadow-[0_20px_40px_rgb(0_0_0/0.05),inset_0_0_0_1px_rgb(255_255_255/0.2)] backdrop-blur-[20px] transition-all duration-300 hover:-translate-y-2 hover:border-primary/40 hover:shadow-[0_30px_60px_rgb(0_0_0/0.1),inset_0_0_0_1px_rgb(255_255_255/0.3)] sm:min-h-[200px] dark:shadow-[0_20px_40px_rgb(0_0_0/0.3),inset_0_0_0_1px_rgb(255_255_255/0.05)] dark:hover:border-primary/50 dark:hover:shadow-[0_30px_60px_rgb(0_0_0/0.4),inset_0_0_0_1px_rgb(var(--app-primary-rgb)/0.3)]"
             type="button"
@@ -46,14 +46,9 @@
           >
             <div class="mb-5 flex w-full items-center justify-between">
               <span
-                class="inline-flex min-h-[28px] items-center justify-center rounded-full px-3 text-[12px] font-bold transition-colors"
-                :class="
-                  item.type === 'this'
-                    ? 'bg-primary/10 text-primary'
-                    : 'bg-indigo-500/10 text-indigo-500'
-                "
+                class="inline-flex min-h-[28px] items-center justify-center rounded-full bg-primary/10 px-3 text-[12px] font-bold text-primary transition-colors"
               >
-                {{ item.type === "this" ? "站内系统" : "外部系统" }}
+                可进入系统
               </span>
               <span
                 class="text-2xl leading-none text-app-text-secondary transition-all duration-300 group-hover:translate-x-1 group-hover:text-primary"
@@ -86,15 +81,13 @@ import { ElMessage } from "element-plus";
 import type { SystemItem } from "@/config/api";
 import { useSystemNavigation } from "@/composables/useSystemNavigation";
 
-const { accessibleSystemList, navigateToSystem } = useSystemNavigation();
+const { accessibleSystemList, navigateBySystemTarget } = useSystemNavigation();
 const systemItems = accessibleSystemList;
 
 const handleNavigate = async (item: SystemItem): Promise<void> => {
-  const success = await navigateToSystem(item);
-  if (success) {
-    return;
+  const result = await navigateBySystemTarget(item.url);
+  if (result.status === "forbidden") {
+    ElMessage.warning("当前账号无权访问该系统");
   }
-
-  ElMessage.warning("当前账号无权访问该系统");
 };
 </script>

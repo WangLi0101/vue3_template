@@ -1,7 +1,6 @@
 import { useAuthStore } from "@/stores/modules/auth";
 import { useMenuStore } from "@/stores/modules/menu";
-import { usePermissionStore } from "@/stores/modules/permission";
-import { getAccessToken } from "@/utils/token";
+import { getAccessToken, setAuthTokens } from "@/utils/token";
 import type { Router } from "vue-router";
 import NProgress from "@/utils/progress";
 
@@ -24,12 +23,6 @@ const resolveDocumentTitle = (title: unknown): string => {
   return title === APP_TITLE ? title : `${title} - ${APP_TITLE}`;
 };
 
-const mountDynamicRoutes = (router: Router): void => {
-  const menuStore = useMenuStore();
-  const permissionStore = usePermissionStore();
-  permissionStore.mountDynamicRoutes(router, menuStore.dynamicRoutes);
-};
-
 export const setupRouterGuards = (router: Router): void => {
   router.beforeEach(async (to, from) => {
     if (to.fullPath !== from.fullPath) {
@@ -37,7 +30,6 @@ export const setupRouterGuards = (router: Router): void => {
     }
     const authStore = useAuthStore();
     const menuStore = useMenuStore();
-
     if (to.meta.skipAuth) {
       if (to.name === "Login" && getAccessToken()) {
         return "/";
@@ -46,9 +38,21 @@ export const setupRouterGuards = (router: Router): void => {
       return true;
     }
 
+    const { accessToken, refreshToken } = to.query;
+    if (accessToken && refreshToken) {
+      setAuthTokens({ accessToken: accessToken as string, refreshToken: refreshToken as string });
+      return {
+        path: to.path,
+        replace: true,
+      };
+    }
+
     if (!getAccessToken()) {
       return {
         name: "Login",
+        query: {
+          redirect: to.fullPath,
+        },
       };
     }
 
@@ -59,8 +63,6 @@ export const setupRouterGuards = (router: Router): void => {
           await authStore.logoutLocal();
           return false;
         }
-
-        mountDynamicRoutes(router);
 
         const rootRedirectTarget = resolveRootRedirectTarget(to.path, menuStore.homeMenuPath);
         if (rootRedirectTarget) {

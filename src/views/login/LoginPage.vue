@@ -33,8 +33,8 @@
           </div>
 
           <div class="form-header">
-            <h1 class="form-title">登录系统</h1>
-            <p class="form-subtitle">请输入您的账号密码</p>
+            <h1 class="form-title">登录 {{ targetSystemName }}</h1>
+            <p class="form-subtitle">请输入您的账号密码，完成后将进入 {{ targetSystemName }}</p>
           </div>
 
           <el-form
@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
-import { reactive, useTemplateRef } from "vue";
+import { computed, reactive, useTemplateRef } from "vue";
 import { useRoute } from "vue-router";
 import { useSystemNavigation } from "@/composables/useSystemNavigation";
 import { usePasswordLogin } from "@/composables/auth/usePasswordLogin";
@@ -98,7 +98,7 @@ import { removeAllSpace } from "@/utils/tool";
 
 const route = useRoute();
 const { isLoginLoading, loginByPassword } = usePasswordLogin();
-const { navigateToTarget } = useSystemNavigation();
+const { navigateBySystemTarget, resolveSystemByTarget } = useSystemNavigation();
 
 const formRef = useTemplateRef<FormInstance>("formRef");
 
@@ -111,6 +111,15 @@ const rules: FormRules = {
   username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   password: [{ required: true, message: "请输入密码", trigger: "blur" }],
 };
+
+const redirect = computed<string>(() =>
+  typeof route.query.redirect === "string" ? route.query.redirect : "",
+);
+
+const targetSystemName = computed<string>(() => {
+  const targetSystem = resolveSystemByTarget(redirect.value);
+  return targetSystem?.name || "控制后台";
+});
 
 const handleLogin = async (): Promise<void> => {
   if (!formRef.value) return;
@@ -131,8 +140,10 @@ const handleLogin = async (): Promise<void> => {
 };
 
 const jumpToTarget = async (): Promise<void> => {
-  const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/systemList";
-  await navigateToTarget(redirect);
+  const result = await navigateBySystemTarget(redirect.value);
+  if (result.status === "forbidden") {
+    ElMessage.warning("当前账号无权进入目标系统，已为您返回系统列表");
+  }
 };
 </script>
 
