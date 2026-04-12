@@ -91,14 +91,14 @@
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import { reactive, useTemplateRef } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
+import { useSystemNavigation } from "@/composables/useSystemNavigation";
 import { usePasswordLogin } from "@/composables/auth/usePasswordLogin";
 import { removeAllSpace } from "@/utils/tool";
-import { getAuthTokens } from "@/utils/token";
 
-const router = useRouter();
 const route = useRoute();
 const { isLoginLoading, loginByPassword } = usePasswordLogin();
+const { navigateToTarget } = useSystemNavigation();
 
 const formRef = useTemplateRef<FormInstance>("formRef");
 
@@ -125,24 +125,14 @@ const handleLogin = async (): Promise<void> => {
     if (!loginSuccess) {
       return;
     }
-    jumpToTarget();
+    await jumpToTarget();
     ElMessage.success("登录成功");
   });
 };
 
-const jumpToTarget = () => {
+const jumpToTarget = async (): Promise<void> => {
   const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/systemList";
-  if (redirect.startsWith("http")) {
-    // 跳转到外部网站 拼接token和accesstoken
-    const authTokens = getAuthTokens();
-    const url = new URL(redirect);
-    url.searchParams.set("accessToken", authTokens.accessToken);
-    url.searchParams.set("refreshToken", authTokens.refreshToken);
-    // 本标签页打开
-    window.location.href = url.toString();
-  } else {
-    router.replace(redirect);
-  }
+  await navigateToTarget(redirect);
 };
 </script>
 

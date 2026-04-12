@@ -49,9 +49,6 @@ export const setupRouterGuards = (router: Router): void => {
     if (!getAccessToken()) {
       return {
         name: "Login",
-        query: {
-          redirect: to.fullPath,
-        },
       };
     }
 
