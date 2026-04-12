@@ -1,3 +1,4 @@
+import { ElMessage } from "element-plus";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { systemList } from "@/config/api";
@@ -5,14 +6,6 @@ import type { SystemItem } from "@/config/api";
 import { useAuthStore } from "@/stores/modules/auth";
 import { usePermissionStore } from "@/stores/modules/permission";
 import { getAccessToken, getAuthTokens } from "@/utils/token";
-
-export type SystemNavigationStatus = "success" | "invalid_target" | "forbidden" | "session_invalid";
-
-export interface SystemNavigationResult {
-  status: SystemNavigationStatus;
-  target: string;
-  system: SystemItem | null;
-}
 
 // 判断目标地址是否为外部系统地址。
 const isExternalTarget = (target: string): boolean => /^https?:\/\//.test(target);
@@ -118,42 +111,27 @@ export const useSystemNavigation = () => {
   const navigateBySystemTarget = async (
     target: string,
     fallback = "/systemList",
-  ): Promise<SystemNavigationResult> => {
+  ): Promise<void> => {
     const sessionReady = await ensureSessionReady();
     if (!sessionReady) {
-      return {
-        status: "session_invalid",
-        target: fallback,
-        system: null,
-      };
+      ElMessage.warning("登录状态已失效，请重新登录");
+      return;
     }
 
     const system = resolveSystemByTarget(target);
     if (!system) {
       await performNavigation(fallback);
-      return {
-        status: "invalid_target",
-        target: fallback,
-        system: null,
-      };
+      ElMessage.warning("目标系统不存在，已为您返回系统列表");
+      return;
     }
 
     if (!canAccessSystem(system)) {
       await performNavigation(fallback);
-      return {
-        status: "forbidden",
-        target: fallback,
-        system,
-      };
+      ElMessage.warning("当前账号无权进入目标系统，已为您返回系统列表");
+      return;
     }
 
     await performNavigation(system.url);
-
-    return {
-      status: "success",
-      target: system.url,
-      system,
-    };
   };
 
   return {

@@ -140,10 +140,7 @@ const handleLogin = async (): Promise<void> => {
 };
 
 const jumpToTarget = async (): Promise<void> => {
-  const result = await navigateBySystemTarget(redirect.value);
-  if (result.status === "forbidden") {
-    ElMessage.warning("当前账号无权进入目标系统，已为您返回系统列表");
-  }
+  await navigateBySystemTarget(redirect.value);
 };
 </script>
 

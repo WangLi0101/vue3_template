@@ -77,7 +77,6 @@
 </template>
 
 <script setup lang="ts">
-import { ElMessage } from "element-plus";
 import type { SystemItem } from "@/config/api";
 import { useSystemNavigation } from "@/composables/useSystemNavigation";
 
@@ -85,9 +84,6 @@ const { accessibleSystemList, navigateBySystemTarget } = useSystemNavigation();
 const systemItems = accessibleSystemList;
 
 const handleNavigate = async (item: SystemItem): Promise<void> => {
-  const result = await navigateBySystemTarget(item.url);
-  if (result.status === "forbidden") {
-    ElMessage.warning("当前账号无权访问该系统");
-  }
+  await navigateBySystemTarget(item.url);
 };
 </script>
