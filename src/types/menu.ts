@@ -1,5 +1,3 @@
-export type PermissionCode = string;
-
 export interface AppRouteMeta {
   title: string;
   icon?: string;

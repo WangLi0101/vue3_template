@@ -1,6 +1,5 @@
-import type { AuthUser, RoleCode } from "../../src/api/auth/types";
+import type { AuthUser, PermissionCode, RoleCode } from "../../src/api/auth/types";
 import type { SysMenu } from "../../src/api/auth/types";
-import type { PermissionCode } from "../../src/types/menu";
 
 interface MockUserProfile {
   password: string;
