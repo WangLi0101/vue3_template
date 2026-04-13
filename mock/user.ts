@@ -1,9 +1,9 @@
 import type { ServerResponse } from "node:http";
 import type { MockMethod } from "vite-plugin-mock";
-import type { RoleStatus } from "../src/api/system/role/constants";
-import type { UserStatus } from "../src/api/system/user/constants";
-import { ROLE_STATUS } from "../src/api/system/role/constants";
-import { USER_STATUS } from "../src/api/system/user/constants";
+import type { RoleStatus } from "../src/api/management/role/constants";
+import type { UserStatus } from "../src/api/management/user/constants";
+import { ROLE_STATUS } from "../src/api/management/role/constants";
+import { USER_STATUS } from "../src/api/management/user/constants";
 import type { ApiResponse } from "../src/types/http";
 import { removeAllSpace } from "../src/utils/tool";
 import { resolveProfileFromAccessToken, resolveRequestToken } from "./token-session";
@@ -286,7 +286,7 @@ const listRoles = (query: RoleListQuery) => {
 
 const mocks: MockMethod[] = [
   {
-    url: "/api/system/roles/options",
+    url: "/api/management/roles/options",
     method: "get",
     rawResponse(req, res) {
       const authError = ensureAuthorized(req);
@@ -308,7 +308,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/roles/list",
+    url: "/api/management/roles/list",
     method: "post",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
@@ -322,7 +322,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/roles",
+    url: "/api/management/roles",
     method: "post",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
@@ -367,7 +367,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/roles",
+    url: "/api/management/roles",
     method: "put",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
@@ -412,7 +412,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/roles",
+    url: "/api/management/roles",
     method: "delete",
     rawResponse(req, res) {
       const authError = ensureAuthorized(req);
@@ -439,7 +439,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/roles/batch-delete",
+    url: "/api/management/roles/batch-delete",
     method: "post",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
@@ -470,7 +470,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/users/list",
+    url: "/api/management/users/list",
     method: "post",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
@@ -484,7 +484,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/users",
+    url: "/api/management/users",
     method: "post",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
@@ -529,7 +529,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/users",
+    url: "/api/management/users",
     method: "put",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
@@ -563,7 +563,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/users",
+    url: "/api/management/users",
     method: "delete",
     rawResponse(req, res) {
       const authError = ensureAuthorized(req);
@@ -583,7 +583,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/users/batch-delete",
+    url: "/api/management/users/batch-delete",
     method: "post",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);

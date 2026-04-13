@@ -1,69 +1,217 @@
 <template>
-  <el-space direction="vertical" :size="16" fill>
-    <el-card shadow="never">
-      <template #header>
-        <div class="font-semibold">当前登录信息</div>
-      </template>
+  <div class="content flex h-full flex-col">
+    <div class="mb-4">
+      <el-form ref="queryFormRef" :model="query" inline label-width="68px" class="flex flex-wrap">
+        <el-form-item label="权限名称" prop="name">
+          <el-input
+            v-model="query.name"
+            placeholder="请输入权限名称"
+            clearable
+            @keyup.enter="handleSearch"
+          />
+        </el-form-item>
+        <el-form-item label="权限编码" prop="code">
+          <el-input
+            v-model="query.code"
+            placeholder="请输入权限编码"
+            clearable
+            @keyup.enter="handleSearch"
+          />
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="query.status" placeholder="全部状态" clearable class="w-36">
+            <el-option label="启用" :value="1" />
+            <el-option label="停用" :value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleSearch">查询</el-button>
+          <el-button @click="handleReset">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
 
-      <div class="mb-3 text-sm text-gray-500">用户：{{ authStore.user?.displayName || "-" }}</div>
-      <div class="mb-2 text-sm">角色：</div>
-      <el-space wrap>
-        <el-tag v-for="role in roleList" :key="role" type="info">{{ role }}</el-tag>
-      </el-space>
-      <div class="mb-2 mt-4 text-sm">权限：</div>
-      <el-space wrap>
-        <el-tag v-for="permission in permissionList" :key="permission" effect="plain">
-          {{ permission }}
-        </el-tag>
-      </el-space>
-    </el-card>
-
-    <el-card shadow="never">
-      <template #header>
-        <div class="font-semibold">v-role 示例</div>
-      </template>
-
-      <el-alert
-        class="mb-4"
-        title="无匹配角色的元素会在 mounted 阶段直接移除"
-        type="warning"
-        :closable="false"
-      />
-      <el-space wrap>
-        <el-button v-role="['super_admin']" type="primary"> 仅 super_admin 可见 </el-button>
-        <el-button v-role="['auditor']" type="success"> 仅 auditor 可见 </el-button>
-        <el-button v-role="['super_admin', 'auditor']" type="info">
-          super_admin 或 auditor 可见
+    <div class="flex min-h-0 flex-1 flex-col">
+      <div class="mb-4 flex flex-wrap items-center gap-3">
+        <el-button type="primary" @click="handleCreate"> 新建权限 </el-button>
+        <el-button type="danger" plain :disabled="!selectedIds.length" @click="handleBatchDelete">
+          批量删除
         </el-button>
-      </el-space>
-    </el-card>
+      </div>
 
-    <el-card shadow="never">
-      <template #header>
-        <div class="font-semibold">v-permission 示例</div>
-      </template>
+      <div class="min-h-0 flex-1">
+        <el-table
+          v-loading="isListLoading"
+          :data="tableData"
+          border
+          stripe
+          height="100%"
+          row-key="id"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="52" align="center" fixed="left" />
+          <el-table-column prop="id" label="ID" width="80" align="center" fixed="left" />
+          <el-table-column prop="name" label="权限名称" min-width="160" fixed="left" />
+          <el-table-column prop="code" label="权限编码" min-width="200" />
+          <el-table-column prop="type" label="类型" width="100" align="center">
+            <template #default="{ row }">
+              <el-tag :type="row.type === 1 ? 'primary' : 'warning'">
+                {{ row.type === 1 ? "菜单" : "按钮" }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="sort" label="排序" width="90" align="center" />
+          <el-table-column prop="status" label="状态" width="100" align="center">
+            <template #default="{ row }">
+              <el-tag :type="row.status === 1 ? 'success' : 'info'">
+                {{ row.status === 1 ? "启用" : "停用" }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="remark" label="备注" min-width="200" show-overflow-tooltip />
+          <el-table-column prop="createdAt" label="创建时间" min-width="180" />
+          <el-table-column label="操作" width="160" fixed="right">
+            <template #default="{ row }">
+              <el-button type="primary" link @click="handleEdit(row)"> 编辑 </el-button>
+              <el-button type="danger" link @click="handleDelete(row)"> 删除 </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
 
-      <el-space wrap>
-        <el-button v-permission="'sys:user:create'" type="primary">
-          需要 sys:user:create
-        </el-button>
-        <el-button v-permission="['sys:role:create', 'sys:user:delete']" type="warning">
-          sys:role:create 或 sys:user:delete
-        </el-button>
-        <el-button v-permission="'sys:menu:create'" type="danger"> 需要 sys:menu:create </el-button>
-      </el-space>
-    </el-card>
-  </el-space>
+    <PermissionFormDialog
+      v-model="dialogVisible"
+      :is-edit="isEdit"
+      :permission="currentPermission"
+      @success="handleDialogSuccess"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useAuthStore } from "@/stores/modules/auth";
-import { usePermissionStore } from "@/stores/modules/permission";
+import { onMounted, reactive, ref, useTemplateRef } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import type { FormInstance } from "element-plus";
+import type { PermissionItem, PermissionListPayload } from "@/api/management/permission";
+import {
+  batchDeletePermissionsApi,
+  deletePermissionApi,
+  getPermissionListApi,
+} from "@/api/management/permission";
+import { removeAllSpace } from "@/utils/tool";
+import PermissionFormDialog from "./components/PermissionFormDialog.vue";
 
-const authStore = useAuthStore();
-const permissionStore = usePermissionStore();
+defineOptions({
+  name: "PermissionPage",
+});
 
-const roleList = computed(() => permissionStore.roles);
-const permissionList = computed(() => Array.from(permissionStore.permissions));
+onMounted(() => {
+  void getPermissionList();
+});
+
+const queryFormRef = useTemplateRef<FormInstance>("queryFormRef");
+const isListLoading = ref(false);
+const tableData = ref<PermissionItem[]>([]);
+const selectedIds = ref<number[]>([]);
+const dialogVisible = ref(false);
+const isEdit = ref(false);
+const currentPermission = ref<PermissionItem | null>(null);
+const query = reactive<PermissionListPayload>({
+  name: "",
+  code: "",
+  status: null,
+});
+
+const getPermissionList = async () => {
+  isListLoading.value = true;
+  try {
+    const response = await getPermissionListApi({
+      ...query,
+      name: query.name?.trim(),
+      code: removeAllSpace(query.code || ""),
+      status: query.status ?? null,
+    });
+
+    if (response.code !== 0) {
+      return;
+    }
+
+    tableData.value = response.data.records;
+    selectedIds.value = [];
+  } finally {
+    isListLoading.value = false;
+  }
+};
+
+const handleSearch = async () => {
+  await getPermissionList();
+};
+
+const handleReset = async () => {
+  queryFormRef.value?.resetFields();
+  await getPermissionList();
+};
+
+const handleSelectionChange = (rows: PermissionItem[]) => {
+  selectedIds.value = rows.map((item) => item.id);
+};
+
+const handleCreate = () => {
+  isEdit.value = false;
+  currentPermission.value = null;
+  dialogVisible.value = true;
+};
+
+const handleEdit = (row: PermissionItem) => {
+  isEdit.value = true;
+  currentPermission.value = { ...row };
+  dialogVisible.value = true;
+};
+
+const handleDelete = async (row: PermissionItem) => {
+  try {
+    await ElMessageBox.confirm(`确认删除权限「${row.name}」吗？`, "提示", {
+      type: "warning",
+    });
+  } catch {
+    return;
+  }
+
+  const response = await deletePermissionApi(row.id);
+  if (response.code !== 0) {
+    return;
+  }
+
+  ElMessage.success("删除成功");
+  await getPermissionList();
+};
+
+const handleBatchDelete = async () => {
+  if (!selectedIds.value.length) {
+    return;
+  }
+
+  try {
+    await ElMessageBox.confirm(`确认删除选中的 ${selectedIds.value.length} 个权限吗？`, "提示", {
+      type: "warning",
+    });
+  } catch {
+    return;
+  }
+
+  const response = await batchDeletePermissionsApi({
+    ids: [...selectedIds.value],
+  });
+  if (response.code !== 0) {
+    return;
+  }
+
+  ElMessage.success("批量删除成功");
+  await getPermissionList();
+};
+
+const handleDialogSuccess = async () => {
+  await getPermissionList();
+};
 </script>

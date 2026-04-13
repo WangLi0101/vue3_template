@@ -37,6 +37,7 @@ Read `references/form-dialog-guidelines.md` when the request is about standards,
 ## Focus Areas
 
 - Reuse the repository's standard `FormDialog` lifecycle and naming from `docs/08-弹窗组件规范.md`.
+- When the task also touches the hosting CRUD page, keep the page layout aligned with `docs/CRUD页面规范.md`: use split query/content regions, reuse `app-card`, and keep query/reset inside the query area instead of the table toolbar.
 - Use `RoleFormDialog.vue` as the default baseline for lean create/edit dialogs.
 - Switch to `UserFormDialog.vue` when the dialog needs mode-specific fields, richer validators, or different create/edit payload omission.
 - For lean CRUD dialogs whose form fields largely mirror the incoming entity data, prefer loop-based backfill over verbose field-by-field mapping, and keep that logic inside a dedicated helper such as `assignFormFromRole` or `assignFormFromUser`.

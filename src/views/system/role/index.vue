@@ -1,7 +1,7 @@
 <template>
-  <div class="content flex h-full flex-col">
-    <div class="mb-4">
-      <el-form ref="queryFormRef" :model="query" inline label-width="68px" class="flex flex-wrap">
+  <div class="no-bg-content flex flex-col gap-4">
+    <div class="app-card">
+      <el-form ref="queryFormRef" :model="query" inline label-width="68px" class="role-query-form">
         <el-form-item label="角色名称" prop="name">
           <el-input
             v-model="query.name"
@@ -24,15 +24,15 @@
             <el-option label="停用" :value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="role-query-form__actions !mr-0">
           <el-button type="primary" @click="handleSearch">查询</el-button>
           <el-button @click="handleReset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
 
-    <div class="flex min-h-0 flex-1 flex-col">
-      <div class="mb-4 flex flex-wrap items-center gap-3">
+    <div class="app-card flex min-h-0 flex-1 flex-col">
+      <div class="mb-4 flex flex-wrap items-center justify-end gap-3">
         <el-button type="primary" @click="handleCreate"> 新建角色 </el-button>
         <el-button type="danger" plain :disabled="!selectedIds.length" @click="handleBatchDelete">
           批量删除
@@ -87,8 +87,8 @@
 import { onMounted, reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance } from "element-plus";
-import type { RoleItem, RoleListPayload } from "@/api/system/role";
-import { batchDeleteRolesApi, deleteRoleApi, getRoleListApi } from "@/api/system/role";
+import type { RoleItem, RoleListPayload } from "@/api/management/role";
+import { batchDeleteRolesApi, deleteRoleApi, getRoleListApi } from "@/api/management/role";
 import { removeAllSpace } from "@/utils/tool";
 import RoleFormDialog from "./components/RoleFormDialog.vue";
 
@@ -205,3 +205,25 @@ const handleDialogSuccess = async () => {
   await getRoleList();
 };
 </script>
+
+<style scoped lang="scss">
+.role-query-form {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+
+  :deep(.el-form-item) {
+    margin-bottom: 0;
+  }
+}
+
+.role-query-form__actions {
+  margin-left: auto;
+
+  :deep(.el-form-item__content) {
+    gap: 12px;
+  }
+}
+</style>

@@ -51,9 +51,9 @@
 <script setup lang="ts">
 import { computed, reactive, ref, useTemplateRef } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
-import type { DictionaryItem } from "@/api/system/dictionary";
+import type { DictionaryItem } from "@/api/management/dictionary";
 import { ElMessage } from "element-plus";
-import { createDictionaryApi, updateDictionaryApi } from "@/api/system/dictionary";
+import { createDictionaryApi, updateDictionaryApi } from "@/api/management/dictionary";
 
 interface Props {
   isEdit: boolean;

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import type { DictionaryItem, DictionaryListQuery } from "@/api/system/dictionary";
-import { getDictionaryListApi } from "@/api/system/dictionary";
+import type { DictionaryItem, DictionaryListQuery } from "@/api/management/dictionary";
+import { getDictionaryListApi } from "@/api/management/dictionary";
 import { arrayToTree } from "@/utils/tree";
 
 export const useDictionaryStore = defineStore(

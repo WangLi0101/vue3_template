@@ -30,14 +30,11 @@ export const setupRouterGuards = (router: Router): void => {
     }
     const authStore = useAuthStore();
     const menuStore = useMenuStore();
-    if (to.meta.skipAuth) {
-      if (to.name === "Login" && getAccessToken()) {
-        return "/";
-      }
 
+    if (to.meta.skipAuth) {
       return true;
     }
-
+    // 如果有token，需要设置token
     const { accessToken, refreshToken } = to.query;
     if (accessToken && refreshToken) {
       setAuthTokens({ accessToken: accessToken as string, refreshToken: refreshToken as string });
@@ -82,6 +79,7 @@ export const setupRouterGuards = (router: Router): void => {
       }
     }
 
+    // 如果是/，重定向到首页
     const rootRedirectTarget = resolveRootRedirectTarget(to.path, menuStore.homeMenuPath);
     if (rootRedirectTarget) {
       return {

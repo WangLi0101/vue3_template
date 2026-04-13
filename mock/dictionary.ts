@@ -234,7 +234,7 @@ const listDictionaries = (query: DictionaryListQuery) => {
 
 const mocks: MockMethod[] = [
   {
-    url: "/api/system/dictionary/list",
+    url: "/api/management/dictionary/list",
     method: "post",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
@@ -248,7 +248,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/dictionary",
+    url: "/api/management/dictionary",
     method: "post",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
@@ -281,7 +281,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/dictionary",
+    url: "/api/management/dictionary",
     method: "put",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);
@@ -315,7 +315,7 @@ const mocks: MockMethod[] = [
     },
   },
   {
-    url: "/api/system/dictionary",
+    url: "/api/management/dictionary",
     method: "delete",
     rawResponse: async function (req, res) {
       const authError = ensureAuthorized(req);

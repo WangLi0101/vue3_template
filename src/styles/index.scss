@@ -54,5 +54,9 @@ body {
 }
 
 .no-bg-content {
-  @apply h-full overflow-auto p-5;
+  @apply h-full overflow-auto;
+}
+
+.app-card {
+  @apply rounded-lg border border-app-border bg-app-surface p-4;
 }

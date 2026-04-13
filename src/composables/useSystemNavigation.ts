@@ -121,7 +121,6 @@ export const useSystemNavigation = () => {
     const system = resolveSystemByTarget(target);
     if (!system) {
       await performNavigation(fallback);
-      ElMessage.warning("目标系统不存在，已为您返回系统列表");
       return;
     }
 

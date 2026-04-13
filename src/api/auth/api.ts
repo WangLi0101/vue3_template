@@ -50,17 +50,3 @@ export const getMenusApi = () => {
     method: "get",
   });
 };
-
-export const downloadTokenProbeApi = () => {
-  return request("/auth/download-token-probe", "MOCK", {
-    method: "get",
-    responseType: "blob",
-  });
-};
-
-export const downloadTokenProbeErrorApi = () => {
-  return request("/auth/download-token-probe-error", "MOCK", {
-    method: "get",
-    responseType: "blob",
-  });
-};

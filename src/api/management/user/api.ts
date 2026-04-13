@@ -5,47 +5,47 @@ import type {
   CreateUserPayload,
   RoleOption,
   UpdateUserPayload,
-  UserListPayload,
   UserItem,
+  UserListPayload,
   UserMutationResponse,
-} from "@/api/system/user/types";
+} from "./types";
 
 export const getUserListApi = (payload: UserListPayload) => {
-  return request<PageResponse<UserItem>>("/system/users/list", "MOCK", {
+  return request<PageResponse<UserItem>>("/management/users/list", "MOCK", {
     method: "post",
     data: payload,
   });
 };
 
 export const getRoleOptionsApi = () => {
-  return request<RoleOption[]>("/system/roles/options", "MOCK", {
+  return request<RoleOption[]>("/management/roles/options", "MOCK", {
     method: "get",
   });
 };
 
 export const createUserApi = (payload: CreateUserPayload) => {
-  return request<UserMutationResponse>("/system/users", "MOCK", {
+  return request<UserMutationResponse>("/management/users", "MOCK", {
     method: "post",
     data: payload,
   });
 };
 
 export const updateUserApi = (payload: UpdateUserPayload) => {
-  return request<UserMutationResponse>("/system/users", "MOCK", {
+  return request<UserMutationResponse>("/management/users", "MOCK", {
     method: "put",
     data: payload,
   });
 };
 
 export const deleteUserApi = (id: number) => {
-  return request<UserMutationResponse>("/system/users", "MOCK", {
+  return request<UserMutationResponse>("/management/users", "MOCK", {
     method: "delete",
     params: { id },
   });
 };
 
 export const batchDeleteUsersApi = (payload: BatchDeleteUsersPayload) => {
-  return request<UserMutationResponse>("/system/users/batch-delete", "MOCK", {
+  return request<UserMutationResponse>("/management/users/batch-delete", "MOCK", {
     method: "post",
     data: payload,
   });

@@ -1,28 +1,38 @@
 <template>
   <el-dialog
     v-model="dialogVisible"
-    :title="isEdit ? '编辑角色' : '添加角色'"
+    :title="isEdit ? '编辑权限' : '添加权限'"
     width="640px"
     :close-on-click-modal="false"
     @open="open"
     @closed="closed"
   >
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="88px" class="role-form">
-      <el-form-item label="角色名称" prop="name">
+    <el-form ref="formRef" :model="form" :rules="rules" label-width="88px" class="permission-form">
+      <el-form-item label="权限名称" prop="name">
         <el-input
           v-model.trim="form.name"
           maxlength="20"
-          placeholder="请输入角色名称"
+          placeholder="请输入权限名称"
           style="width: 320px"
         />
       </el-form-item>
-      <el-form-item label="角色编码" prop="code">
+      <el-form-item label="权限编码" prop="code">
         <el-input
           v-model="form.code"
-          maxlength="30"
-          placeholder="请输入角色编码"
+          maxlength="50"
+          placeholder="请输入权限编码，如 sys:user:create"
           style="width: 320px"
         />
+      </el-form-item>
+      <el-form-item label="权限类型" prop="type">
+        <el-select v-model="form.type" placeholder="请选择权限类型" style="width: 320px">
+          <el-option
+            v-for="item in PERMISSION_TYPE_OPTIONS"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="排序" prop="sort">
         <el-input-number v-model="form.sort" :min="0" :max="999" style="width: 180px" />
@@ -30,8 +40,8 @@
       <el-form-item label="状态" prop="status">
         <el-switch
           v-model="form.status"
-          :active-value="ROLE_STATUS.ENABLED"
-          :inactive-value="ROLE_STATUS.DISABLED"
+          :active-value="PERMISSION_STATUS.ENABLED"
+          :inactive-value="PERMISSION_STATUS.DISABLED"
           active-text="启用"
           inactive-text="停用"
         />
@@ -59,15 +69,20 @@
 <script setup lang="ts">
 import { reactive, ref, useTemplateRef } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
-import type { RoleItem } from "@/api/management/role";
+import type { PermissionItem } from "@/api/management/permission";
 import { ElMessage } from "element-plus";
-import { createRoleApi, ROLE_STATUS, updateRoleApi } from "@/api/management/role";
+import {
+  createPermissionApi,
+  PERMISSION_STATUS,
+  PERMISSION_TYPE_OPTIONS,
+  updatePermissionApi,
+} from "@/api/management/permission";
 import { removeAllSpace } from "@/utils/tool";
-import { ROLE_CODE_REGEXP } from "@/utils/validators";
+import { PERMISSION_CODE_REGEXP } from "@/utils/validators";
 
 interface Props {
   isEdit: boolean;
-  role: RoleItem | null;
+  permission: PermissionItem | null;
 }
 
 interface Emits {
@@ -82,23 +97,24 @@ const formRef = useTemplateRef<FormInstance>("formRef");
 const form = ref({
   name: "",
   code: "",
+  type: 1,
   sort: 0,
-  status: ROLE_STATUS.ENABLED,
+  status: PERMISSION_STATUS.ENABLED,
   remark: "",
 });
 type FormKey = keyof typeof form.value;
 
-const assignFormFromRole = (role: RoleItem) => {
+const assignFormFromPermission = (permission: PermissionItem) => {
   for (const key of Object.keys(form.value) as FormKey[]) {
-    if (key in role) {
-      form.value[key] = role[key as keyof RoleItem] as never;
+    if (key in permission) {
+      form.value[key] = permission[key as keyof PermissionItem] as never;
     }
   }
 };
 
 const open = () => {
-  if (props.isEdit && props.role) {
-    assignFormFromRole(props.role);
+  if (props.isEdit && props.permission) {
+    assignFormFromPermission(props.permission);
   }
 };
 
@@ -108,17 +124,18 @@ const closed = () => {
 
 const rules = reactive<FormRules<typeof form.value>>({
   name: [
-    { required: true, message: "请输入角色名称", trigger: "blur" },
-    { min: 2, max: 20, message: "角色名称长度为 2-20 位", trigger: "blur" },
+    { required: true, message: "请输入权限名称", trigger: "blur" },
+    { min: 2, max: 20, message: "权限名称长度为 2-20 位", trigger: "blur" },
   ],
   code: [
-    { required: true, message: "请输入角色编码", trigger: "blur" },
+    { required: true, message: "请输入权限编码", trigger: "blur" },
     {
-      pattern: ROLE_CODE_REGEXP,
-      message: "角色编码需以小写字母开头，可包含小写字母、数字和下划线",
+      pattern: PERMISSION_CODE_REGEXP,
+      message: "权限编码需以小写字母开头，可包含小写字母、数字、冒号和下划线",
       trigger: "blur",
     },
   ],
+  type: [{ required: true, message: "请选择权限类型", trigger: "change" }],
 });
 
 const getFormData = () => ({
@@ -127,15 +144,17 @@ const getFormData = () => ({
 });
 
 const add = () => {
-  return createRoleApi({
+  return createPermissionApi({
     ...getFormData(),
+    parentId: null,
   });
 };
 
 const edit = () => {
-  return updateRoleApi({
-    id: props.role!.id,
+  return updatePermissionApi({
+    id: props.permission!.id,
     ...getFormData(),
+    parentId: null,
   });
 };
 

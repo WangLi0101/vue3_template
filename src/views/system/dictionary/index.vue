@@ -74,8 +74,8 @@
 import { onMounted, reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance } from "element-plus";
-import type { DictionaryItem, DictionaryListQuery } from "@/api/system/dictionary";
-import { deleteDictionaryApi } from "@/api/system/dictionary";
+import type { DictionaryItem, DictionaryListQuery } from "@/api/management/dictionary";
+import { deleteDictionaryApi } from "@/api/management/dictionary";
 import { useDictionaryStore } from "@/stores/modules/dictionary";
 import DictionaryFormDialog from "./components/DictionaryFormDialog.vue";
 

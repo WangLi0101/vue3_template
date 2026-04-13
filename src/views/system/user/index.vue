@@ -123,7 +123,7 @@
 import { onMounted, reactive, ref, useTemplateRef } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance } from "element-plus";
-import type { RoleOption, UserItem, UserListPayload, UserStatus } from "@/api/system/user";
+import type { RoleOption, UserItem, UserListPayload, UserStatus } from "@/api/management/user";
 import {
   batchDeleteUsersApi,
   deleteUserApi,
@@ -132,7 +132,7 @@ import {
   USER_STATUS,
   USER_STATUS_LABEL_MAP,
   USER_STATUS_OPTIONS,
-} from "@/api/system/user";
+} from "@/api/management/user";
 import { removeAllSpace } from "@/utils/tool";
 import UserFormDialog from "./components/UserFormDialog.vue";
 

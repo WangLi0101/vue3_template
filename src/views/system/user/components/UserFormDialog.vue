@@ -125,9 +125,9 @@
 <script setup lang="ts">
 import { reactive, ref, useTemplateRef } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
-import type { RoleOption, UserItem } from "@/api/system/user";
+import type { RoleOption, UserItem } from "@/api/management/user";
 import { ElMessage } from "element-plus";
-import { createUserApi, updateUserApi, USER_STATUS } from "@/api/system/user";
+import { createUserApi, updateUserApi, USER_STATUS } from "@/api/management/user";
 import { removeAllSpace } from "@/utils/tool";
 import { isValidPhone } from "@/utils/validators";
 
