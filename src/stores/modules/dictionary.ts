@@ -43,6 +43,7 @@ export const useDictionaryStore = defineStore(
   },
   {
     persist: {
+      storage: sessionStorage,
       key: "rbac-admin-dictionary",
       pick: ["dictionaryList"],
     },
