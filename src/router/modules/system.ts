@@ -6,6 +6,7 @@ export const routes: RouteRecordRaw[] = [
     path: "system",
     name: "System",
     component: AppRouterView,
+    redirect: "/system/user",
     meta: {
       title: "系统管理",
       icon: "mdi:cog-outline",

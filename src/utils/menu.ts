@@ -180,6 +180,21 @@ export const toSidebarMenus = (menus: SidebarMenuItem[]): SidebarMenuItem[] => {
   });
 };
 
+export const findFirstLeafMenu = (menus: SidebarMenuItem[]): SidebarMenuItem | null => {
+  for (const menu of menus) {
+    if (menu.children?.length) {
+      const firstLeafChild = findFirstLeafMenu(menu.children);
+      if (firstLeafChild) {
+        return firstLeafChild;
+      }
+    }
+
+    return menu;
+  }
+
+  return null;
+};
+
 // 菜单结构变化时一次性构建 path -> 面包屑链路索引，避免每次查询都 DFS 整棵树。
 export const buildBreadcrumbChainMap = (
   menus: SidebarMenuItem[],

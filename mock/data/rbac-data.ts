@@ -11,24 +11,6 @@ interface MockUserProfile {
 
 const adminMenus: SysMenu[] = [
   {
-    menuId: "100",
-    parentMenuId: "",
-    menuName: "仪表盘",
-    menuType: "MENU",
-    routePath: "dashboard",
-    componentPath: "dashboard/DashboardPage",
-    icon: "mdi:view-dashboard",
-    sortNo: 1,
-    visible: true,
-    status: 1,
-    permissionCode: "",
-    remark: "",
-    createdBy: "",
-    updatedBy: "",
-    createdAt: "",
-    updatedAt: "",
-  },
-  {
     menuId: "200",
     parentMenuId: "",
     menuName: "系统管理",
