@@ -4,6 +4,8 @@ Use this reference when the task is about reviewing standards, choosing an imple
 
 Do not treat this file as a replacement for `docs/08-弹窗组件规范.md`. The doc remains the authoritative source for dialog categories, shared naming, and common lifecycle constraints; this reference only keeps the extra execution notes that are useful during implementation and review.
 
+By default, this repository prefers `BusinessFormDialog` for standard CRUD create/edit work. Only introduce `CommonForm` or `CommonForm + ContainerDialog` when the same form really needs to be reused across containers or submission flows.
+
 ## Baseline Selection
 
 ### Prefer `RoleFormDialog.vue`
@@ -63,6 +65,7 @@ Keep Vue SFC block order as `template` → `script` → `style`.
 ## Review Checklist
 
 - Is the dialog really a `FormDialog`, not an `ActionDialog` or `DetailDialog`?
+- Is this truly a reuse-driven split, or would a single `BusinessFormDialog` be simpler?
 - Are `isEdit` and `row` sufficient, or does the task really require a typed `scene`?
 - Does `open` only handle replay or initialization work?
 - Does `closed` rely on `resetFields()` before adding extra cleanup?
