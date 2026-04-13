@@ -1,3 +1,4 @@
+import type { SysMenu } from "@/api/auth";
 import type { AppMenu } from "@/types/menu";
 import type { RouteRecordRaw } from "vue-router";
 
@@ -198,4 +199,55 @@ export const buildBreadcrumbChainMap = (
   });
 
   return chainMap;
+};
+
+export const transformMenusToTree = (menus: SysMenu[]): AppMenu[] => {
+  const menuMap = new Map<string, AppMenu>();
+  const rootMenus: AppMenu[] = [];
+
+  menus.forEach((menu) => {
+    const appMenu: AppMenu = {
+      id: menu.menuId,
+      name: menu.menuId,
+      path: menu.routePath,
+      component: menu.componentPath,
+      meta: {
+        title: menu.menuName,
+        icon: menu.icon,
+        rank: menu.sortNo,
+        hidden: !menu.visible,
+      },
+    };
+    menuMap.set(menu.menuId, appMenu);
+  });
+
+  menus.forEach((menu) => {
+    const appMenu = menuMap.get(menu.menuId);
+    if (!appMenu) return;
+
+    if (!menu.parentMenuId || menu.parentMenuId === "0" || menu.parentMenuId === "") {
+      rootMenus.push(appMenu);
+    } else {
+      const parentMenu = menuMap.get(menu.parentMenuId);
+      if (parentMenu) {
+        if (!parentMenu.children) {
+          parentMenu.children = [];
+        }
+        parentMenu.children.push(appMenu);
+      } else {
+        rootMenus.push(appMenu);
+      }
+    }
+  });
+
+  const sortAppMenus = (items: AppMenu[]): AppMenu[] => {
+    return sortWithRank(items, (item) => resolveRank(item.meta.rank)).map((item) => {
+      if (item.children?.length) {
+        return { ...item, children: sortAppMenus(item.children) };
+      }
+      return item;
+    });
+  };
+
+  return sortAppMenus(rootMenus);
 };

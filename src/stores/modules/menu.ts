@@ -6,12 +6,15 @@ import type { AppMenu } from "@/types/menu";
 import { mergeMenus, toMenuItems, toMenuItemsFromRoutes, toSidebarMenus } from "@/utils/menu";
 import type { SidebarMenuItem } from "@/utils/menu";
 import type { RouteRecordRaw } from "vue-router";
+import type { SysMenu } from "@/api/auth";
 
 export const useMenuStore = defineStore("menu", () => {
   // 预留给动态路由链路使用；当前默认不赋值。
   const backendMenus = ref<AppMenu[]>([]);
   // 左侧菜单栏菜单展示。
   const sidebarBackendMenus = ref<AppMenu[]>([]);
+  // 后端返回的扁平化菜单
+  const sidebarBackendFlatMenus = ref<SysMenu[]>([]);
   const staticMenus = computed<SidebarMenuItem[]>(() => toMenuItemsFromRoutes(rootRouteModules));
   // 完整菜单树同时兼容静态路由和可选的动态路由，供面包屑、隐藏页等场景复用。
   const allMenus = computed<SidebarMenuItem[]>(() =>
@@ -29,8 +32,9 @@ export const useMenuStore = defineStore("menu", () => {
     backendMenus.value = menus;
   };
 
-  const setSidebarBackendMenus = (menus: AppMenu[]): void => {
+  const setSidebarBackendMenus = (menus: AppMenu[], flatMenus: SysMenu[]): void => {
     sidebarBackendMenus.value = menus;
+    sidebarBackendFlatMenus.value = flatMenus;
   };
 
   const reset = (): void => {

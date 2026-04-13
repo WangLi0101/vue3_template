@@ -2,7 +2,7 @@ import type { ServerResponse } from "node:http";
 import type { MockMethod } from "vite-plugin-mock";
 import type { ApiResponse } from "../src/types/http";
 import { removeAllSpace } from "../src/utils/tool";
-import { cloneMenus, mockProfiles } from "./data/rbac-data";
+import { mockProfiles } from "./data/rbac-data";
 import {
   ACCESS_TOKEN_EXPIRES_IN_MS,
   REFRESH_TOKEN_EXPIRES_IN_MS,
@@ -118,13 +118,7 @@ const mocks: MockMethod[] = [
         return;
       }
 
-      sendJson(
-        res,
-        200,
-        success({
-          user: profile.user,
-        }),
-      );
+      sendJson(res, 200, success(profile.user));
     },
   },
   {
@@ -137,13 +131,7 @@ const mocks: MockMethod[] = [
         return;
       }
 
-      sendJson(
-        res,
-        200,
-        success({
-          roles: [...profile.roles],
-        }),
-      );
+      sendJson(res, 200, success([...profile.roles]));
     },
   },
   {
@@ -156,13 +144,7 @@ const mocks: MockMethod[] = [
         return;
       }
 
-      sendJson(
-        res,
-        200,
-        success({
-          permissions: [...profile.permissions],
-        }),
-      );
+      sendJson(res, 200, success([...profile.permissions]));
     },
   },
   {
@@ -175,13 +157,7 @@ const mocks: MockMethod[] = [
         return;
       }
 
-      sendJson(
-        res,
-        200,
-        success({
-          menus: cloneMenus(profile.menus),
-        }),
-      );
+      sendJson(res, 200, success(profile.menus));
     },
   },
   {

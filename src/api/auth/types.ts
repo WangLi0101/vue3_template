@@ -1,4 +1,3 @@
-import type { AppMenu, PermissionCode } from "@/types/menu";
 export type { AppMenu, AppRouteMeta, PermissionCode } from "@/types/menu";
 
 export interface AuthUser {
@@ -25,20 +24,21 @@ export interface RefreshTokenPayload {
   refreshToken: string;
 }
 
-export type RefreshTokenResponse = TokenPair;
-
-export interface CurrentUserResponse {
-  user: AuthUser;
-}
-
-export interface RolesResponse {
-  roles: RoleCode[];
-}
-
-export interface PermissionsResponse {
-  permissions: PermissionCode[];
-}
-
-export interface MenusResponse {
-  menus: AppMenu[];
+export interface SysMenu {
+  menuId: string;
+  parentMenuId: string;
+  menuName: string;
+  menuType: string;
+  routePath: string;
+  componentPath: string;
+  icon: string;
+  sortNo: number;
+  visible: boolean;
+  status: number;
+  permissionCode: string;
+  remark: string;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: string;
+  updatedAt: string;
 }

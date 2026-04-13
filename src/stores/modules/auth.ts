@@ -11,6 +11,7 @@ import type { AuthUser, TokenPair } from "@/api/auth/types";
 import router from "@/router";
 import { ApiRequestError } from "@/types/http";
 import { clearAuthTokens, getAccessToken, getRefreshToken, setAuthTokens } from "@/utils/token";
+import { transformMenusToTree } from "@/utils/menu";
 import { useMenuStore } from "./menu";
 import { usePermissionStore } from "./permission";
 import { useTabsStore } from "./tabs";
@@ -72,10 +73,11 @@ export const useAuthStore = defineStore("auth", () => {
 
     const [userResponse, rolesResponse, permissionsResponse, menusResponse] = responses;
 
-    user.value = userResponse.data.user;
-    permissionStore.setRoles(rolesResponse.data.roles);
-    permissionStore.setPermissions(permissionsResponse.data.permissions);
-    menuStore.setSidebarBackendMenus(menusResponse.data.menus);
+    user.value = userResponse.data;
+    permissionStore.setRoles(rolesResponse.data);
+    permissionStore.setPermissions(permissionsResponse.data);
+    menuStore.setSidebarBackendMenus(transformMenusToTree(menusResponse.data), menusResponse.data);
+
     tabsStore.syncHomeTag();
     isInitialized.value = true;
     return true;
